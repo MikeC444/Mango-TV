@@ -2,12 +2,21 @@
 <!--
   Settles the bottom edge of large artwork into the page so it does not end on
   a hard line.
+
+  Spans the artwork's full height rather than a partial band pinned to the
+  bottom: a view whose own bounds start partway down the image is a seam
+  waiting to happen the moment its top edge and the image beneath it do not
+  agree on exactly where "transparent" starts. A gradient over the whole
+  image has no such edge - it reads as flat through the top half, held there
+  by the repeated centerColor stop, then settles into the page colour by the
+  bottom.
 -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <gradient
         android:angle="90"
-        android:endColor="@color/scrim_none"
-        android:startColor="@color/surface_base"
+        android:startColor="@color/scrim_none"
+        android:centerColor="@color/scrim_none"
+        android:endColor="@color/surface_base"
         android:type="linear" />
 </shape>

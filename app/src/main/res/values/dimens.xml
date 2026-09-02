@@ -23,9 +23,13 @@
     <dimen name="safe_area_horizontal">48dp</dimen>
     <dimen name="safe_area_vertical">27dp</dimen>
 
-    <!-- Navigation rail. Collapsed it is a quiet strip of icons sitting inside
-         the same safe area every screen already keeps clear; it only expands,
-         drawing over the content, while it holds focus. -->
+    <!-- Navigation rail. Collapsed it is a quiet strip of icons in its own
+         reserved column, so the rail's bounds never overlap the content next
+         to it - both so nothing underneath is covered and so the platform's
+         own focus search recognises it as reachable by moving left. It only
+         grows to its expanded width, drawing over the content, while it holds
+         focus. -->
+    <dimen name="nav_rail_collapsed">76dp</dimen>
     <dimen name="nav_rail_expanded">232dp</dimen>
     <dimen name="nav_item_height">56dp</dimen>
     <dimen name="nav_icon_size">24dp</dimen>
@@ -70,10 +74,6 @@
     <dimen name="detail_poster_height">300dp</dimen>
     <!-- Leaves the primary action on screen without scrolling at 540dp. -->
     <dimen name="detail_backdrop_height">400dp</dimen>
-    <!-- Long enough that the fade is fully settled to the page colour well
-         before the backdrop's own bottom edge, so nothing changes abruptly
-         where the image gives way to the plain page beneath it. -->
-    <dimen name="detail_scrim_bottom_height">220dp</dimen>
     <dimen name="cast_avatar_size">88dp</dimen>
     <dimen name="cast_item_width">104dp</dimen>
     <dimen name="detail_text_max_width">620dp</dimen>

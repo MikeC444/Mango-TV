@@ -101,6 +101,7 @@
     <string name="stream_picker_empty_title">No sources found</string>
     <string name="stream_picker_empty_body">None of your enabled add-ons had anything to play for this title.</string>
     <string name="stream_picker_not_supported">Not supported in this app</string>
+    <string name="stream_picker_torrent_unsupported">Torrent source · not playable here</string>
     <string name="stream_quality_unknown">Unknown quality</string>
     <string name="player_error">Couldn\'t play this source.</string>
 </resources>

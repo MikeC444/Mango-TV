@@ -57,6 +57,18 @@ class StreamAdapter(
             details.text = detailsLine(stream)
 
             val supported = stream.isDirectlyPlayable
+            if (!supported) {
+                // Most real-world add-ons only offer a torrent source - naming
+                // that plainly is more useful than a blanket "not supported"
+                // that reads like something this application got wrong.
+                unsupported.setText(
+                    if (stream.isPeerToPeer) {
+                        R.string.stream_picker_torrent_unsupported
+                    } else {
+                        R.string.stream_picker_not_supported
+                    },
+                )
+            }
             unsupported.visibility = if (supported) View.GONE else View.VISIBLE
             view.isFocusable = supported
             view.isClickable = supported

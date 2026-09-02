@@ -58,11 +58,12 @@
 
                 <View
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/detail_scrim_bottom_height"
+                    android:layout_height="0dp"
                     android:background="@drawable/scrim_bottom"
                     app:layout_constraintBottom_toBottomOf="@id/detail_backdrop"
                     app:layout_constraintEnd_toEndOf="@id/detail_backdrop"
-                    app:layout_constraintStart_toStartOf="@id/detail_backdrop" />
+                    app:layout_constraintStart_toStartOf="@id/detail_backdrop"
+                    app:layout_constraintTop_toTopOf="@id/detail_backdrop" />
 
                 <ImageView
                     android:id="@+id/detail_poster"
