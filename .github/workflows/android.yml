@@ -31,6 +31,19 @@ jobs:
       - name: Assemble debug APK
         run: ./gradlew assembleDebug
 
+      # The Stremio protocol layer has no Android dependencies, so it is
+      # covered by real JVM tests that execute here rather than only compiling.
+      - name: Unit tests
+        run: ./gradlew testDebugUnitTest
+
+      - name: Upload test report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: app/build/reports/tests/testDebugUnitTest/
+          if-no-files-found: ignore
+
       - name: Lint
         run: ./gradlew :app:lintDebug
 

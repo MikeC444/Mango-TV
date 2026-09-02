@@ -37,11 +37,21 @@ data class MediaItem(
     val id: MediaId,
     val type: MediaType,
     val title: String,
-    val year: Int,
-    val runtimeMinutes: Int,
-    val certification: String,
-    val genres: List<String>,
-    val synopsis: String,
+
+    /**
+     * Everything below the title is optional.
+     *
+     * A bundled record carries all of it, but a catalogue row from an add-on
+     * routinely carries an identifier, a name and a poster and nothing else -
+     * the rest arrives only when the title is opened and its metadata is
+     * fetched. Requiring these would mean either inventing values at the parser
+     * or refusing perfectly good content.
+     */
+    val year: Int? = null,
+    val runtimeMinutes: Int? = null,
+    val certification: String? = null,
+    val genres: List<String> = emptyList(),
+    val synopsis: String? = null,
     val images: MediaImages,
     /**
      * How far through the viewer is, from 0 to 1. Anything above zero means

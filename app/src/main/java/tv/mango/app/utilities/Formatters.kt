@@ -33,18 +33,22 @@ object Formatters {
      * which is the number a viewer is actually deciding on.
      */
     fun metadataLine(context: Context, item: MediaItem): String {
-        val length = when (item.type) {
-            MediaType.MOVIE -> runtime(context, item.runtimeMinutes)
-            MediaType.SERIES -> context.getString(
-                R.string.format_per_episode,
-                runtime(context, item.runtimeMinutes),
-            )
+        // Any of these may be absent on a title whose metadata has not been
+        // fetched, or whose provider simply does not carry it. The line is
+        // assembled from whatever is known and closes up around the rest, so a
+        // sparse record reads as a shorter line rather than as a broken one.
+        val length = item.runtimeMinutes?.let { minutes ->
+            when (item.type) {
+                MediaType.MOVIE -> runtime(context, minutes)
+                MediaType.SERIES ->
+                    context.getString(R.string.format_per_episode, runtime(context, minutes))
+            }
         }
-        return listOf(
-            item.year.toString(),
+        return listOfNotNull(
+            item.year?.toString(),
             length,
             item.certification,
-            item.genres.joinToString(", "),
+            item.genres.joinToString(", ").takeIf { it.isNotEmpty() },
         ).filter { it.isNotBlank() }.joinToString(SEPARATOR)
     }
 

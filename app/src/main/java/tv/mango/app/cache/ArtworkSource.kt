@@ -26,5 +26,13 @@ interface ArtworkSource {
 class BundledArtworkSource : ArtworkSource {
 
     override fun uriFor(key: String, widthPx: Int, heightPx: Int): String =
-        "file:///android_asset/artwork/$key.webp"
+        // An add-on names its artwork by absolute URL where the bundled
+        // catalogue names it by key. Both arrive here, and the image pipeline
+        // above does not distinguish between them - which is what lets one
+        // card layout serve bundled and remote content alike.
+        if (key.startsWith("http://") || key.startsWith("https://")) {
+            key
+        } else {
+            "file:///android_asset/artwork/$key.webp"
+        }
 }

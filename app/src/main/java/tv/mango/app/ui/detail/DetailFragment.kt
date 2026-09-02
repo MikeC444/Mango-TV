@@ -147,7 +147,9 @@ class DetailFragment : Fragment() {
 
         views.detailTitle.text = item.title
         views.detailMeta.text = Formatters.metadataLine(requireContext(), item)
-        views.detailSynopsis.text = item.synopsis
+        views.detailSynopsis.text = item.synopsis.orEmpty()
+        views.detailSynopsis.visibility =
+            if (item.synopsis.isNullOrBlank()) View.GONE else View.VISIBLE
 
         ImageLoader.loadBackdrop(
             target = views.detailBackdrop,

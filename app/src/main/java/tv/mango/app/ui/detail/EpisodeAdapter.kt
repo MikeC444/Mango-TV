@@ -2,6 +2,7 @@ package tv.mango.app.ui.detail
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -82,7 +83,11 @@ class EpisodeAdapter(
                 episode.number,
                 episode.title,
             )
-            meta.text = Formatters.runtime(context, episode.runtimeMinutes)
+            // A provider that does not give runtimes leaves the line empty
+            // rather than showing a fabricated one.
+            val runtime = episode.runtimeMinutes?.let { Formatters.runtime(context, it) }
+            meta.text = runtime.orEmpty()
+            meta.visibility = if (runtime == null) View.GONE else View.VISIBLE
             ImageLoader.loadPoster(thumbnail, episode.thumbnail, width, height)
 
             // The synopsis is the accessible description rather than a fourth
@@ -91,7 +96,7 @@ class EpisodeAdapter(
                 R.string.cd_episode,
                 episode.number,
                 episode.title,
-                episode.synopsis,
+                episode.synopsis.orEmpty(),
             )
         }
 

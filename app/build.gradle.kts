@@ -55,6 +55,12 @@ android {
         jvmTarget = "17"
     }
 
+    testOptions {
+        unitTests {
+            isReturnDefaultValues = true
+        }
+    }
+
     lint {
         abortOnError = true
         warningsAsErrors = false
@@ -99,4 +105,14 @@ dependencies {
     // every build for queries this data does not have. Room becomes the right
     // answer when the library grows real ones - sorting, filtering, joins.
     implementation(libs.androidx.datastore.preferences)
+
+    // Add-ons are remote HTTP services. OkHttp gives per-call timeouts, proper
+    // cancellation and connection reuse across the several add-ons a single
+    // screen may query at once.
+    implementation(libs.okhttp)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlin.test.junit)
+    testImplementation(libs.okhttp.mockwebserver)
+    testImplementation(libs.kotlinx.coroutines.test)
 }

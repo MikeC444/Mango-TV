@@ -2,6 +2,7 @@ package tv.mango.app.ui.home
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import tv.mango.app.R
@@ -52,7 +53,9 @@ class HeroView @JvmOverloads constructor(
 
         binding.heroTitle.text = item.title
         binding.heroMeta.text = Formatters.metadataLine(context, item)
-        binding.heroSynopsis.text = item.synopsis
+        binding.heroSynopsis.text = item.synopsis.orEmpty()
+        binding.heroSynopsis.visibility =
+            if (item.synopsis.isNullOrBlank()) View.GONE else View.VISIBLE
         binding.heroEyebrow.setText(
             if (item.isPartiallyWatched) R.string.label_continue_watching else R.string.label_featured,
         )

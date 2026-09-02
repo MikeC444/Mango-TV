@@ -18,10 +18,12 @@ data class Episode(
     val season: Int,
     val number: Int,
     val title: String,
-    val synopsis: String,
-    val runtimeMinutes: Int,
-    /** Episodes reuse their series' artwork; a real provider would supply stills. */
+    /** Absent on providers that give an episode list but no descriptions. */
+    val synopsis: String? = null,
+    val runtimeMinutes: Int? = null,
+    /** A still where the provider has one; otherwise the series' own artwork. */
     val thumbnail: String,
+    val airedIso: String? = null,
     val progress: Float = 0f,
 )
 
