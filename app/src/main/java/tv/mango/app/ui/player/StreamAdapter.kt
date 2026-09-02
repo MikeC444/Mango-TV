@@ -19,9 +19,21 @@ class StreamAdapter(
 
     private var streams: List<StreamResult> = emptyList()
 
+    /**
+     * Position of the first source this application can actually play, or -1
+     * when nothing in the list is playable. Streams are already ranked by
+     * [tv.mango.app.addon.StreamRanker] with a playable source ahead of a
+     * torrent whenever one exists, so this is the one worth calling out
+     * rather than leaving the viewer to guess among a page of otherwise
+     * similar-looking cards. Tracked by position rather than by
+     * [StreamResult.id], which plenty of add-ons simply never set.
+     */
+    private var recommendedPosition: Int = -1
+
     @SuppressLint("NotifyDataSetChanged")
     fun submit(newStreams: List<StreamResult>) {
         streams = newStreams
+        recommendedPosition = newStreams.indexOfFirst { it.isDirectlyPlayable }
         notifyDataSetChanged()
     }
 
@@ -34,7 +46,7 @@ class StreamAdapter(
         )
 
     override fun onBindViewHolder(holder: StreamViewHolder, position: Int) {
-        holder.bind(streams[position])
+        holder.bind(streams[position], recommended = position == recommendedPosition)
     }
 
     class StreamViewHolder(
@@ -43,6 +55,7 @@ class StreamAdapter(
     ) : RecyclerView.ViewHolder(view) {
 
         private val quality: TextView = view.findViewById(R.id.stream_quality)
+        private val recommended: TextView = view.findViewById(R.id.stream_recommended)
         private val details: TextView = view.findViewById(R.id.stream_details)
         private val unsupported: TextView = view.findViewById(R.id.stream_unsupported)
 
@@ -52,8 +65,9 @@ class StreamAdapter(
             }
         }
 
-        fun bind(stream: StreamResult) {
+        fun bind(stream: StreamResult, recommended: Boolean) {
             quality.text = qualityLabel(stream)
+            this.recommended.visibility = if (recommended) View.VISIBLE else View.GONE
             details.text = detailsLine(stream)
 
             val supported = stream.isDirectlyPlayable
@@ -89,6 +103,7 @@ class StreamAdapter(
 
         private fun detailsLine(stream: StreamResult): String = listOfNotNull(
             stream.providerName.takeIf { it.isNotBlank() },
+            stream.audio,
             stream.codec,
             stream.language?.uppercase(),
             stream.sizeBytes?.let(Formatters::fileSize),

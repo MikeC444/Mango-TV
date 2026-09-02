@@ -24,6 +24,8 @@ import tv.mango.app.R
 import tv.mango.app.addon.model.SubtitleResult
 import tv.mango.app.di.AppGraph
 import tv.mango.app.models.MediaId
+import tv.mango.app.models.MediaType
+import tv.mango.app.models.ResumePoint
 import tv.mango.app.ui.player.PlaybackTarget
 import tv.mango.app.utilities.Logger
 
@@ -47,6 +49,7 @@ class PlayerActivity : AppCompatActivity() {
     // Nullable rather than lateinit: MediaId is a value class, and Kotlin does
     // not allow lateinit on one.
     private var progressId: MediaId? = null
+    private var resumePoint: ResumePoint? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +63,7 @@ class PlayerActivity : AppCompatActivity() {
             return
         }
         progressId = MediaId(progressIdValue)
+        resumePoint = readResumePoint()
         startFraction = intent.getFloatExtra(EXTRA_START_FRACTION, 0f)
         seekPending = startFraction > 0f
         title = intent.getStringExtra(EXTRA_TITLE)
@@ -111,6 +115,26 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
+    /** Rebuilds the [ResumePoint] a Continue Watching entry needs, from intent extras. */
+    private fun readResumePoint(): ResumePoint? {
+        val resumeTitle = intent.getStringExtra(EXTRA_RESUME_TITLE) ?: return null
+        val typeName = intent.getStringExtra(EXTRA_RESUME_TYPE) ?: return null
+        val type = runCatching { MediaType.valueOf(typeName) }.getOrNull() ?: return null
+        val posterKey = intent.getStringExtra(EXTRA_RESUME_POSTER) ?: return null
+        val backdropKey = intent.getStringExtra(EXTRA_RESUME_BACKDROP) ?: return null
+        return ResumePoint(
+            title = resumeTitle,
+            type = type,
+            posterKey = posterKey,
+            backdropKey = backdropKey,
+            runtimeMinutes = intent.getIntExtra(EXTRA_RESUME_RUNTIME, -1).takeIf { it >= 0 },
+            episodeId = intent.getStringExtra(EXTRA_RESUME_EPISODE_ID),
+            episodeSeason = intent.getIntExtra(EXTRA_RESUME_EPISODE_SEASON, -1).takeIf { it >= 0 },
+            episodeNumber = intent.getIntExtra(EXTRA_RESUME_EPISODE_NUMBER, -1).takeIf { it >= 0 },
+            episodeTitle = intent.getStringExtra(EXTRA_RESUME_EPISODE_TITLE),
+        )
+    }
+
     /** Runs on every player event until the duration is known, then seeks once and stops checking. */
     private fun maybeSeekToStart(current: Player) {
         if (!seekPending) return
@@ -131,12 +155,13 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun recordProgress() {
         val id = progressId ?: return
+        val point = resumePoint ?: return
         val exoPlayer = player ?: return
         val duration = exoPlayer.duration
         if (duration == C.TIME_UNSET || duration <= 0) return
         val fraction = (exoPlayer.currentPosition.toFloat() / duration).coerceIn(0f, 1f)
         val library = AppGraph.from(this).libraryRepository
-        lifecycleScope.launch { library.recordProgress(id, fraction) }
+        lifecycleScope.launch { library.recordProgress(id, fraction, point) }
     }
 
     private fun hideSystemBars() {
@@ -171,6 +196,16 @@ class PlayerActivity : AppCompatActivity() {
         private const val EXTRA_SUB_LABELS = "sub_labels"
         private const val EXTRA_SUB_MIME_TYPES = "sub_mime_types"
 
+        private const val EXTRA_RESUME_TITLE = "resume_title"
+        private const val EXTRA_RESUME_TYPE = "resume_type"
+        private const val EXTRA_RESUME_POSTER = "resume_poster"
+        private const val EXTRA_RESUME_BACKDROP = "resume_backdrop"
+        private const val EXTRA_RESUME_RUNTIME = "resume_runtime"
+        private const val EXTRA_RESUME_EPISODE_ID = "resume_episode_id"
+        private const val EXTRA_RESUME_EPISODE_SEASON = "resume_episode_season"
+        private const val EXTRA_RESUME_EPISODE_NUMBER = "resume_episode_number"
+        private const val EXTRA_RESUME_EPISODE_TITLE = "resume_episode_title"
+
         private const val PROGRESS_INTERVAL_MILLIS = 10_000L
         private const val DEFAULT_SUBTITLE_MIME_TYPE = "application/x-subrip"
 
@@ -178,6 +213,7 @@ class PlayerActivity : AppCompatActivity() {
             fun mimeTypeFor(subtitle: SubtitleResult): String =
                 subtitle.format.mimeType ?: DEFAULT_SUBTITLE_MIME_TYPE
 
+            val point = target.resumePoint
             return Intent(context, PlayerActivity::class.java).apply {
                 putExtra(EXTRA_TITLE, target.title)
                 putExtra(EXTRA_URL, target.url)
@@ -187,6 +223,15 @@ class PlayerActivity : AppCompatActivity() {
                 putStringArrayListExtra(EXTRA_SUB_LANGUAGES, ArrayList(target.subtitles.map { it.language }))
                 putStringArrayListExtra(EXTRA_SUB_LABELS, ArrayList(target.subtitles.map { it.label }))
                 putStringArrayListExtra(EXTRA_SUB_MIME_TYPES, ArrayList(target.subtitles.map(::mimeTypeFor)))
+                putExtra(EXTRA_RESUME_TITLE, point.title)
+                putExtra(EXTRA_RESUME_TYPE, point.type.name)
+                putExtra(EXTRA_RESUME_POSTER, point.posterKey)
+                putExtra(EXTRA_RESUME_BACKDROP, point.backdropKey)
+                point.runtimeMinutes?.let { putExtra(EXTRA_RESUME_RUNTIME, it) }
+                putExtra(EXTRA_RESUME_EPISODE_ID, point.episodeId)
+                point.episodeSeason?.let { putExtra(EXTRA_RESUME_EPISODE_SEASON, it) }
+                point.episodeNumber?.let { putExtra(EXTRA_RESUME_EPISODE_NUMBER, it) }
+                putExtra(EXTRA_RESUME_EPISODE_TITLE, point.episodeTitle)
             }
         }
     }

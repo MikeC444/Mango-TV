@@ -73,17 +73,27 @@ class LibraryStore(
      * removed, so a title watched to the end stops offering to resume and
      * leaves Continue Watching on its own.
      */
-    suspend fun setProgress(id: String, fraction: Float, atMillis: Long) {
+    suspend fun setProgress(id: String, position: PlaybackPosition) {
         store.edit { preferences ->
             val current = preferences[PROGRESS]
                 ?.let { runCatching { json.decodeFromString(PROGRESS_SERIALIZER, it) }.getOrNull() }
                 .orEmpty()
-            val updated = if (fraction >= COMPLETE_THRESHOLD || fraction <= 0f) {
+            val updated = if (position.fraction >= COMPLETE_THRESHOLD || position.fraction <= 0f) {
                 current - id
             } else {
-                current + (id to PlaybackPosition(fraction, atMillis))
+                current + (id to position)
             }
             preferences[PROGRESS] = json.encodeToString(PROGRESS_SERIALIZER, updated)
+        }
+    }
+
+    /** Explicit removal, for "Remove from Continue Watching" - not just a position update. */
+    suspend fun removeProgress(id: String) {
+        store.edit { preferences ->
+            val current = preferences[PROGRESS]
+                ?.let { runCatching { json.decodeFromString(PROGRESS_SERIALIZER, it) }.getOrNull() }
+                .orEmpty()
+            preferences[PROGRESS] = json.encodeToString(PROGRESS_SERIALIZER, current - id)
         }
     }
 

@@ -34,6 +34,17 @@ object Formatters {
      * which is the number a viewer is actually deciding on.
      */
     fun metadataLine(context: Context, item: MediaItem): String {
+        // A Continue Watching card describes itself differently: which
+        // episode, and how much of it is left, is what a viewer deciding
+        // whether to resume actually wants - not the show's year or genres.
+        val resume = item.resume
+        if (resume != null) {
+            return listOfNotNull(
+                resume.episodeLabel,
+                resume.remainingMinutes?.let { context.getString(R.string.format_minutes_remaining, it) },
+            ).joinToString(SEPARATOR)
+        }
+
         // Any of these may be absent on a title whose metadata has not been
         // fetched, or whose provider simply does not carry it. The line is
         // assembled from whatever is known and closes up around the rest, so a

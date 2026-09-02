@@ -65,6 +65,18 @@ internal object StreamDescriptors {
         return match.groupValues[1].takeIf { it.isNotBlank() }
     }
 
+    /** "5.1", "7.1", "Stereo" - read the same way quality and codec are. */
+    fun audioOf(text: String): String? {
+        val normalised = text.lowercase()
+        return when {
+            normalised.containsAny("atmos") -> "Dolby Atmos"
+            normalised.containsAny("7.1") -> "7.1"
+            normalised.containsAny("5.1", "dd5.1", "ddp5.1", "eac3", "ac3", "dts") -> "5.1"
+            normalised.containsAny("2.0", "stereo") -> "Stereo"
+            else -> null
+        }
+    }
+
     private fun String.containsAny(vararg needles: String): Boolean =
         needles.any { contains(it) }
 

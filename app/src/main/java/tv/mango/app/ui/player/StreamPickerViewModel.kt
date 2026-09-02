@@ -15,6 +15,7 @@ import tv.mango.app.data.FailureReason
 import tv.mango.app.data.provider.StreamProvider
 import tv.mango.app.data.provider.SubtitleProvider
 import tv.mango.app.models.MediaId
+import tv.mango.app.models.ResumePoint
 import tv.mango.app.player.PendingPlayback
 import tv.mango.app.repository.LibraryRepository
 
@@ -33,6 +34,8 @@ data class PlaybackTarget(
     val subtitles: List<SubtitleResult>,
     val progressId: MediaId,
     val startFraction: Float,
+    /** What to hand back to [LibraryRepository.recordProgress] as the player reports progress. */
+    val resumePoint: ResumePoint,
 )
 
 /**
@@ -96,7 +99,11 @@ class StreamPickerViewModel(
         val req = request ?: return null
         val url = stream.url?.takeIf { stream.isDirectlyPlayable } ?: return null
 
-        val progressId = req.episode?.id?.let(::MediaId) ?: req.item.id
+        // Always the series or film's own id, never an episode's: Continue
+        // Watching is one card per title, and picking a different episode of
+        // a show already in progress has to move that one card rather than
+        // starting a second, unrelated one.
+        val progressId = req.item.id
         val startFraction = if (req.startFromBeginning) 0f else library.progressOf(progressId).first()
         val subtitles = (resourceSubtitles + stream.subtitles)
             .distinctBy { Triple(it.providerId, it.language, it.url) }
@@ -107,6 +114,17 @@ class StreamPickerViewModel(
             subtitles = subtitles,
             progressId = progressId,
             startFraction = startFraction,
+            resumePoint = ResumePoint(
+                title = req.item.title,
+                type = req.item.type,
+                posterKey = req.item.images.poster,
+                backdropKey = req.item.images.backdrop,
+                runtimeMinutes = req.episode?.runtimeMinutes ?: req.item.runtimeMinutes,
+                episodeId = req.episode?.id,
+                episodeSeason = req.episode?.season,
+                episodeNumber = req.episode?.number,
+                episodeTitle = req.episode?.title,
+            ),
         )
     }
 

@@ -188,6 +188,7 @@ object StremioResponseParser {
             codec = StreamDescriptors.codecOf(describing),
             sizeBytes = hints?.long("videoSize") ?: StreamDescriptors.sizeOf(describing),
             language = StreamDescriptors.languageOf(describing),
+            audio = StreamDescriptors.audioOf(describing),
             behaviorHints = parseStreamBehaviorHints(hints),
             subtitles = parseSubtitles(stream, provider),
             providerId = provider.id,

@@ -47,6 +47,16 @@ class StreamDescriptorsTest {
     }
 
     @Test
+    fun `audio channels are read from the usual spellings`() {
+        assertEquals("5.1", StreamDescriptors.audioOf("1080p DD5.1"))
+        assertEquals("5.1", StreamDescriptors.audioOf("2160p EAC3"))
+        assertEquals("7.1", StreamDescriptors.audioOf("1080p 7.1 remux"))
+        assertEquals("Dolby Atmos", StreamDescriptors.audioOf("1080p Dolby Atmos"))
+        assertEquals("Stereo", StreamDescriptors.audioOf("720p Stereo"))
+        assertNull(StreamDescriptors.audioOf("1080p x264"))
+    }
+
+    @Test
     fun `quality ranks order the way a viewer would expect`() {
         val sorted = listOf(
             StreamQuality.HD_720,

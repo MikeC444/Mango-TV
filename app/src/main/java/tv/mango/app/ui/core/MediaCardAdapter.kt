@@ -22,6 +22,13 @@ import tv.mango.app.models.MediaItem
 class MediaCardAdapter(
     private val onSelected: (MediaItem) -> Unit,
     private val onFocused: (MediaItem) -> Unit = {},
+    /**
+     * @return true if the long press was handled - only ever true for a
+     *   Continue Watching card, which is the only kind of card this applies
+     *   to. Every other row leaves this at its default and the platform's
+     *   own long-click handling simply finds nothing to do.
+     */
+    private val onLongSelected: (MediaItem) -> Boolean = { false },
 ) : RecyclerView.Adapter<MediaCardAdapter.CardViewHolder>() {
 
     private var items: List<MediaItem> = emptyList()
@@ -50,7 +57,7 @@ class MediaCardAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_media_card, parent, false)
-        return CardViewHolder(view as TvCardView, onSelected, onFocused)
+        return CardViewHolder(view as TvCardView, onSelected, onFocused, onLongSelected)
     }
 
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
@@ -66,6 +73,7 @@ class MediaCardAdapter(
         private val card: TvCardView,
         onSelected: (MediaItem) -> Unit,
         onFocused: (MediaItem) -> Unit,
+        onLongSelected: (MediaItem) -> Boolean,
     ) : RecyclerView.ViewHolder(card) {
 
         private val artwork: ImageView = card.findViewById(R.id.artwork)
@@ -84,6 +92,10 @@ class MediaCardAdapter(
             card.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) item?.let(onFocused)
             }
+            // A remote's Select button already generates a long-click when
+            // held, the same as it does on a touch screen - no extra key
+            // handling is needed for this to be D-pad reachable.
+            card.setOnLongClickListener { item?.let(onLongSelected) ?: false }
 
             // Every card inflates its progress bar from the same drawable
             // resource, and those instances share one constant state. Without
@@ -119,7 +131,9 @@ class MediaCardAdapter(
             val base = context.getString(R.string.cd_poster, item.title)
             if (!item.isPartiallyWatched) return base
             val percent = (item.progress * 100).toInt()
-            return base + ", " + context.getString(R.string.cd_progress, percent)
+            val withProgress = base + ", " + context.getString(R.string.cd_progress, percent)
+            if (item.resume == null) return withProgress
+            return withProgress + ", " + context.getString(R.string.cd_continue_watching_remove)
         }
 
         fun recycle() {

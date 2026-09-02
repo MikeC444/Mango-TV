@@ -62,6 +62,10 @@
     <!-- Hero. Substantial without swallowing the first content row. -->
     <dimen name="hero_height">440dp</dimen>
     <dimen name="hero_text_max_width">560dp</dimen>
+    <!-- The hero fades out over this much scroll, not over its own height -
+         otherwise a taller hero would stay visible, faintly, behind rows for
+         longer than a viewer scrolling past it would expect. -->
+    <dimen name="hero_fade_distance">180dp</dimen>
 
     <!-- Buttons sized for confident D-pad targets at a distance. -->
     <dimen name="button_height">52dp</dimen>

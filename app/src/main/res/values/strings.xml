@@ -48,6 +48,7 @@
     <string name="search_title">Search</string>
     <string name="search_hint">Search movies and TV shows</string>
     <string name="search_recent_label">Recent Searches</string>
+    <string name="search_popular_label">Popular Searches</string>
     <string name="search_empty_title">No results for “%1$s”</string>
     <string name="search_empty_body">Try a different title, or check the spelling.</string>
     <string name="search_prompt_title">Find something to watch</string>
@@ -63,6 +64,11 @@
     <string name="cd_episode">Episode %1$d, %2$s. %3$s</string>
     <string name="cd_in_library">In your library</string>
     <string name="cd_cast_member">%1$s as %2$s</string>
+
+    <!-- Continue Watching -->
+    <string name="format_minutes_remaining">%1$d min remaining</string>
+    <string name="continue_watching_removed">Removed from Continue Watching</string>
+    <string name="cd_continue_watching_remove">Hold Select to remove from Continue Watching</string>
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>
@@ -111,6 +117,7 @@
     <string name="stream_picker_empty_title">No sources found</string>
     <string name="stream_picker_empty_body">None of your enabled add-ons had anything to play for this title.</string>
     <string name="stream_picker_not_supported">Not supported in this app</string>
+    <string name="stream_recommended">⭐ Recommended</string>
     <string name="stream_picker_torrent_unsupported">Torrent source · not playable here</string>
     <string name="stream_quality_unknown">Unknown quality</string>
     <string name="player_error">Couldn\'t play this source.</string>

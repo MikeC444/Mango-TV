@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.FOCUS_BEFORE_DESCENDANTS
 import android.view.ViewGroup.FOCUS_BLOCK_DESCENDANTS
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -20,6 +21,7 @@ import tv.mango.app.data.FailureReason
 import tv.mango.app.data.UiState
 import tv.mango.app.databinding.FragmentHomeBinding
 import tv.mango.app.di.appGraph
+import tv.mango.app.models.Episode
 import tv.mango.app.models.HomeContent
 import tv.mango.app.models.MediaItem
 import tv.mango.app.navigation.NavigationHost
@@ -48,13 +50,14 @@ class HomeFragment : Fragment() {
 
     private val viewModel: HomeViewModel by viewModels {
         viewModelFactory {
-            initializer { HomeViewModel(appGraph.catalogRepository) }
+            initializer { HomeViewModel(appGraph.catalogRepository, appGraph.libraryRepository) }
         }
     }
 
     private val rowsAdapter = ContentRowsAdapter(
-        onItemSelected = ::openDetail,
+        onItemSelected = ::onCardSelected,
         onItemFocused = ::onCardFocused,
+        onItemLongSelected = ::onCardLongPressed,
     )
 
     /** How far the rows have been scrolled up over the hero, in pixels. */
@@ -100,9 +103,11 @@ class HomeFragment : Fragment() {
         views.rows.adapter = rowsAdapter
         views.rows.addOnScrollListener(scrollListener)
 
-        views.hero.onPlay = { item ->
-            (activity as? NavigationHost)?.requestPlayback(item)
-        }
+        // Not just requestPlayback(item): the hero can be showing a Continue
+        // Watching card the viewer scrolled to, and pressing Play there has
+        // to resume the exact episode too, the same as tapping the card
+        // itself would.
+        views.hero.onPlay = ::playItem
         views.hero.onDetails = ::openDetail
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -169,7 +174,7 @@ class HomeFragment : Fragment() {
      */
     private fun updateHeroForScroll() {
         val views = binding ?: return
-        val fadeOver = resources.getDimensionPixelSize(R.dimen.hero_height).toFloat()
+        val fadeOver = resources.getDimensionPixelSize(R.dimen.hero_fade_distance).toFloat()
         val alpha = (1f - scrolledBy / fadeOver).coerceIn(0f, 1f)
         views.hero.alpha = alpha
 
@@ -207,6 +212,40 @@ class HomeFragment : Fragment() {
 
     private fun openDetail(item: MediaItem) {
         (activity as? NavigationHost)?.openDetail(item)
+    }
+
+    /**
+     * A Continue Watching card resumes directly rather than opening the
+     * detail screen first - "click it and it plays" is the entire point of
+     * the row. Every other card behaves as it always has.
+     */
+    private fun onCardSelected(item: MediaItem) {
+        if (item.resume == null) openDetail(item) else playItem(item)
+    }
+
+    /** Resumes exactly where a Continue Watching card's snapshot says it left off. */
+    private fun playItem(item: MediaItem) {
+        val resume = item.resume
+        val episode = resume?.episodeId?.let { episodeId ->
+            Episode(
+                id = episodeId,
+                seriesId = item.id,
+                season = resume.episodeSeason ?: 1,
+                number = resume.episodeNumber ?: 1,
+                title = resume.episodeTitle ?: item.title,
+                // Never shown: the picker and player describe the title by
+                // its own artwork, not the episode's.
+                thumbnail = item.images.poster,
+            )
+        }
+        (activity as? NavigationHost)?.requestPlayback(item, episode, startFromBeginning = false)
+    }
+
+    private fun onCardLongPressed(item: MediaItem): Boolean {
+        val resume = item.resume ?: return false
+        viewModel.removeFromContinueWatching(resume.id)
+        Toast.makeText(requireContext(), R.string.continue_watching_removed, Toast.LENGTH_SHORT).show()
+        return true
     }
 
     override fun onDestroyView() {
