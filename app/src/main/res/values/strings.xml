@@ -40,4 +40,6 @@
     <string name="cd_poster">Artwork for %1$s</string>
     <string name="cd_backdrop">Backdrop image</string>
     <string name="cd_progress">%1$d percent watched</string>
+
+    <string name="placeholder_body">This section arrives in a later phase of the build.</string>
 </resources>

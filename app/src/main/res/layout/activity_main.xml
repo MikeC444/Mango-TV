@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Root container.
+  The application shell: content, with the navigation rail drawn over its
+  leading edge.
 
-  Intentionally has no background: the window background already paints the
-  base surface, and repainting it here would overdraw every pixel of the screen
-  a second time on every frame.
+  Neither container paints a background. The window background already fills the
+  screen with the base surface, and painting it again here would overdraw every
+  pixel a second time on every frame.
+
+  The content is inset by the rail's collapsed width, so nothing sits under the
+  resting icons. The rail itself is laid out at its full expanded width and
+  simply draws on top when it opens, which is why opening it costs no layout
+  pass and never shifts the content.
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root"
@@ -14,6 +20,14 @@
     <FrameLayout
         android:id="@+id/content_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/nav_rail_collapsed"
+        android:clipChildren="false" />
+
+    <tv.mango.app.navigation.NavRail
+        android:id="@+id/nav_rail"
+        android:layout_width="@dimen/nav_rail_expanded"
+        android:layout_height="match_parent"
+        android:layout_gravity="start" />
 
 </FrameLayout>

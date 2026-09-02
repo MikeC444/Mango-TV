@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Fades in behind the navigation rail while it holds focus, so labels read
+  against whatever is on screen without the content having to move aside.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:angle="0"
+        android:centerColor="@color/scrim_strong"
+        android:centerX="0.6"
+        android:endColor="@color/scrim_none"
+        android:startColor="@color/surface_base"
+        android:type="linear" />
+</shape>

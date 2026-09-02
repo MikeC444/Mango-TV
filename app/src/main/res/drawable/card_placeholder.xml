@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Shown while artwork loads. A flat surface, not a shimmer: a looping highlight
+  would be a continuous animation on every unloaded card on screen.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/surface_raised" />
+    <corners android:radius="@dimen/card_corner" />
+</shape>

@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Local playback progress and library membership are worth restoring onto a
-     replacement device. Caches are not. -->
+<!--
+  Local playback progress and library membership are worth restoring onto a
+  replacement device.
+
+  Listing includes restricts the backup to exactly these paths, so caches and
+  downloaded artwork are left out by omission rather than by an explicit
+  exclude.
+-->
 <full-backup-content>
     <include
         domain="database"
@@ -8,7 +14,4 @@
     <include
         domain="sharedpref"
         path="mango_settings.xml" />
-    <exclude
-        domain="file"
-        path="image_cache" />
 </full-backup-content>

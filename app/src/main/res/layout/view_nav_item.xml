@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Contents of a single rail destination. Merged into NavItemView so the item
+     costs one view group rather than two. -->
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:parentTag="android.widget.LinearLayout">
+
+    <View
+        android:id="@+id/indicator"
+        android:layout_width="3dp"
+        android:layout_height="18dp"
+        android:alpha="0"
+        android:background="@drawable/nav_item_indicator" />
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="@dimen/nav_icon_size"
+        android:layout_height="@dimen/nav_icon_size"
+        android:layout_marginStart="@dimen/space_2"
+        android:contentDescription="@null"
+        android:importantForAccessibility="no" />
+
+    <TextView
+        android:id="@+id/label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_2"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.Mango.Label" />
+
+</merge>

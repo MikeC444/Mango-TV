@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The focused card treatment, as a single drawable whose alpha is animated.
+
+  Two cues, neither of them colour alone: the surface brightens as though it has
+  moved closer to the light, and a thin accent edge confirms the selection. The
+  edge is inset by 1dp so the card's rounded outline clip cannot shave it.
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#1AFFFFFF" />
+            <corners android:radius="@dimen/card_corner" />
+        </shape>
+    </item>
+
+    <item
+        android:bottom="1dp"
+        android:left="1dp"
+        android:right="1dp"
+        android:top="1dp">
+        <shape android:shape="rectangle">
+            <stroke
+                android:width="@dimen/focus_ring_width"
+                android:color="@color/accent" />
+            <corners android:radius="@dimen/card_corner" />
+        </shape>
+    </item>
+
+</layer-list>
