@@ -7,10 +7,14 @@
   screen with the base surface, and painting it again here would overdraw every
   pixel a second time on every frame.
 
-  The content is inset by the rail's collapsed width, so nothing sits under the
-  resting icons. The rail itself is laid out at its full expanded width and
-  simply draws on top when it opens, which is why opening it costs no layout
-  pass and never shifts the content.
+  Content is not inset for the rail at all - every screen already keeps its
+  own content clear of the edge with its safe-area padding, and the rail's
+  resting icons sit comfortably inside that same margin. Reserving rail width
+  on top of it would double the dead space along the left edge, which is what
+  made the rail read as a wide blank bar rather than a thin column of icons.
+  The rail is laid out at its full expanded width and simply draws over the
+  content when it opens, which is why opening it costs no layout pass and
+  never shifts anything.
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root"
@@ -21,7 +25,6 @@
         android:id="@+id/content_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/nav_rail_collapsed"
         android:clipChildren="false" />
 
     <tv.mango.app.navigation.NavRail

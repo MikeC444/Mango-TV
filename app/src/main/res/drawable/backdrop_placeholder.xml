@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Shown while a backdrop loads. The same colour as the page underneath it, so
+  there is nothing to see until the real image crossfades in - no flash of a
+  different tone, no visible placeholder box on a surface this large.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/surface_base" />
+</shape>
