@@ -116,9 +116,13 @@ class AddonSubtitleProvider(
     private val resolver: SubtitleResolver,
 ) : SubtitleProvider {
 
-    override suspend fun subtitles(item: MediaItem, episode: Episode?): DataResult<List<SubtitleResult>> {
+    override suspend fun subtitles(
+        item: MediaItem,
+        episode: Episode?,
+        fromStream: List<SubtitleResult>,
+    ): DataResult<List<SubtitleResult>> {
         val videoId = MediaId(episode?.id ?: item.id.value)
-        return DataResult.Success(resolver.subtitles(videoId, item.type).items)
+        return DataResult.Success(resolver.subtitles(videoId, item.type, fromStream).items)
     }
 }
 

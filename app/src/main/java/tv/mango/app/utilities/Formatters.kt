@@ -4,6 +4,7 @@ import android.content.Context
 import tv.mango.app.R
 import tv.mango.app.models.MediaItem
 import tv.mango.app.models.MediaType
+import java.util.Locale
 
 /**
  * How the application writes things down.
@@ -52,6 +53,21 @@ object Formatters {
         ).filter { it.isNotBlank() }.joinToString(SEPARATOR)
     }
 
+    /**
+     * "1.4 GB", "700 MB" - a stream's size, for the source picker.
+     *
+     * Formatted with a fixed locale rather than the device's own: this is a
+     * decimal number in an English-only interface, not localised text, and
+     * the device's locale would otherwise decide whether the separator is a
+     * period or a comma.
+     */
+    fun fileSize(bytes: Long): String {
+        val gb = bytes / (1024.0 * 1024.0 * 1024.0)
+        if (gb >= 1.0) return String.format(Locale.US, "%.1f GB", gb)
+        val mb = bytes / (1024.0 * 1024.0)
+        return String.format(Locale.US, "%.0f MB", mb)
+    }
+
     /** A middle dot with air around it; a slash reads as cramped at distance. */
-    private const val SEPARATOR = "  ·  "
+    const val SEPARATOR = "  ·  "
 }

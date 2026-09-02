@@ -54,23 +54,32 @@ One Gradle module, with boundaries kept by package and interface:
 ```
 app/src/main/java/tv/mango/app/
 ├── models/       Domain types. No Android, no serialisation, no bitmaps.
+├── addon/        The Stremio protocol layer: manifests, catalogues, metadata,
+│                 streams, subtitles - no Android dependencies, no UI.
+├── pairing/      A local web server and QR code so a manifest URL can be
+│                 typed on a phone instead of a television remote.
 ├── data/
 │   ├── provider/ The seam: CatalogProvider, MovieProvider, SeriesProvider,
-│   │             SearchProvider, StreamProvider. Return outcomes, never throw.
+│   │             SearchProvider, StreamProvider, SubtitleProvider. Return
+│   │             outcomes, never throw. Bundled content and add-ons both
+│   │             implement it; nothing above this layer knows which answered.
 │   ├── mock/     Bundled content behind those interfaces.
 │   └── local/    Watchlist and playback positions, on DataStore.
 ├── repository/   Provider results mapped to Loading / Content / Empty / Error.
 ├── cache/        Image pipeline. Every sizing and decode rule lives here.
+├── player/       PendingPlayback and PlayerActivity - Media3, subtitle
+│                 tracks, resume position.
 ├── ui/
 │   ├── core/     The focus engine and the design system.
 │   ├── home/     Cinematic hero over content rows.
 │   ├── browse/   Movies and TV Shows grids.
 │   ├── detail/   Film and series detail, cast, seasons, episodes.
+│   ├── addon/    Installing, listing and managing add-ons.
+│   ├── settings/ The Settings section itself.
+│   ├── player/   The source picker shown when Play is pressed.
 │   └── common/   Error, empty and placeholder states.
 ├── navigation/   One activity, fragments, a rail, and Back.
-├── di/           A hand-written object graph. No annotation processor.
-├── player/       Empty. Phase 8.
-└── settings/     Empty. Phase 7.
+└── di/           A hand-written object graph. No annotation processor.
 ```
 
 The interface named `CatalogProvider` rather than `ContentProvider` on purpose:
@@ -124,16 +133,22 @@ Built and green in CI:
 - **Detail** — backdrop, poster, metadata, synopsis, cast, and for a series a
   season selector with episodes loaded a season at a time.
 - **Library** — saving a title persists and survives a restart.
+- **Stremio-compatible add-ons** — install by manifest URL (typed, or via a
+  QR code and a phone), browse and open their content through the same
+  screens the bundled catalogue uses, configure one that requires it, reorder
+  and remove from an add-on's own detail screen.
+- **Playback.** `PLAY`, `CONTINUE`, `START OVER` and selecting an episode all
+  route through `NavigationHost.requestPlayback`, which opens a source picker
+  querying every enabled add-on for a stream and ranking what comes back; the
+  viewer chooses, and a Media3 player plays it, with subtitle tracks attached
+  and position saved as it plays.
 
-Not built. Deferred to phases 6–11, with their packages, provider interfaces
-and persistence already in place:
+Not built:
 
-- **Playback.** This is the visible gap. `PLAY`, `CONTINUE`, `START OVER`,
-  `TRAILER` and selecting an episode all route through
-  `NavigationHost.requestPlayback`, which currently logs and returns. The
-  Media3 player attaches there.
-- **Search**, **Library** and **Settings** screens. Reachable from the rail,
-  where each says plainly that it is not built yet.
+- **Search** and **Library** screens. Reachable from the rail, where each says
+  plainly that it is not built yet.
+- **Trailer.** Routes through the same picker as everything else, but nothing
+  distinguishes a trailer stream from a full one yet.
 - The performance pass and final polish, once there is hardware to measure on.
 
 ---

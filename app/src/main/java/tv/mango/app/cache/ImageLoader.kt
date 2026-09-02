@@ -40,6 +40,10 @@ object ImageLoader {
     private val backdropOptions = RequestOptions()
         .format(DecodeFormat.PREFER_ARGB_8888)
         .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+        // Matches the page behind it, so the crossfade below has something to
+        // start from rather than a null drawable - and there is nothing to see
+        // while it loads, rather than a flash of a different tone.
+        .placeholder(R.drawable.backdrop_placeholder)
 
     private val source: ArtworkSource = BundledArtworkSource()
 

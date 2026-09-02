@@ -25,7 +25,7 @@ import android.view.View
 object FocusElevation {
 
     /** Focused scale. Enough to read as a lift, not enough to read as a pop. */
-    const val SCALE_FOCUSED = 1.05f
+    const val SCALE_FOCUSED = 1.08f
     const val SCALE_RESTING = 1f
 
     /**

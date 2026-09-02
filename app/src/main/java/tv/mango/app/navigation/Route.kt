@@ -29,4 +29,11 @@ sealed interface Route {
     data object AddAddon : Route
 
     data class AddonDetail(val addonId: String) : Route
+
+    /**
+     * Reached by pressing Play. Carries no payload of its own - the request
+     * behind it travels through [tv.mango.app.player.PendingPlayback], since
+     * a [tv.mango.app.models.MediaItem] is not something a route can carry.
+     */
+    data object StreamPicker : Route
 }

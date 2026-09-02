@@ -95,4 +95,12 @@
     <string name="action_move_down">Move Down</string>
     <string name="action_remove_addon">Remove</string>
     <string name="addon_not_found">This add-on is no longer installed.</string>
+
+    <!-- Choosing a source to play -->
+    <string name="stream_picker_title">Choose a Source</string>
+    <string name="stream_picker_empty_title">No sources found</string>
+    <string name="stream_picker_empty_body">None of your enabled add-ons had anything to play for this title.</string>
+    <string name="stream_picker_not_supported">Not supported in this app</string>
+    <string name="stream_quality_unknown">Unknown quality</string>
+    <string name="player_error">Couldn\'t play this source.</string>
 </resources>
