@@ -53,4 +53,42 @@
     <string name="cd_episode">Episode %1$d, %2$s. %3$s</string>
     <string name="cd_in_library">In your library</string>
     <string name="cd_cast_member">%1$s as %2$s</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_addons_title">Add-ons</string>
+    <string name="settings_addons_subtitle">Manage installed add-ons</string>
+
+    <!-- Add-ons: the installed list -->
+    <string name="addon_list_title">Add-ons</string>
+    <string name="addon_list_empty_title">No add-ons installed</string>
+    <string name="addon_list_empty_body">Install a Stremio-compatible add-on to bring in movies, shows and streams.</string>
+    <string name="action_add_addon">Add Add-on</string>
+    <string name="addon_status_enabled">Enabled</string>
+    <string name="addon_status_disabled">Disabled</string>
+
+    <!-- Add-ons: installing one -->
+    <string name="add_addon_title">Add Add-on</string>
+    <string name="add_addon_url_hint">Add-on manifest URL</string>
+    <string name="action_preview">Preview</string>
+    <string name="action_install">Install</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="add_addon_already_installed">Already installed. Installing again updates it.</string>
+    <string name="add_addon_error_invalid_url">That doesn\'t look like a web address.</string>
+    <string name="add_addon_error_unreachable">Couldn\'t reach that add-on. Check the address and your connection.</string>
+    <string name="add_addon_error_not_an_addon">That address didn\'t return a Stremio add-on.</string>
+    <string name="add_addon_error_incomplete">This add-on\'s manifest is missing required information.</string>
+    <string name="add_addon_error_nothing_usable">This add-on doesn\'t offer anything this app can use yet.</string>
+    <string name="add_addon_needs_configuration_title">Configuration required</string>
+    <string name="add_addon_needs_configuration_body">This add-on needs to be configured before it can be installed. Open the address below in a browser, complete its configuration, then paste the manifest URL it gives you back into the field above.</string>
+
+    <!-- Add-ons: one add-on's details -->
+    <string name="label_version">Version %1$s</string>
+    <string name="format_types">Content types: %1$s</string>
+    <string name="format_resources">Resources: %1$s</string>
+    <string name="format_manifest_url">Manifest URL: %1$s</string>
+    <string name="action_move_up">Move Up</string>
+    <string name="action_move_down">Move Down</string>
+    <string name="action_remove_addon">Remove</string>
+    <string name="addon_not_found">This add-on is no longer installed.</string>
 </resources>

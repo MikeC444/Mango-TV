@@ -4,6 +4,7 @@ import kotlinx.serialization.json.JsonObject
 import tv.mango.app.addon.model.Addon
 import tv.mango.app.addon.model.AddonResourceName
 import tv.mango.app.addon.protocol.AddonUrls
+import tv.mango.app.addon.protocol.CachePolicy
 import tv.mango.app.addon.protocol.StremioProtocolClient
 import tv.mango.app.addon.protocol.StremioResponseParser
 import tv.mango.app.models.Episode
@@ -100,7 +101,7 @@ class MetadataResolver(
             type = wireType,
             id = id.value,
         )
-        return when (val outcome = client.fetch(url)) {
+        return when (val outcome = client.fetch(url, CachePolicy.METADATA)) {
             is StremioProtocolClient.Outcome.Success -> outcome.body
             is StremioProtocolClient.Outcome.Failure -> null
         }

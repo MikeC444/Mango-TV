@@ -14,6 +14,17 @@ interface NavigationHost {
     fun openDetail(item: MediaItem)
 
     /**
+     * Opens any other route on top of the current screen.
+     *
+     * [openDetail] stays as its own method because a screen holding a
+     * [MediaItem] should not have to know which [Route] a film or a series
+     * maps to; everything without that ambiguity - Settings' own screens
+     * among them - goes through this instead of NavigationHost growing one
+     * method per destination.
+     */
+    fun push(route: Route)
+
+    /**
      * Every route into playback: a title's primary action, starting one over
      * from the beginning, a trailer, or an episode.
      *

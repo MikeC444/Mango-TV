@@ -154,6 +154,14 @@ class AddonManager(
 
         /** Shorter, for the home screen, which must not feel slow to open. */
         const val CATALOG_TIMEOUT_MILLIS = 6_000L
+
+        /**
+         * Longer than the default. Resolving a playable source - scraping,
+         * hashing, checking a debrid account - routinely takes longer than
+         * listing a catalogue entry, and a viewer who pressed Play is waiting
+         * for sources rather than browsing past them.
+         */
+        const val STREAM_TIMEOUT_MILLIS = 12_000L
     }
 }
 

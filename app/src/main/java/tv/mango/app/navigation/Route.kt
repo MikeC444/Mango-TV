@@ -21,4 +21,12 @@ sealed interface Route {
 
     data class MovieDetail(val id: String) : Route
     data class SeriesDetail(val id: String) : Route
+
+    /** Reached from Settings. The installed add-ons, in priority order. */
+    data object AddonList : Route
+
+    /** Paste a manifest URL, preview what it offers, confirm installing it. */
+    data object AddAddon : Route
+
+    data class AddonDetail(val addonId: String) : Route
 }
