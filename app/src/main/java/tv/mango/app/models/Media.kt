@@ -58,6 +58,15 @@ data class MediaItem(
      * the title is partly watched and should offer to resume.
      */
     val progress: Float = 0f,
+
+    /**
+     * Set only for a card synthesised for the Continue Watching row - never
+     * for anything read from a catalogue. Its presence is what tells a card
+     * tap to resume playback directly instead of opening the detail screen,
+     * and what tells the hero to describe the episode and time remaining
+     * instead of a title's usual year and genres.
+     */
+    val resume: ContinueWatchingItem? = null,
 ) {
     val isPartiallyWatched: Boolean get() = progress > 0f
 }

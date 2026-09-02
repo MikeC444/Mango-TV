@@ -1,11 +1,14 @@
 package tv.mango.app.ui.search
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -28,9 +31,12 @@ import tv.mango.app.ui.core.MediaCardAdapter
 /**
  * Search by title, across films and series.
  *
- * The results grid is the same [MediaCardAdapter] and [BrowseGridLayoutManager]
- * the browse screens use, so a result card focuses, lifts and opens exactly
- * like every other poster in the application - search is a different way of
+ * Results update live as the viewer types - [SearchViewModel] debounces the
+ * actual query, so this screen never has to think about that itself, only
+ * report every keystroke and render whatever state comes back. The results
+ * grid is the same [MediaCardAdapter] and [BrowseGridLayoutManager] the
+ * browse screens use, so a result card focuses, lifts and opens exactly like
+ * every other poster in the application - search is a different way of
  * arriving at the same content, not a different kind of screen.
  */
 class SearchFragment : Fragment() {
@@ -47,6 +53,19 @@ class SearchFragment : Fragment() {
 
     /** Retried on request, since the failed state itself carries no query. */
     private var lastQuery: String = ""
+
+    private val queryWatcher = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
+        override fun afterTextChanged(s: Editable?) {
+            val text = s?.toString().orEmpty()
+            // Kept in sync with every keystroke, not just an explicit submit,
+            // so a retry after an error reached by live typing re-runs the
+            // query actually on screen rather than a stale one.
+            lastQuery = text.trim()
+            viewModel.onQueryChanged(text)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -78,12 +97,16 @@ class SearchFragment : Fragment() {
             adapter = resultsAdapter
         }
 
+        views.searchField.addTextChangedListener(queryWatcher)
         views.searchField.setOnEditorActionListener { textView, actionId, event ->
             val committed = actionId == EditorInfo.IME_ACTION_SEARCH ||
                 (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)
             if (committed) submit(textView.text?.toString().orEmpty())
             committed
         }
+
+        // Fixed, never empty - bound once rather than on every state change.
+        bindChips(views.searchPopularChips, viewModel.popularSearches)
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -98,7 +121,7 @@ class SearchFragment : Fragment() {
     private fun submit(query: String) {
         if (query.isBlank()) return
         lastQuery = query.trim()
-        viewModel.search(lastQuery)
+        viewModel.submit(lastQuery)
     }
 
     private fun render(state: SearchState) {
@@ -107,9 +130,10 @@ class SearchFragment : Fragment() {
         views.searchProgress.visibility = View.GONE
         views.searchResults.visibility = View.GONE
         views.searchMessage.visibility = View.GONE
+        views.searchSuggestions.visibility = View.GONE
 
         when (state) {
-            SearchState.Idle -> showMessage(R.string.search_prompt_title, R.string.search_prompt_body)
+            SearchState.Idle -> views.searchSuggestions.visibility = View.VISIBLE
 
             SearchState.Loading -> views.searchProgress.visibility = View.VISIBLE
 
@@ -155,7 +179,7 @@ class SearchFragment : Fragment() {
     private fun setRetry(showRetry: Boolean) {
         val views = binding ?: return
         if (showRetry && lastQuery.isNotEmpty()) {
-            views.searchMessage.setAction(R.string.action_retry) { viewModel.search(lastQuery) }
+            views.searchMessage.setAction(R.string.action_retry) { viewModel.submit(lastQuery) }
         } else {
             views.searchMessage.setAction(null)
         }
@@ -164,21 +188,26 @@ class SearchFragment : Fragment() {
     private fun renderRecentSearches(recent: List<String>) {
         val views = binding ?: return
         views.searchRecentGroup.visibility = if (recent.isEmpty()) View.GONE else View.VISIBLE
-        views.searchRecentChips.removeAllViews()
-        recent.forEach { query ->
-            val chip = ItemSearchChipBinding.inflate(
-                layoutInflater,
-                views.searchRecentChips,
-                false,
-            )
-            chip.root.text = query
-            chip.root.setOnClickListener {
-                views.searchField.setText(query)
-                views.searchField.setSelection(query.length)
-                submit(query)
-            }
-            views.searchRecentChips.addView(chip.root)
+        bindChips(views.searchRecentChips, recent)
+    }
+
+    private fun bindChips(container: LinearLayout, labels: List<String>) {
+        container.removeAllViews()
+        labels.forEach { label ->
+            val chip = ItemSearchChipBinding.inflate(layoutInflater, container, false)
+            chip.root.text = label
+            chip.root.setOnClickListener { selectChip(label) }
+            container.addView(chip.root)
         }
+    }
+
+    private fun selectChip(label: String) {
+        val views = binding ?: return
+        views.searchField.removeTextChangedListener(queryWatcher)
+        views.searchField.setText(label)
+        views.searchField.setSelection(label.length)
+        views.searchField.addTextChangedListener(queryWatcher)
+        submit(label)
     }
 
     private fun openDetail(item: MediaItem) {
@@ -186,7 +215,10 @@ class SearchFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        binding?.searchResults?.adapter = null
+        binding?.let {
+            it.searchField.removeTextChangedListener(queryWatcher)
+            it.searchResults.adapter = null
+        }
         binding = null
         super.onDestroyView()
     }

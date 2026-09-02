@@ -36,6 +36,7 @@ data class StreamResult(
     val codec: String? = null,
     val sizeBytes: Long? = null,
     val language: String? = null,
+    val audio: String? = null,
 
     val behaviorHints: StreamBehaviorHints = StreamBehaviorHints(),
 

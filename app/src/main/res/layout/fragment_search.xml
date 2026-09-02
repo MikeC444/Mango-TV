@@ -40,32 +40,70 @@
             android:textColorHint="@color/text_tertiary" />
 
         <LinearLayout
-            android:id="@+id/search_recent_group"
+            android:id="@+id/search_suggestions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_4"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/search_recent_label"
-                android:textAppearance="@style/TextAppearance.Mango.Overline" />
-
-            <HorizontalScrollView
+            <LinearLayout
+                android:id="@+id/search_recent_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_2"
-                android:clipToPadding="false"
-                android:scrollbars="none">
+                android:layout_marginTop="@dimen/space_4"
+                android:orientation="vertical">
 
-                <LinearLayout
-                    android:id="@+id/search_recent_chips"
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal" />
+                    android:text="@string/search_recent_label"
+                    android:textAppearance="@style/TextAppearance.Mango.Overline" />
 
-            </HorizontalScrollView>
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_2"
+                    android:clipToPadding="false"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:id="@+id/search_recent_chips"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" />
+
+                </HorizontalScrollView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/search_popular_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_4"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/search_popular_label"
+                    android:textAppearance="@style/TextAppearance.Mango.Overline" />
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_2"
+                    android:clipToPadding="false"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:id="@+id/search_popular_chips"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" />
+
+                </HorizontalScrollView>
+
+            </LinearLayout>
 
         </LinearLayout>
 

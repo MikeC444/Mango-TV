@@ -20,6 +20,8 @@ class ContentRowsAdapter(
     private val onItemSelected: (MediaItem) -> Unit,
     /** Called as focus moves between cards, so the hero can follow the selection. */
     private val onItemFocused: (MediaItem) -> Unit = {},
+    /** See [MediaCardAdapter]'s own parameter of the same name. */
+    private val onItemLongSelected: (MediaItem) -> Boolean = { false },
 ) : RecyclerView.Adapter<ContentRowsAdapter.RowViewHolder>() {
 
     private var rows: List<ContentRow> = emptyList()
@@ -52,7 +54,7 @@ class ContentRowsAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RowViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.view_content_row, parent, false)
-        return RowViewHolder(view as RowContainerView, sharedPool, onItemSelected, onItemFocused)
+        return RowViewHolder(view as RowContainerView, sharedPool, onItemSelected, onItemFocused, onItemLongSelected)
     }
 
     override fun onBindViewHolder(holder: RowViewHolder, position: Int) {
@@ -67,11 +69,12 @@ class ContentRowsAdapter(
         sharedPool: RecyclerView.RecycledViewPool?,
         onItemSelected: (MediaItem) -> Unit,
         onItemFocused: (MediaItem) -> Unit,
+        onItemLongSelected: (MediaItem) -> Boolean,
     ) : RecyclerView.ViewHolder(container) {
 
         private val title: TextView = container.findViewById(R.id.row_title)
         private val list: RowRecyclerView = container.findViewById(R.id.row_list)
-        private val cardAdapter = MediaCardAdapter(onItemSelected, onItemFocused)
+        private val cardAdapter = MediaCardAdapter(onItemSelected, onItemFocused, onItemLongSelected)
 
         init {
             // Rows draw their cards from, and return them to, the pool owned by
