@@ -22,7 +22,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import tv.mango.app.R
 import tv.mango.app.addon.model.SubtitleResult
-import tv.mango.app.di.appGraph
+import tv.mango.app.di.AppGraph
 import tv.mango.app.models.MediaId
 import tv.mango.app.ui.player.PlaybackTarget
 import tv.mango.app.utilities.Logger
@@ -44,7 +44,9 @@ class PlayerActivity : AppCompatActivity() {
     private var progressJob: Job? = null
     private var seekPending = false
     private var startFraction = 0f
-    private lateinit var progressId: MediaId
+    // Nullable rather than lateinit: MediaId is a value class, and Kotlin does
+    // not allow lateinit on one.
+    private var progressId: MediaId? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -128,11 +130,13 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun recordProgress() {
+        val id = progressId ?: return
         val exoPlayer = player ?: return
         val duration = exoPlayer.duration
         if (duration == C.TIME_UNSET || duration <= 0) return
         val fraction = (exoPlayer.currentPosition.toFloat() / duration).coerceIn(0f, 1f)
-        lifecycleScope.launch { appGraph.libraryRepository.recordProgress(progressId, fraction) }
+        val library = AppGraph.from(this).libraryRepository
+        lifecycleScope.launch { library.recordProgress(id, fraction) }
     }
 
     private fun hideSystemBars() {
@@ -145,13 +149,13 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onPause() {
         player?.pause()
-        if (::progressId.isInitialized) recordProgress()
+        recordProgress()
         super.onPause()
     }
 
     override fun onDestroy() {
         progressJob?.cancel()
-        if (::progressId.isInitialized) recordProgress()
+        recordProgress()
         player?.release()
         player = null
         super.onDestroy()
