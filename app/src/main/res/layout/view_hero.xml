@@ -48,6 +48,20 @@
         app:layout_constraintEnd_toEndOf="@id/hero_backdrop"
         app:layout_constraintStart_toStartOf="@id/hero_backdrop" />
 
+    <!-- The brand mark. Pinned to the hero's own top-start corner, clear of
+         the glass panel anchored at the bottom, so it never competes with the
+         title/synopsis for space or focus - it is decoration, not a control. -->
+    <ImageView
+        android:id="@+id/hero_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/home_logo_height"
+        android:adjustViewBounds="true"
+        android:contentDescription="@null"
+        android:importantForAccessibility="no"
+        android:src="@drawable/logo_mango"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <LinearLayout
         android:id="@+id/hero_panel"
         android:layout_width="wrap_content"
