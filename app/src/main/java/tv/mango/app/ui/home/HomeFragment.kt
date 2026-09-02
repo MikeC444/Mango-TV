@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.FOCUS_BEFORE_DESCENDANTS
+import android.view.ViewGroup.FOCUS_BLOCK_DESCENDANTS
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -179,6 +181,15 @@ class HomeFragment : Fragment() {
             // moved away from several rows ago.
             if (visible) pendingHeroItem?.let(views.hero::show)
         }
+
+        // Reachability is stricter than the fade: the rows begin drawing over
+        // the hero from the first pixel of scroll, well before it is faint
+        // enough to cross the visibility threshold above, so its buttons must
+        // stop being reachable immediately - a viewer navigating a row should
+        // never have focus land on a Play or Details button they can no
+        // longer clearly see underneath it.
+        views.hero.descendantFocusability =
+            if (scrolledBy == 0) FOCUS_BEFORE_DESCENDANTS else FOCUS_BLOCK_DESCENDANTS
     }
 
     private fun isHeroVisible(): Boolean =

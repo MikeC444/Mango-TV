@@ -16,12 +16,13 @@ import tv.mango.app.ui.core.MotionSpec
  * At rest it is a narrow column of icons at the edge of the screen. When the
  * viewer moves left into it, labels fade in and a scrim settles behind them.
  *
- * The rail's laid-out width never changes. An expanding rail would push the
- * content across and force a full measure and layout pass on every frame of the
- * animation - the most expensive way to animate anything on Android. Instead
- * the rail is always its full width and simply draws over the content, and the
- * whole open-and-close is two alpha fades. Content never jumps, and the viewer
- * does not lose their place.
+ * The rail rests at a narrow, reserved width so its bounds never sit on top of
+ * the content beside it - which keeps a poster from being covered by an
+ * invisible strip of it, and keeps it a valid target when the platform's own
+ * focus search looks for something to the left. It only grows to its full
+ * width, over the content, on the one event where it gains or loses focus -
+ * not on every frame of an animation, the most expensive way to animate
+ * anything on Android. The content itself never moves either way.
  */
 class NavRail @JvmOverloads constructor(
     context: Context,
@@ -113,6 +114,14 @@ class NavRail @JvmOverloads constructor(
             .start()
 
         navItems.forEach { it.setLabelExpanded(value, animate = true) }
+
+        // The one layout pass this view ever costs: growing over the content
+        // while focus is here, and shrinking back to its reserved column the
+        // moment it leaves.
+        val widthRes = if (value) R.dimen.nav_rail_expanded else R.dimen.nav_rail_collapsed
+        layoutParams = layoutParams.apply {
+            width = resources.getDimensionPixelSize(widthRes)
+        }
     }
 
     override fun onDetachedFromWindow() {
