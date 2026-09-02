@@ -2,6 +2,9 @@
 <!--
   One card: the focusable surface, the artwork on it, and a resume indicator.
 
+  Spacing between cards belongs to the list, not to the card, so this one
+  layout serves both a row and a grid.
+
   There is deliberately no title beneath the artwork. Rows of labelled cards
   read as a database; the focused title is named once, in the hero, where there
   is room to say something about it. Keeping text off the card also means the
@@ -11,7 +14,6 @@
     android:id="@+id/card"
     android:layout_width="@dimen/card_poster_width"
     android:layout_height="@dimen/card_poster_height"
-    android:layout_marginEnd="@dimen/card_gap"
     android:background="@drawable/card_placeholder">
 
     <ImageView

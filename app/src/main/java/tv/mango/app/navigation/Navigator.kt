@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import tv.mango.app.R
+import tv.mango.app.ui.browse.BrowseFragment
 import tv.mango.app.ui.common.PlaceholderFragment
 import tv.mango.app.ui.home.HomeFragment
 
@@ -119,10 +120,10 @@ class Navigator(
 
     private fun fragmentFor(route: Route): Fragment = when (route) {
         Route.Home -> HomeFragment()
-        Route.Movies -> PlaceholderFragment.of(R.string.nav_movies)
-        Route.Series -> PlaceholderFragment.of(R.string.nav_series)
-        // Every section but Home arrives in a later phase. Until then each is an
-        // honest empty state rather than a dead entry on the rail.
+        Route.Movies -> BrowseFragment.forMovies()
+        Route.Series -> BrowseFragment.forSeries()
+        // Search, Library and Settings arrive in later phases. Until then each
+        // is an honest empty state rather than a dead entry on the rail.
         Route.Search -> PlaceholderFragment.of(R.string.nav_search)
         Route.Library -> PlaceholderFragment.of(R.string.nav_library)
         Route.Settings -> PlaceholderFragment.of(R.string.nav_settings)

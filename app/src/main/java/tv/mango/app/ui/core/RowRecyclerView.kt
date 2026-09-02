@@ -39,6 +39,9 @@ class RowRecyclerView @JvmOverloads constructor(
 
         setPadding(lane, 0, lane, 0)
         layoutManager = FocusLaneLayoutManager(context, HORIZONTAL, lane)
+        addItemDecoration(
+            CardSpacingDecoration.Row(resources.getDimensionPixelSize(R.dimen.card_gap)),
+        )
 
         // Rows have a fixed height, so the parent never needs to re-measure
         // when their contents change.
