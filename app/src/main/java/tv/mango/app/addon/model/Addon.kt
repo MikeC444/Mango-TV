@@ -11,6 +11,15 @@ data class Addon(
     /** The URL the user supplied. Carries the add-on's configuration, if any. */
     val manifestUrl: String,
     val manifest: AddonManifest,
+
+    /**
+     * The manifest exactly as the add-on sent it.
+     *
+     * Kept so the record can be stored verbatim and re-parsed, which means a
+     * field this version does not model survives being installed by it.
+     */
+    val manifestJson: String = "",
+
     val isEnabled: Boolean = true,
     /**
      * Lower sorts first. Ties are broken by installation order, so a list the
