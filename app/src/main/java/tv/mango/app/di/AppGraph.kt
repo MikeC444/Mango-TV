@@ -9,6 +9,8 @@ import tv.mango.app.addon.AddonManager
 import tv.mango.app.addon.AddonRepository
 import tv.mango.app.addon.CatalogResolver
 import tv.mango.app.addon.MetadataResolver
+import tv.mango.app.addon.StreamResolver
+import tv.mango.app.addon.SubtitleResolver
 import tv.mango.app.addon.protocol.StremioProtocolClient
 import tv.mango.app.data.local.LibraryStore
 import tv.mango.app.data.mock.MockCatalogProvider
@@ -16,10 +18,16 @@ import tv.mango.app.data.mock.MockCatalogSource
 import tv.mango.app.data.mock.MockDetailProvider
 import tv.mango.app.data.provider.AddonCatalogProvider
 import tv.mango.app.data.provider.AddonDetailProvider
+import tv.mango.app.data.provider.AddonStreamProvider
+import tv.mango.app.data.provider.AddonSubtitleProvider
 import tv.mango.app.data.provider.CatalogProvider
 import tv.mango.app.data.provider.CompositeCatalogProvider
+import tv.mango.app.data.provider.FallbackMovieProvider
+import tv.mango.app.data.provider.FallbackSeriesProvider
 import tv.mango.app.data.provider.MovieProvider
 import tv.mango.app.data.provider.SeriesProvider
+import tv.mango.app.data.provider.StreamProvider
+import tv.mango.app.data.provider.SubtitleProvider
 import tv.mango.app.network.HttpClientFactory
 import tv.mango.app.repository.CatalogRepository
 import tv.mango.app.repository.LibraryRepository
@@ -92,6 +100,23 @@ class AppGraph(private val application: Context) {
     private val addonDetailProvider: AddonDetailProvider by lazy {
         AddonDetailProvider(metadataResolver)
     }
+
+    private val streamResolver: StreamResolver by lazy {
+        StreamResolver(addonManager, protocolClient)
+    }
+
+    private val subtitleResolver: SubtitleResolver by lazy {
+        SubtitleResolver(addonManager, protocolClient)
+    }
+
+    /**
+     * Add-ons are the only source of streams and subtitles: the bundled
+     * catalogue is mock data with nothing playable behind it, so there is no
+     * fallback to compose here the way there is for catalogues and metadata.
+     */
+    val streamProvider: StreamProvider by lazy { AddonStreamProvider(streamResolver) }
+
+    val subtitleProvider: SubtitleProvider by lazy { AddonSubtitleProvider(subtitleResolver) }
 
     // ------------------------------------------------------------- composed
 

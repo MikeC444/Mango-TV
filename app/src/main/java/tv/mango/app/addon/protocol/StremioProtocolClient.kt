@@ -11,6 +11,7 @@ import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
+import tv.mango.app.addon.cache.AddonCache
 import java.io.IOException
 import kotlin.coroutines.resume
 
@@ -28,6 +29,7 @@ import kotlin.coroutines.resume
  */
 class StremioProtocolClient(
     private val client: OkHttpClient,
+    private val cache: AddonCache<String, Outcome.Success> = AddonCache(maxEntries = MAX_CACHE_ENTRIES),
 ) {
 
     private val json = Json {
@@ -46,8 +48,28 @@ class StremioProtocolClient(
      * Cancellation is honoured: leaving a screen cancels the coroutine, which
      * cancels the underlying call rather than leaving it to finish into a
      * result nobody will read.
+     *
+     * [cachePolicy] governs whether a successful answer is served from and
+     * saved to an in-memory cache. Only successes are ever cached - a failure
+     * is retried on the next request rather than being remembered as
+     * permanent, since a broken add-on can recover between one screen and the
+     * next. The default asks the network every time, which keeps every
+     * existing caller's behaviour unchanged; resolvers that want caching opt
+     * in explicitly with the policy that matches how long their kind of
+     * response stays true.
      */
-    suspend fun fetch(url: String): Outcome = withContext(Dispatchers.IO) {
+    suspend fun fetch(url: String, cachePolicy: CachePolicy = CachePolicy.NONE): Outcome {
+        if (cachePolicy != CachePolicy.NONE) {
+            cache.get(url)?.let { return it }
+        }
+        val outcome = fetchNetwork(url)
+        if (cachePolicy != CachePolicy.NONE && outcome is Outcome.Success) {
+            cache.put(url, outcome, cachePolicy.ttlMillis)
+        }
+        return outcome
+    }
+
+    private suspend fun fetchNetwork(url: String): Outcome = withContext(Dispatchers.IO) {
         val request = Request.Builder()
             .url(url)
             .header("Accept", "application/json")
@@ -141,7 +163,29 @@ class StremioProtocolClient(
          * page, and far below what would trouble the heap.
          */
         const val MAX_BODY_CHARS = 8 * 1024 * 1024
+
+        /** Shared across every cached resource; small enough to cost nothing on a Fire Stick. */
+        const val MAX_CACHE_ENTRIES = 128
     }
+}
+
+/**
+ * How long, if at all, a successful response should be kept and reused.
+ *
+ * Deliberately coarse - a resolver picks the bucket that matches its own
+ * resource rather than inventing a duration - and deliberately conservative
+ * about streams: they can expire, so [NONE] is what every stream and
+ * subtitle lookup uses, and nothing in this application caches one.
+ */
+enum class CachePolicy(val ttlMillis: Long) {
+    /** Not cached. The default, and the only sane choice for anything that can expire. */
+    NONE(0L),
+
+    /** A catalogue page. Short-lived: a viewer paging through one expects it to be current. */
+    CATALOG(2 * 60_000L),
+
+    /** A title's metadata. Changes rarely once published, so it is kept longer. */
+    METADATA(15 * 60_000L),
 }
 
 /** Why a request to an add-on did not produce a usable response. */

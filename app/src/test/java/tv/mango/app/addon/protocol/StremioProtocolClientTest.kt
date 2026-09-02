@@ -200,4 +200,47 @@ class StremioProtocolClientTest {
             assertIs<StremioProtocolClient.Outcome.Failure>(outcome).reason,
         )
     }
+
+    // ----------------------------------------------------------------- cache
+
+    @Test
+    fun `the default policy never caches, so every call hits the network`() = runTest {
+        server.enqueue(MockResponse().setResponseCode(200).setBody("{}"))
+        server.enqueue(MockResponse().setResponseCode(200).setBody("{}"))
+        val target = url("/catalog/movie/top.json")
+
+        client.fetch(target)
+        client.fetch(target)
+
+        assertEquals(2, server.requestCount)
+    }
+
+    @Test
+    fun `a cached policy serves the second call without a second request`() = runTest {
+        server.enqueue(MockResponse().setResponseCode(200).setBody("""{ "one": 1 }"""))
+        val target = url("/catalog/movie/top.json")
+
+        val first = client.fetch(target, CachePolicy.CATALOG)
+        val second = client.fetch(target, CachePolicy.CATALOG)
+
+        assertEquals(1, server.requestCount)
+        assertEquals(
+            (first as StremioProtocolClient.Outcome.Success).body,
+            (second as StremioProtocolClient.Outcome.Success).body,
+        )
+    }
+
+    @Test
+    fun `a failure is never cached and is retried on the next call`() = runTest {
+        server.enqueue(MockResponse().setResponseCode(500))
+        server.enqueue(MockResponse().setResponseCode(200).setBody("{}"))
+        val target = url("/meta/movie/tt1.json")
+
+        val first = client.fetch(target, CachePolicy.METADATA)
+        val second = client.fetch(target, CachePolicy.METADATA)
+
+        assertIs<StremioProtocolClient.Outcome.Failure>(first)
+        assertIs<StremioProtocolClient.Outcome.Success>(second)
+        assertEquals(2, server.requestCount)
+    }
 }

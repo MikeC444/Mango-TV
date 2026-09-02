@@ -4,6 +4,7 @@ import tv.mango.app.addon.model.Addon
 import tv.mango.app.addon.model.AddonCatalog
 import tv.mango.app.addon.model.AddonResourceName
 import tv.mango.app.addon.protocol.AddonUrls
+import tv.mango.app.addon.protocol.CachePolicy
 import tv.mango.app.addon.protocol.StremioProtocolClient
 import tv.mango.app.addon.protocol.StremioResponseParser
 import tv.mango.app.models.ContentRow
@@ -81,7 +82,7 @@ class CatalogResolver(
             }
 
             val extra = if (skip > 0) listOf(AddonCatalog.EXTRA_SKIP to skip.toString()) else emptyList()
-            when (val outcome = client.fetch(url(addon, catalog, extra))) {
+            when (val outcome = client.fetch(url(addon, catalog, extra), CachePolicy.CATALOG)) {
                 is StremioProtocolClient.Outcome.Success ->
                     AddonReply.Answered(
                         StremioResponseParser.parseCatalog(outcome.body).take(limit),
@@ -103,7 +104,7 @@ class CatalogResolver(
                 ?: return@fanOut AddonReply.Answered(emptyList())
 
             val extra = listOf(AddonCatalog.EXTRA_SEARCH to query)
-            when (val outcome = client.fetch(url(addon, catalog, extra))) {
+            when (val outcome = client.fetch(url(addon, catalog, extra), CachePolicy.CATALOG)) {
                 is StremioProtocolClient.Outcome.Success ->
                     AddonReply.Answered(StremioResponseParser.parseCatalog(outcome.body))
                 is StremioProtocolClient.Outcome.Failure -> AddonReply.Failed(outcome.reason)
@@ -115,7 +116,7 @@ class CatalogResolver(
         addon: Addon,
         catalog: AddonCatalog,
     ): AddonReply<ResolvedRow> =
-        when (val outcome = client.fetch(url(addon, catalog))) {
+        when (val outcome = client.fetch(url(addon, catalog), CachePolicy.CATALOG)) {
             is StremioProtocolClient.Outcome.Success -> {
                 val items = StremioResponseParser.parseCatalog(outcome.body)
                 if (items.isEmpty()) {

@@ -1,5 +1,7 @@
 package tv.mango.app.data.provider
 
+import tv.mango.app.addon.model.StreamResult
+import tv.mango.app.addon.model.SubtitleResult
 import tv.mango.app.data.DataResult
 import tv.mango.app.models.Episode
 import tv.mango.app.models.MediaId
@@ -36,17 +38,21 @@ interface SearchProvider {
 }
 
 /**
- * Resolves a title to something playable.
+ * Resolves a title, or one episode of it, to everything playable.
  *
  * Separate from every other provider because entitlement and playback are
- * usually a different system from metadata, and because a stream URL is often
- * short-lived where metadata is cacheable for days.
+ * usually a different system from metadata, and because a stream is often
+ * short-lived where metadata is cacheable for days. Returns every stream any
+ * enabled add-on offered, already ranked - the player chooses among them, or
+ * offers the choice to the viewer, without ever learning which add-on any of
+ * them came from beyond what [StreamResult.providerName] already carries for
+ * the interface to show.
  */
 interface StreamProvider {
-    suspend fun stream(id: MediaId): DataResult<StreamSource>
+    suspend fun streams(item: MediaItem, episode: Episode? = null): DataResult<List<StreamResult>>
 }
 
-data class StreamSource(
-    val uri: String,
-    val mimeType: String?,
-)
+/** Subtitles for a title, or one episode of it, from every add-on that has them. */
+interface SubtitleProvider {
+    suspend fun subtitles(item: MediaItem, episode: Episode? = null): DataResult<List<SubtitleResult>>
+}

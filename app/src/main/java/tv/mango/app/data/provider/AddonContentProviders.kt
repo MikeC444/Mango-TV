@@ -3,6 +3,10 @@ package tv.mango.app.data.provider
 import tv.mango.app.addon.Aggregated
 import tv.mango.app.addon.CatalogResolver
 import tv.mango.app.addon.MetadataResolver
+import tv.mango.app.addon.StreamResolver
+import tv.mango.app.addon.SubtitleResolver
+import tv.mango.app.addon.model.StreamResult
+import tv.mango.app.addon.model.SubtitleResult
 import tv.mango.app.data.DataResult
 import tv.mango.app.data.FailureReason
 import tv.mango.app.models.ContentRow
@@ -82,6 +86,40 @@ class AddonDetailProvider(
 
     override suspend fun episodes(id: MediaId, season: Int): DataResult<List<Episode>> =
         DataResult.Success(metadata.episodes(id, season))
+}
+
+/**
+ * Streams, from every enabled add-on that advertises the resource for this
+ * content type - ranked, not narrowed to one, so the interface can offer the
+ * viewer a choice or simply take the first.
+ */
+class AddonStreamProvider(
+    private val resolver: StreamResolver,
+) : StreamProvider {
+
+    override suspend fun streams(item: MediaItem, episode: Episode?): DataResult<List<StreamResult>> {
+        val videoId = MediaId(episode?.id ?: item.id.value)
+        val resolved = resolver.streams(videoId, item.type)
+        if (resolved.items.isEmpty()) return resolved.toFailure()
+        return DataResult.Success(resolved.items)
+    }
+}
+
+/**
+ * Subtitles, from every enabled add-on that advertises the resource.
+ *
+ * No subtitles found is not a failure worth reporting the way no streams
+ * found is: most titles have none available and a viewer expects to watch
+ * without them far more often than they expect to fail to watch at all.
+ */
+class AddonSubtitleProvider(
+    private val resolver: SubtitleResolver,
+) : SubtitleProvider {
+
+    override suspend fun subtitles(item: MediaItem, episode: Episode?): DataResult<List<SubtitleResult>> {
+        val videoId = MediaId(episode?.id ?: item.id.value)
+        return DataResult.Success(resolver.subtitles(videoId, item.type).items)
+    }
 }
 
 /**
