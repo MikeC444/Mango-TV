@@ -44,6 +44,16 @@
 
     <string name="placeholder_body">This section arrives in a later phase of the build.</string>
 
+    <!-- Search -->
+    <string name="search_title">Search</string>
+    <string name="search_hint">Search movies and TV shows</string>
+    <string name="search_recent_label">Recent Searches</string>
+    <string name="search_empty_title">No results for “%1$s”</string>
+    <string name="search_empty_body">Try a different title, or check the spelling.</string>
+    <string name="search_prompt_title">Find something to watch</string>
+    <string name="search_prompt_body">Search by title across your movies and TV shows.</string>
+    <string name="cd_search_field">Search movies and TV shows</string>
+
     <!-- Formatting -->
     <string name="format_hours_minutes">%1$dh %2$dm</string>
     <string name="format_minutes">%1$dm</string>

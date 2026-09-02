@@ -2,16 +2,30 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingStart="@dimen/safe_area_horizontal"
-    android:paddingTop="@dimen/safe_area_vertical"
-    android:paddingEnd="@dimen/safe_area_horizontal"
-    android:paddingBottom="@dimen/safe_area_vertical">
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/stream_picker_backdrop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/backdrop_placeholder"
+        android:contentDescription="@null"
+        android:importantForAccessibility="no"
+        android:scaleType="centerCrop" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/scrim_strong" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingStart="@dimen/safe_area_horizontal"
+        android:paddingTop="@dimen/safe_area_vertical"
+        android:paddingEnd="@dimen/safe_area_horizontal"
+        android:paddingBottom="@dimen/safe_area_vertical">
 
         <TextView
             android:id="@+id/stream_picker_title"

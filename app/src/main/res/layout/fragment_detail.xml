@@ -104,49 +104,65 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!-- Actions. -->
+            <!--
+              Actions and synopsis, as one glass card rather than loose page
+              content. A negative top margin lets it overlap the last inch of
+              the backdrop's own fade, so it reads as a panel floating over the
+              cinematic artwork instead of a form sitting under it.
+            -->
             <LinearLayout
-                android:id="@+id/detail_actions"
+                android:id="@+id/detail_info_panel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/safe_area_horizontal"
-                android:layout_marginTop="@dimen/space_3"
-                android:orientation="horizontal">
+                android:layout_marginTop="-24dp"
+                android:layout_marginEnd="@dimen/safe_area_horizontal"
+                android:background="@drawable/glass_panel"
+                android:elevation="@dimen/space_1"
+                android:orientation="vertical"
+                android:padding="@dimen/space_4">
 
-                <Button
-                    android:id="@+id/action_play"
-                    style="@style/Widget.Mango.Button"
-                    android:text="@string/action_play" />
+                <LinearLayout
+                    android:id="@+id/detail_actions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/action_restart"
-                    style="@style/Widget.Mango.Button"
-                    android:layout_marginStart="@dimen/space_2"
-                    android:text="@string/action_start_over"
-                    android:visibility="gone" />
+                    <Button
+                        android:id="@+id/action_play"
+                        style="@style/Widget.Mango.Button"
+                        android:text="@string/action_play" />
 
-                <Button
-                    android:id="@+id/action_library"
-                    style="@style/Widget.Mango.Button"
-                    android:layout_marginStart="@dimen/space_2"
-                    android:text="@string/action_add_to_library" />
+                    <Button
+                        android:id="@+id/action_restart"
+                        style="@style/Widget.Mango.Button"
+                        android:layout_marginStart="@dimen/space_2"
+                        android:text="@string/action_start_over"
+                        android:visibility="gone" />
 
-                <Button
-                    android:id="@+id/action_trailer"
-                    style="@style/Widget.Mango.Button"
-                    android:layout_marginStart="@dimen/space_2"
-                    android:text="@string/action_trailer" />
+                    <Button
+                        android:id="@+id/action_library"
+                        style="@style/Widget.Mango.Button"
+                        android:layout_marginStart="@dimen/space_2"
+                        android:text="@string/action_add_to_library" />
+
+                    <Button
+                        android:id="@+id/action_trailer"
+                        style="@style/Widget.Mango.Button"
+                        android:layout_marginStart="@dimen/space_2"
+                        android:text="@string/action_trailer" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/detail_synopsis"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_3"
+                    android:maxWidth="@dimen/detail_text_max_width"
+                    android:textAppearance="@style/TextAppearance.Mango.Body" />
 
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/detail_synopsis"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/safe_area_horizontal"
-                android:layout_marginTop="@dimen/space_4"
-                android:maxWidth="@dimen/detail_text_max_width"
-                android:textAppearance="@style/TextAppearance.Mango.Body" />
 
             <!-- Seasons and episodes. Gone for a film. -->
             <tv.mango.app.ui.detail.SeasonsView

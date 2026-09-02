@@ -13,6 +13,7 @@ import tv.mango.app.ui.common.PlaceholderFragment
 import tv.mango.app.ui.detail.DetailFragment
 import tv.mango.app.ui.home.HomeFragment
 import tv.mango.app.ui.player.StreamPickerFragment
+import tv.mango.app.ui.search.SearchFragment
 import tv.mango.app.ui.settings.SettingsFragment
 
 /**
@@ -129,9 +130,9 @@ class Navigator(
         Route.Home -> HomeFragment()
         Route.Movies -> BrowseFragment.forMovies()
         Route.Series -> BrowseFragment.forSeries()
-        // Search and Library arrive in later phases. Until then each is an
-        // honest empty state rather than a dead entry on the rail.
-        Route.Search -> PlaceholderFragment.of(R.string.nav_search)
+        Route.Search -> SearchFragment()
+        // Library arrives in a later phase. Until then it is an honest empty
+        // state rather than a dead entry on the rail.
         Route.Library -> PlaceholderFragment.of(R.string.nav_library)
         Route.Settings -> SettingsFragment()
         is Route.MovieDetail -> DetailFragment.of(route.id, MediaType.MOVIE)

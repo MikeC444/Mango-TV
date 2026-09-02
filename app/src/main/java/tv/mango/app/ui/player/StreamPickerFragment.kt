@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.launch
 import tv.mango.app.R
 import tv.mango.app.addon.model.StreamResult
+import tv.mango.app.cache.ImageLoader
 import tv.mango.app.data.FailureReason
 import tv.mango.app.databinding.FragmentStreamPickerBinding
 import tv.mango.app.di.appGraph
@@ -59,6 +60,14 @@ class StreamPickerFragment : Fragment() {
         val views = binding ?: return
 
         viewModel.displayTitle?.let { views.streamPickerTitle.text = it }
+        viewModel.displayBackdrop?.let { key ->
+            ImageLoader.loadBackdrop(
+                target = views.streamPickerBackdrop,
+                key = key,
+                widthPx = BACKDROP_MAX_WIDTH_PX,
+                heightPx = BACKDROP_MAX_HEIGHT_PX,
+            )
+        }
 
         views.streamPickerList.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -127,8 +136,17 @@ class StreamPickerFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        binding?.streamPickerList?.adapter = null
+        binding?.let {
+            it.streamPickerList.adapter = null
+            ImageLoader.clear(it.streamPickerBackdrop)
+        }
         binding = null
         super.onDestroyView()
+    }
+
+    private companion object {
+        /** As on the home hero and the detail screen: capped well below any television's resolution. */
+        const val BACKDROP_MAX_WIDTH_PX = 1280
+        const val BACKDROP_MAX_HEIGHT_PX = 720
     }
 }
