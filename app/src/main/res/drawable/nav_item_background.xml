@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  A rail destination's own glass pill - the same resting-glass/focused-glow
+  language as surface_focus_background, but at the nav item's own height and
+  corner radius rather than the larger one settings rows and cards share, so
+  it reads as a capsule at rest and while being navigated through, not just
+  a rounded rectangle that happens to get more rounded on focus.
+-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true">
+        <layer-list>
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="@color/glass_fill_focused" />
+                    <corners android:radius="@dimen/nav_item_corner" />
+                </shape>
+            </item>
+            <item>
+                <shape android:shape="rectangle">
+                    <stroke
+                        android:width="@dimen/glass_stroke_width"
+                        android:color="@color/glass_stroke_focused" />
+                    <corners android:radius="@dimen/nav_item_corner" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+    <item>
+        <layer-list>
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="@color/glass_fill" />
+                    <corners android:radius="@dimen/nav_item_corner" />
+                </shape>
+            </item>
+            <item>
+                <shape android:shape="rectangle">
+                    <stroke
+                        android:width="@dimen/glass_stroke_width"
+                        android:color="@color/glass_stroke" />
+                    <corners android:radius="@dimen/nav_item_corner" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+</selector>

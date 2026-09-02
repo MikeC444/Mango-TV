@@ -16,7 +16,7 @@
         android:id="@+id/icon"
         android:layout_width="@dimen/nav_icon_size"
         android:layout_height="@dimen/nav_icon_size"
-        android:layout_marginStart="@dimen/space_2"
+        android:layout_marginStart="@dimen/space_1"
         android:contentDescription="@null"
         android:importantForAccessibility="no" />
 
@@ -24,7 +24,7 @@
         android:id="@+id/label"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/space_2"
+        android:layout_marginStart="@dimen/space_1"
         android:layout_weight="1"
         android:ellipsize="end"
         android:maxLines="1"
