@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingStart="@dimen/safe_area_horizontal"
+    android:paddingTop="@dimen/safe_area_vertical"
+    android:paddingEnd="@dimen/safe_area_horizontal"
+    android:paddingBottom="@dimen/safe_area_vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/stream_picker_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/stream_picker_title"
+            android:textAppearance="@style/TextAppearance.Mango.Title" />
+
+        <ProgressBar
+            android:id="@+id/stream_picker_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_4"
+            android:indeterminateTint="@color/accent"
+            android:visibility="gone" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/stream_picker_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/space_3"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:visibility="gone"
+            tools:listitem="@layout/item_stream" />
+
+        <tv.mango.app.ui.common.MessageView
+            android:id="@+id/stream_picker_message"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/space_3"
+            android:layout_weight="1"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</FrameLayout>

@@ -12,6 +12,7 @@ import tv.mango.app.ui.browse.BrowseFragment
 import tv.mango.app.ui.common.PlaceholderFragment
 import tv.mango.app.ui.detail.DetailFragment
 import tv.mango.app.ui.home.HomeFragment
+import tv.mango.app.ui.player.StreamPickerFragment
 import tv.mango.app.ui.settings.SettingsFragment
 
 /**
@@ -138,6 +139,7 @@ class Navigator(
         Route.AddonList -> AddonListFragment()
         Route.AddAddon -> AddAddonFragment()
         is Route.AddonDetail -> AddonDetailFragment.of(route.addonId)
+        Route.StreamPicker -> StreamPickerFragment()
     }
 
     private fun Route.tag(): String = this::class.java.name

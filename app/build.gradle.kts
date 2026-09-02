@@ -116,6 +116,15 @@ dependencies {
     // already in hand, nothing here touches the network.
     implementation(libs.zxing.core)
 
+    // Playback. HLS and DASH modules are separate from the core player
+    // because most add-on streams are progressive MP4 and paying for two
+    // manifest parsers on every install is not free; DefaultMediaSourceFactory
+    // picks whichever a stream actually turns out to need.
+    implementation(libs.media3.exoplayer)
+    implementation(libs.media3.exoplayer.hls)
+    implementation(libs.media3.exoplayer.dash)
+    implementation(libs.media3.ui)
+
     testImplementation(libs.junit)
     testImplementation(libs.kotlin.test.junit)
     testImplementation(libs.okhttp.mockwebserver)

@@ -28,10 +28,9 @@ interface NavigationHost {
      * Every route into playback: a title's primary action, starting one over
      * from the beginning, a trailer, or an episode.
      *
-     * There is deliberately one entry point rather than one per button. The
-     * player arrives in a later phase, and when it does it attaches here
-     * instead of in five places, which is also why this is worth having while
-     * it does nothing.
+     * Deliberately one entry point rather than one per button. It opens the
+     * stream picker, which queries every enabled add-on for a source and lets
+     * the viewer choose among them before anything plays.
      *
      * @param startFromBeginning ignore any saved position and start over.
      */

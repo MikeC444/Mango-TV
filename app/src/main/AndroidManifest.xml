@@ -47,6 +47,16 @@
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Its own activity rather than a fragment: a video surface wants
+             the whole window and its own immersive chrome, not a place in a
+             back stack built for browsing screens. -->
+        <activity
+            android:name=".player.PlayerActivity"
+            android:configChanges="keyboard|keyboardHidden|navigation|screenSize|smallestScreenSize|screenLayout|uiMode"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.MangoTV" />
     </application>
 
 </manifest>

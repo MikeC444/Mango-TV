@@ -52,7 +52,19 @@ interface StreamProvider {
     suspend fun streams(item: MediaItem, episode: Episode? = null): DataResult<List<StreamResult>>
 }
 
-/** Subtitles for a title, or one episode of it, from every add-on that has them. */
+/**
+ * Subtitles for a title, or one episode of it, from every add-on that has them.
+ *
+ * @param fromStream subtitles the stream the viewer chose already carried,
+ *   folded into the result alongside whatever the subtitles resource itself
+ *   returns - a stream can bring its own tracks, and a separate lookup is not
+ *   guaranteed to exist at all, so the caller should end up with one list
+ *   regardless of which source actually had something.
+ */
 interface SubtitleProvider {
-    suspend fun subtitles(item: MediaItem, episode: Episode? = null): DataResult<List<SubtitleResult>>
+    suspend fun subtitles(
+        item: MediaItem,
+        episode: Episode? = null,
+        fromStream: List<SubtitleResult> = emptyList(),
+    ): DataResult<List<SubtitleResult>>
 }

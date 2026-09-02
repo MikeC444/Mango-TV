@@ -7,7 +7,7 @@ import tv.mango.app.databinding.ActivityMainBinding
 import tv.mango.app.models.Episode
 import tv.mango.app.models.MediaItem
 import tv.mango.app.models.MediaType
-import tv.mango.app.utilities.Logger
+import tv.mango.app.player.PendingPlayback
 
 /**
  * The application's only activity.
@@ -55,22 +55,17 @@ class MainActivity : AppCompatActivity(), NavigationHost {
     }
 
     /**
-     * Playback is not built yet.
-     *
-     * Left as an explicit, logged no-op rather than as buttons wired to
-     * nothing: the seam is where the player attaches, and a gap that is named
-     * is easier to close than one spread across the screens that need it.
+     * Every route into playback shares one seam: the request is handed to
+     * [PendingPlayback] and the stream picker reads it back, since a
+     * [MediaItem] and an [Episode] are not something a [Route] can carry.
      */
     override fun requestPlayback(
         item: MediaItem,
         episode: Episode?,
         startFromBeginning: Boolean,
     ) {
-        Logger.d(
-            "Playback requested for ${item.title}" +
-                (episode?.let { ", episode ${it.number}" } ?: "") +
-                if (startFromBeginning) ", from the beginning" else "",
-        )
+        PendingPlayback.set(PendingPlayback.Request(item, episode, startFromBeginning))
+        navigator.push(Route.StreamPicker)
     }
 
     override fun focusNavigation() {
