@@ -1,5 +1,6 @@
 package tv.mango.app.navigation
 
+import tv.mango.app.models.Episode
 import tv.mango.app.models.MediaItem
 
 /**
@@ -9,5 +10,32 @@ import tv.mango.app.models.MediaItem
  * which activity is showing it, and a screen can be exercised in isolation.
  */
 interface NavigationHost {
+
     fun openDetail(item: MediaItem)
+
+    /**
+     * Every route into playback: a title's primary action, starting one over
+     * from the beginning, a trailer, or an episode.
+     *
+     * There is deliberately one entry point rather than one per button. The
+     * player arrives in a later phase, and when it does it attaches here
+     * instead of in five places, which is also why this is worth having while
+     * it does nothing.
+     *
+     * @param startFromBeginning ignore any saved position and start over.
+     */
+    fun requestPlayback(
+        item: MediaItem,
+        episode: Episode? = null,
+        startFromBeginning: Boolean = false,
+    )
+
+    /**
+     * Hands focus to the navigation rail.
+     *
+     * For a screen that has nothing to focus. Without it such a screen depends
+     * on focus happening to still be wherever the viewer left it, and if it is
+     * not, the remote does nothing at all - a screen the viewer cannot leave.
+     */
+    fun focusNavigation()
 }

@@ -55,7 +55,8 @@ class SeasonsView @JvmOverloads constructor(
             addItemDecoration(CardSpacingDecoration.Row(gap))
             adapter = episodeAdapter
             itemAnimator = null
-            setHasFixedSize(true)
+            // No setHasFixedSize here: the list has wrap_content height and
+            // starts empty, so binding the first season does change its size.
             isFocusable = false
             descendantFocusability = FOCUS_AFTER_DESCENDANTS
         }

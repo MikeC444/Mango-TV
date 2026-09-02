@@ -19,9 +19,12 @@ import tv.mango.app.data.FailureReason
 import tv.mango.app.data.UiState
 import tv.mango.app.databinding.FragmentDetailBinding
 import tv.mango.app.di.appGraph
+import tv.mango.app.models.Episode
 import tv.mango.app.models.MediaId
+import tv.mango.app.models.MediaItem
 import tv.mango.app.models.MediaType
 import tv.mango.app.models.TitleDetail
+import tv.mango.app.navigation.NavigationHost
 import tv.mango.app.utilities.Formatters
 
 /**
@@ -61,6 +64,9 @@ class DetailFragment : Fragment() {
 
     private val castAdapter = CastAdapter()
 
+    /** The title on screen, for the playback controls to act on. */
+    private var shown: MediaItem? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -79,14 +85,17 @@ class DetailFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = castAdapter
             itemAnimator = null
-            setHasFixedSize(true)
-            // Information, not destinations: the D-pad passes the cast row by.
+            // The cast members take focus; the list around them does not.
             isFocusable = false
-            descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
+            descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
         }
 
         views.detailSeasons.onSeasonSelected = viewModel::selectSeason
-        views.detailSeasons.onEpisodeSelected = { /* Playback arrives with the player. */ }
+        views.detailSeasons.onEpisodeSelected = { episode -> play(episode = episode) }
+
+        views.actionPlay.setOnClickListener { play() }
+        views.actionRestart.setOnClickListener { play(startFromBeginning = true) }
+        views.actionTrailer.setOnClickListener { play() }
         views.actionLibrary.setOnClickListener { viewModel.toggleLibrary() }
 
         collectState()
@@ -131,6 +140,7 @@ class DetailFragment : Fragment() {
     private fun showDetail(detail: TitleDetail) {
         val views = binding ?: return
         val item = detail.item
+        shown = item
 
         views.message.visibility = View.GONE
         views.detailScroll.visibility = View.VISIBLE
@@ -191,6 +201,12 @@ class DetailFragment : Fragment() {
             if (saved) getString(R.string.cd_in_library) else null
     }
 
+    /** Every playback control on this screen goes through the host's one seam. */
+    private fun play(episode: Episode? = null, startFromBeginning: Boolean = false) {
+        val item = shown ?: return
+        (activity as? NavigationHost)?.requestPlayback(item, episode, startFromBeginning)
+    }
+
     private fun showMessage(titleRes: Int, bodyRes: Int?) {
         val views = binding ?: return
         views.detailScroll.visibility = View.GONE
@@ -207,6 +223,7 @@ class DetailFragment : Fragment() {
             it.castList.adapter = null
             it.detailSeasons.release()
         }
+        shown = null
         binding = null
         super.onDestroyView()
     }

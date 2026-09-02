@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- A focused destination sits on a raised surface. Shape and brightness, not
-     colour alone. -->
+<!--
+  The focus treatment for rows that are not artwork.
+
+  A poster lifts and brightens because it is an object being chosen between. A
+  rail destination or a cast member is a line in a list, and giving it the same
+  physicality would flatten the difference. Focus here is a raised surface
+  behind the item, with the text coming up to full brightness alongside it -
+  two cues, neither of them colour alone.
+-->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_focused="true">
         <shape android:shape="rectangle">

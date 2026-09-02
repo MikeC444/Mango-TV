@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import tv.mango.app.R
+import tv.mango.app.navigation.NavigationHost
 import tv.mango.app.databinding.FragmentPlaceholderBinding
 
 /**
@@ -36,6 +37,11 @@ class PlaceholderFragment : Fragment() {
             setMessage(sectionName, R.string.placeholder_body)
             setAction(null)
         }
+
+        // Nothing on this screen can take focus, so it is handed back to the
+        // rail. Otherwise the remote would be dead until the viewer guessed
+        // that left still worked.
+        view.post { (activity as? NavigationHost)?.focusNavigation() }
     }
 
     override fun onDestroyView() {

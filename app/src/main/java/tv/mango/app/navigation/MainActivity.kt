@@ -4,8 +4,10 @@ import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import tv.mango.app.databinding.ActivityMainBinding
+import tv.mango.app.models.Episode
 import tv.mango.app.models.MediaItem
 import tv.mango.app.models.MediaType
+import tv.mango.app.utilities.Logger
 
 /**
  * The application's only activity.
@@ -50,6 +52,29 @@ class MainActivity : AppCompatActivity(), NavigationHost {
         }
 
         navigator.start()
+    }
+
+    /**
+     * Playback is not built yet.
+     *
+     * Left as an explicit, logged no-op rather than as buttons wired to
+     * nothing: the seam is where the player attaches, and a gap that is named
+     * is easier to close than one spread across the screens that need it.
+     */
+    override fun requestPlayback(
+        item: MediaItem,
+        episode: Episode?,
+        startFromBeginning: Boolean,
+    ) {
+        Logger.d(
+            "Playback requested for ${item.title}" +
+                (episode?.let { ", episode ${it.number}" } ?: "") +
+                if (startFromBeginning) ", from the beginning" else "",
+        )
+    }
+
+    override fun focusNavigation() {
+        binding.navRail.focusCurrentSection()
     }
 
     override fun openDetail(item: MediaItem) {

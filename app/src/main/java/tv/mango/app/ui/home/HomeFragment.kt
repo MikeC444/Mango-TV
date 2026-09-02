@@ -98,7 +98,9 @@ class HomeFragment : Fragment() {
         views.rows.adapter = rowsAdapter
         views.rows.addOnScrollListener(scrollListener)
 
-        views.hero.onPlay = ::openDetail
+        views.hero.onPlay = { item ->
+            (activity as? NavigationHost)?.requestPlayback(item)
+        }
         views.hero.onDetails = ::openDetail
 
         viewLifecycleOwner.lifecycleScope.launch {
