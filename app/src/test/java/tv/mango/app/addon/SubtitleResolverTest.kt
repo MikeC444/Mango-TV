@@ -1,6 +1,6 @@
 package tv.mango.app.addon
 
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -36,7 +36,7 @@ class SubtitleResolverTest {
     private fun baseUrl() = server.url("/").toString().trimEnd('/')
 
     @Test
-    fun `subtitles from the resource are returned`() = runTest {
+    fun `subtitles from the resource are returned`() = runBlocking {
         server.enqueue(
             MockResponse().setResponseCode(200).setBody(
                 """{ "subtitles": [{ "id": "1", "url": "https://sub.test/en.srt", "lang": "en" }] }""",
@@ -51,7 +51,7 @@ class SubtitleResolverTest {
     }
 
     @Test
-    fun `subtitles carried on the chosen stream are folded in`() = runTest {
+    fun `subtitles carried on the chosen stream are folded in`() = runBlocking {
         server.enqueue(
             MockResponse().setResponseCode(200).setBody(
                 """{ "subtitles": [{ "id": "1", "url": "https://sub.test/en.srt", "lang": "en" }] }""",
@@ -75,7 +75,7 @@ class SubtitleResolverTest {
     }
 
     @Test
-    fun `a duplicate track from both sources is not shown twice`() = runTest {
+    fun `a duplicate track from both sources is not shown twice`() = runBlocking {
         server.enqueue(
             MockResponse().setResponseCode(200).setBody(
                 """{ "subtitles": [{ "id": "1", "url": "https://sub.test/en.srt", "lang": "en" }] }""",
@@ -99,7 +99,7 @@ class SubtitleResolverTest {
     }
 
     @Test
-    fun `no subtitles anywhere is an empty list, not a failure`() = runTest {
+    fun `no subtitles anywhere is an empty list, not a failure`() = runBlocking {
         val store = FakeAddonStore(
             listOf(testAddon("no-subs", baseUrl(), resources = listOf("catalog"))),
         )

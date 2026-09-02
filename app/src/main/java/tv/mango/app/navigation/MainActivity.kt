@@ -84,4 +84,8 @@ class MainActivity : AppCompatActivity(), NavigationHost {
         }
         navigator.push(route)
     }
+
+    override fun push(route: Route) {
+        navigator.push(route)
+    }
 }

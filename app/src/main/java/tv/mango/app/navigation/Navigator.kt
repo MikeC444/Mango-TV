@@ -5,10 +5,14 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import tv.mango.app.R
 import tv.mango.app.models.MediaType
+import tv.mango.app.ui.addon.AddAddonFragment
+import tv.mango.app.ui.addon.AddonDetailFragment
+import tv.mango.app.ui.addon.AddonListFragment
 import tv.mango.app.ui.browse.BrowseFragment
 import tv.mango.app.ui.common.PlaceholderFragment
 import tv.mango.app.ui.detail.DetailFragment
 import tv.mango.app.ui.home.HomeFragment
+import tv.mango.app.ui.settings.SettingsFragment
 
 /**
  * Screen changes, in one place.
@@ -124,13 +128,16 @@ class Navigator(
         Route.Home -> HomeFragment()
         Route.Movies -> BrowseFragment.forMovies()
         Route.Series -> BrowseFragment.forSeries()
-        // Search, Library and Settings arrive in later phases. Until then each
-        // is an honest empty state rather than a dead entry on the rail.
+        // Search and Library arrive in later phases. Until then each is an
+        // honest empty state rather than a dead entry on the rail.
         Route.Search -> PlaceholderFragment.of(R.string.nav_search)
         Route.Library -> PlaceholderFragment.of(R.string.nav_library)
-        Route.Settings -> PlaceholderFragment.of(R.string.nav_settings)
+        Route.Settings -> SettingsFragment()
         is Route.MovieDetail -> DetailFragment.of(route.id, MediaType.MOVIE)
         is Route.SeriesDetail -> DetailFragment.of(route.id, MediaType.SERIES)
+        Route.AddonList -> AddonListFragment()
+        Route.AddAddon -> AddAddonFragment()
+        is Route.AddonDetail -> AddonDetailFragment.of(route.addonId)
     }
 
     private fun Route.tag(): String = this::class.java.name

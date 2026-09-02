@@ -1,6 +1,6 @@
 package tv.mango.app.addon
 
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -46,7 +46,7 @@ class StreamResolverTest {
     private fun baseUrl(server: MockWebServer) = server.url("/").toString().trimEnd('/')
 
     @Test
-    fun `streams from every capable add-on are combined and ranked`() = runTest {
+    fun `streams from every capable add-on are combined and ranked`() = runBlocking {
         serverA.enqueue(
             MockResponse().setResponseCode(200).setBody(
                 """{ "streams": [{ "url": "https://a.test/720.mp4", "name": "720p" }] }""",
@@ -72,7 +72,7 @@ class StreamResolverTest {
     }
 
     @Test
-    fun `an unreachable add-on does not prevent another from returning streams`() = runTest {
+    fun `an unreachable add-on does not prevent another from returning streams`() = runBlocking {
         // Started and stopped so the port is real but nothing is listening on
         // it any more - a guaranteed connection refusal rather than a guess at
         // which unused port is safe to dial in a sandboxed CI runner.
@@ -99,7 +99,7 @@ class StreamResolverTest {
     }
 
     @Test
-    fun `an add-on that does not advertise streams is not asked`() = runTest {
+    fun `an add-on that does not advertise streams is not asked`() = runBlocking {
         serverA.enqueue(
             MockResponse().setResponseCode(200).setBody(
                 """{ "streams": [{ "url": "https://a.test/a.mp4" }] }""",
@@ -118,7 +118,7 @@ class StreamResolverTest {
     }
 
     @Test
-    fun `no capable add-ons produces an empty result rather than an error`() = runTest {
+    fun `no capable add-ons produces an empty result rather than an error`() = runBlocking {
         val store = FakeAddonStore(
             listOf(testAddon("catalog-only", baseUrl(serverA), resources = listOf("catalog"))),
         )

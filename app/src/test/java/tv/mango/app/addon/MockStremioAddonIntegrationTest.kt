@@ -1,6 +1,6 @@
 package tv.mango.app.addon
 
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import org.junit.After
 import org.junit.Before
@@ -47,7 +47,7 @@ class MockStremioAddonIntegrationTest {
     }
 
     @Test
-    fun `installing reads the manifest, including a resource declared as an object`() = runTest {
+    fun `installing reads the manifest, including a resource declared as an object`() = runBlocking {
         val installer = AddonInstaller(client, store)
 
         val preview = assertIs<AddonInstaller.Preview.Ready>(installer.preview(addon.manifestUrl))
@@ -61,7 +61,7 @@ class MockStremioAddonIntegrationTest {
     }
 
     @Test
-    fun `browsing returns every movie and every series in the mock library`() = runTest {
+    fun `browsing returns every movie and every series in the mock library`() = runBlocking {
         install()
         val catalogs = CatalogResolver(manager, client)
 
@@ -74,7 +74,7 @@ class MockStremioAddonIntegrationTest {
     }
 
     @Test
-    fun `opening a movie returns its full metadata`() = runTest {
+    fun `opening a movie returns its full metadata`() = runBlocking {
         install()
         val metadata = MetadataResolver(manager, client)
 
@@ -89,7 +89,7 @@ class MockStremioAddonIntegrationTest {
     }
 
     @Test
-    fun `opening a series returns its seasons, and episodes load a season at a time`() = runTest {
+    fun `opening a series returns its seasons, and episodes load a season at a time`() = runBlocking {
         install()
         val metadata = MetadataResolver(manager, client)
         val seriesId = MediaId(MockStremioAddon.SERIES_1_ID)
@@ -106,7 +106,7 @@ class MockStremioAddonIntegrationTest {
     }
 
     @Test
-    fun `playing a movie queries streams and ranks the highest quality first`() = runTest {
+    fun `playing a movie queries streams and ranks the highest quality first`() = runBlocking {
         install()
         val streams = StreamResolver(manager, client)
 
@@ -118,7 +118,7 @@ class MockStremioAddonIntegrationTest {
     }
 
     @Test
-    fun `playing one episode of a series queries that episode's streams`() = runTest {
+    fun `playing one episode of a series queries that episode's streams`() = runBlocking {
         install()
         val streams = StreamResolver(manager, client)
         val episodeId = MediaId("${MockStremioAddon.SERIES_1_ID}:1:1")
@@ -129,7 +129,7 @@ class MockStremioAddonIntegrationTest {
     }
 
     @Test
-    fun `subtitles for a movie come back in every language the add-on offers`() = runTest {
+    fun `subtitles for a movie come back in every language the add-on offers`() = runBlocking {
         install()
         val subtitles = SubtitleResolver(manager, client)
 

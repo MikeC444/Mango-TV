@@ -75,4 +75,9 @@
     <dimen name="detail_text_max_width">620dp</dimen>
     <dimen name="season_tab_min_width">120dp</dimen>
 
+    <!-- Settings and add-ons. -->
+    <dimen name="addon_logo_size">56dp</dimen>
+    <dimen name="settings_row_min_width">420dp</dimen>
+    <dimen name="settings_content_max_width">760dp</dimen>
+
 </resources>
