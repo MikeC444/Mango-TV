@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.MangoTV" parent="Theme.AppCompat.NoActionBar">
+        <!-- The window background is the only place the base surface is
+             painted. Fragments and layouts stay transparent so the compositor
+             never fills the same pixels twice. -->
+        <item name="android:windowBackground">@color/surface_base</item>
+        <item name="android:colorBackground">@color/surface_base</item>
+
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+
+        <!-- Cross-screen transitions are handled explicitly by the navigator so
+             their timing matches the motion spec. -->
+        <item name="android:windowAnimationStyle">@null</item>
+
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="colorAccent">@color/accent</item>
+
+        <item name="android:statusBarColor">@color/surface_base</item>
+        <item name="android:navigationBarColor">@color/surface_base</item>
+    </style>
+
+</resources>

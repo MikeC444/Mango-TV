@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mango TV</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_movies">Movies</string>
+    <string name="nav_series">TV Shows</string>
+    <string name="nav_search">Search</string>
+    <string name="nav_library">Library</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Actions -->
+    <string name="action_play">Play</string>
+    <string name="action_continue">Continue</string>
+    <string name="action_start_over">Start Over</string>
+    <string name="action_details">Details</string>
+    <string name="action_trailer">Trailer</string>
+    <string name="action_add_to_library">Add to Library</string>
+    <string name="action_remove_from_library">In Library</string>
+    <string name="action_retry">Retry</string>
+
+    <!-- Sections -->
+    <string name="label_featured">Featured</string>
+    <string name="label_cast">Cast</string>
+    <string name="label_episodes">Episodes</string>
+    <string name="label_season">Season %1$d</string>
+
+    <!--
+      Error copy is written for a viewer, not an engineer. No codes, no stack
+      traces, always a way forward.
+    -->
+    <string name="error_generic_title">Something went wrong.</string>
+    <string name="error_generic_body">Please try again in a moment.</string>
+    <string name="error_network_title">No connection.</string>
+    <string name="error_network_body">Check your connection and try again.</string>
+    <string name="error_empty_title">Nothing here yet.</string>
+
+    <!-- Content descriptions -->
+    <string name="cd_poster">Artwork for %1$s</string>
+    <string name="cd_backdrop">Backdrop image</string>
+    <string name="cd_progress">%1$d percent watched</string>
+</resources>

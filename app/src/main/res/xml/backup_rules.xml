@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Local playback progress and library membership are worth restoring onto a
+     replacement device. Caches are not. -->
+<full-backup-content>
+    <include
+        domain="database"
+        path="mango.db" />
+    <include
+        domain="sharedpref"
+        path="mango_settings.xml" />
+    <exclude
+        domain="file"
+        path="image_cache" />
+</full-backup-content>

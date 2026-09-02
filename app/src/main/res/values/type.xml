@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--
+      Type scale.
+
+      System families only. A bundled or downloadable face would cost APK size
+      and first-render time for no legibility gain at 10 feet, where weight and
+      spacing do the work rather than letterform character.
+
+      18sp is the floor for anything a viewer is expected to read.
+    -->
+
+    <style name="TextAppearance.Mango" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <!-- Hero title. Light weight at large size reads as composed, not loud. -->
+    <style name="TextAppearance.Mango.Display" parent="TextAppearance.Mango">
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:textSize">44sp</item>
+        <item name="android:letterSpacing">-0.015</item>
+        <item name="android:lineSpacingMultiplier">1.05</item>
+    </style>
+
+    <style name="TextAppearance.Mango.Title" parent="TextAppearance.Mango">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:letterSpacing">-0.01</item>
+    </style>
+
+    <style name="TextAppearance.Mango.Headline" parent="TextAppearance.Mango">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">22sp</item>
+    </style>
+
+    <style name="TextAppearance.Mango.Body" parent="TextAppearance.Mango">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:lineSpacingMultiplier">1.35</item>
+    </style>
+
+    <style name="TextAppearance.Mango.Label" parent="TextAppearance.Mango">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+    </style>
+
+    <!-- Section eyebrows: FEATURED, CONTINUE WATCHING. Wide tracking gives the
+         uppercase runs air and keeps them from reading as shouting. -->
+    <style name="TextAppearance.Mango.Overline" parent="TextAppearance.Mango">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:letterSpacing">0.16</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="TextAppearance.Mango.Button" parent="TextAppearance.Mango">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:letterSpacing">0.06</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <!-- Card titles sit under artwork and must never compete with it. -->
+    <style name="TextAppearance.Mango.CardTitle" parent="TextAppearance.Mango">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <style name="TextAppearance.Mango.CardMeta" parent="TextAppearance.Mango">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/text_tertiary</item>
+    </style>
+
+</resources>

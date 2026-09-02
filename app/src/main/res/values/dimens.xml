@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--
+      8dp base grid. Every layout dimension lives here so the spacing system
+      can be retuned in one place rather than hunted through layouts.
+      Reference viewport is 960x540dp (1920x1080 at xhdpi).
+    -->
+
+    <dimen name="space_quarter">2dp</dimen>
+    <dimen name="space_half">4dp</dimen>
+    <dimen name="space_1">8dp</dimen>
+    <dimen name="space_2">16dp</dimen>
+    <dimen name="space_3">24dp</dimen>
+    <dimen name="space_4">32dp</dimen>
+    <dimen name="space_5">40dp</dimen>
+    <dimen name="space_6">48dp</dimen>
+    <dimen name="space_8">64dp</dimen>
+    <dimen name="space_10">80dp</dimen>
+
+    <!-- Television overscan safe area: 5% of the reference viewport. Nothing
+         meaningful is drawn outside this inset. -->
+    <dimen name="safe_area_horizontal">48dp</dimen>
+    <dimen name="safe_area_vertical">27dp</dimen>
+
+    <!-- Navigation rail. Collapsed it is a quiet strip of icons; it only
+         expands while it holds focus. -->
+    <dimen name="nav_rail_collapsed">76dp</dimen>
+    <dimen name="nav_rail_expanded">232dp</dimen>
+    <dimen name="nav_item_height">56dp</dimen>
+    <dimen name="nav_icon_size">24dp</dimen>
+
+    <!-- Card geometry. Sizes are fixed so images can be decoded at exactly the
+         pixels required and never larger. -->
+    <dimen name="card_poster_width">148dp</dimen>
+    <dimen name="card_poster_height">222dp</dimen>
+    <dimen name="card_landscape_width">260dp</dimen>
+    <dimen name="card_landscape_height">146dp</dimen>
+    <dimen name="card_continue_width">300dp</dimen>
+    <dimen name="card_continue_height">169dp</dimen>
+    <dimen name="card_episode_width">224dp</dimen>
+    <dimen name="card_episode_height">126dp</dimen>
+    <dimen name="card_gap">16dp</dimen>
+    <dimen name="card_corner">4dp</dimen>
+
+    <!-- Focus. A card lifts 10dp toward the viewer; only the focused card ever
+         casts a shadow. -->
+    <dimen name="focus_elevation">10dp</dimen>
+    <dimen name="focus_ring_width">2dp</dimen>
+
+    <!-- Content rows. -->
+    <dimen name="row_header_spacing">12dp</dimen>
+    <dimen name="row_spacing">32dp</dimen>
+
+    <!-- Hero. Substantial without swallowing the first content row. -->
+    <dimen name="hero_height">380dp</dimen>
+    <dimen name="hero_text_max_width">520dp</dimen>
+
+    <!-- Buttons sized for confident D-pad targets at a distance. -->
+    <dimen name="button_height">48dp</dimen>
+    <dimen name="button_min_width">160dp</dimen>
+    <dimen name="button_padding_horizontal">28dp</dimen>
+    <dimen name="button_corner">3dp</dimen>
+
+    <dimen name="progress_bar_height">3dp</dimen>
+    <dimen name="hairline_width">1dp</dimen>
+
+    <!-- Detail screen. -->
+    <dimen name="detail_poster_width">200dp</dimen>
+    <dimen name="detail_poster_height">300dp</dimen>
+    <dimen name="detail_backdrop_height">440dp</dimen>
+    <dimen name="cast_avatar_size">88dp</dimen>
+    <dimen name="cast_item_width">104dp</dimen>
+
+</resources>

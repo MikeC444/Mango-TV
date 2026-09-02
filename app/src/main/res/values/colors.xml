@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--
+      Mango TV palette.
+
+      Roughly 90% neutral, 10% accent. The accent appears only on selected
+      states, progress and small highlights - never as a surface or a large
+      field of colour.
+
+      Surfaces are charcoal rather than pure black: true black crushes the
+      subtle elevation steps that carry the sense of depth, and shows banding
+      on the cheaper panels these devices are usually attached to.
+    -->
+
+    <color name="surface_base">#FF0B0B0C</color>
+    <color name="surface_raised">#FF141416</color>
+    <color name="surface_overlay">#FF1C1C1F</color>
+    <color name="hairline">#FF2A2A2E</color>
+
+    <!-- Warm off-white. Pure white is harsh at 10 feet in a dark room. -->
+    <color name="text_primary">#FFF2EFE9</color>
+    <color name="text_secondary">#FF9C9A96</color>
+    <!-- Non-essential text only: ~4.6:1 on surface_base, which holds AA for
+         large text but not for body copy. -->
+    <color name="text_tertiary">#FF7E7E83</color>
+    <color name="text_on_accent">#FF120D06</color>
+
+    <!-- Muted amber ochre. Warm and restrained; never neon. -->
+    <color name="accent">#FFD9A05B</color>
+    <color name="accent_pressed">#FFC08A46</color>
+    <color name="accent_dim">#66D9A05B</color>
+
+    <!-- Focus treatment. The scrim is the "lift toward the light" brightness
+         step applied to a focused card. -->
+    <color name="focus_scrim">#FFFFFFFF</color>
+    <color name="focus_ring">#FFF2EFE9</color>
+
+    <!-- Scrims that keep text legible over artwork. -->
+    <color name="scrim_strong">#E60B0B0C</color>
+    <color name="scrim_medium">#990B0B0C</color>
+    <color name="scrim_none">#000B0B0C</color>
+
+    <color name="transparent">#00000000</color>
+
+</resources>
