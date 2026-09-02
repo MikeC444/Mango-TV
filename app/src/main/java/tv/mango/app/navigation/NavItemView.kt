@@ -64,9 +64,9 @@ class NavItemView @JvmOverloads constructor(
         isFocusableInTouchMode = false
         // The icon and label are decoration; focus lands on the item as a whole.
         descendantFocusability = FOCUS_BLOCK_DESCENDANTS
-        background = ContextCompat.getDrawable(context, R.drawable.surface_focus_background)
+        background = ContextCompat.getDrawable(context, R.drawable.nav_item_background)
 
-        val padding = resources.getDimensionPixelSize(R.dimen.space_2)
+        val padding = resources.getDimensionPixelSize(R.dimen.space_1)
         setPaddingRelative(padding, 0, padding, 0)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

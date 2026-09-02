@@ -31,24 +31,25 @@
          focus. -->
     <dimen name="nav_rail_collapsed">76dp</dimen>
     <dimen name="nav_rail_expanded">232dp</dimen>
-    <dimen name="nav_item_height">56dp</dimen>
-    <dimen name="nav_icon_size">24dp</dimen>
+    <dimen name="nav_item_height">44dp</dimen>
+    <dimen name="nav_icon_size">20dp</dimen>
+    <!-- Half the item's own height, so the resting and focused pill both
+         read as a capsule rather than a rounded rectangle. -->
+    <dimen name="nav_item_corner">22dp</dimen>
 
     <!-- Card geometry. Sizes are fixed so images can be decoded at exactly the
-         pixels required and never larger. -->
-    <dimen name="card_poster_width">160dp</dimen>
-    <dimen name="card_poster_height">240dp</dimen>
+         pixels required and never larger. Small enough that a row reads as a
+         shelf of titles rather than three enormous posters. -->
+    <dimen name="card_poster_width">130dp</dimen>
+    <dimen name="card_poster_height">195dp</dimen>
     <dimen name="card_landscape_width">260dp</dimen>
     <dimen name="card_landscape_height">146dp</dimen>
     <dimen name="card_continue_width">300dp</dimen>
     <dimen name="card_continue_height">169dp</dimen>
     <dimen name="card_episode_width">224dp</dimen>
     <dimen name="card_episode_height">126dp</dimen>
-    <dimen name="card_gap">16dp</dimen>
-    <!-- Large by earlier television standards on purpose: a small radius reads
-         as an Android list item, a generous one reads as a poster on a glass
-         shelf. -->
-    <dimen name="card_corner">14dp</dimen>
+    <dimen name="card_gap">12dp</dimen>
+    <dimen name="card_corner">10dp</dimen>
 
     <!-- Focus. A card lifts 10dp toward the viewer; only the focused card ever
          casts a shadow. -->
