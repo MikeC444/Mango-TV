@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The hero.
+
+  Composition is deliberate: the backdrop fills the frame, a horizontal scrim
+  darkens the left where the words sit and releases the right where the image
+  is worth seeing, and a bottom scrim settles the image into the rows below so
+  it does not end on a hard line. Text is constrained to a readable measure
+  rather than running the width of a television.
+
+  Flat by design - two scrims and a text column over the image, with no nesting
+  beyond what the constraints need.
+-->
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <ImageView
+        android:id="@+id/hero_backdrop"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@string/cd_backdrop"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/hero_scrim"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/scrim_hero"
+        app:layout_constraintBottom_toBottomOf="@id/hero_backdrop"
+        app:layout_constraintEnd_toEndOf="@id/hero_backdrop"
+        app:layout_constraintStart_toStartOf="@id/hero_backdrop"
+        app:layout_constraintTop_toTopOf="@id/hero_backdrop" />
+
+    <View
+        android:id="@+id/hero_bottom_fade"
+        android:layout_width="0dp"
+        android:layout_height="96dp"
+        android:background="@drawable/scrim_bottom"
+        app:layout_constraintBottom_toBottomOf="@id/hero_backdrop"
+        app:layout_constraintEnd_toEndOf="@id/hero_backdrop"
+        app:layout_constraintStart_toStartOf="@id/hero_backdrop" />
+
+    <TextView
+        android:id="@+id/hero_eyebrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_featured"
+        android:textAppearance="@style/TextAppearance.Mango.Overline"
+        app:layout_constraintBottom_toTopOf="@id/hero_title"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/hero_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_1"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textAppearance="@style/TextAppearance.Mango.Display"
+        app:layout_constraintBottom_toTopOf="@id/hero_meta"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_max="@dimen/hero_text_max_width"
+        app:layout_constraintWidth_default="wrap"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        tools:text="A Quiet Inheritance" />
+
+    <TextView
+        android:id="@+id/hero_meta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_2"
+        android:textAppearance="@style/TextAppearance.Mango.Label"
+        app:layout_constraintBottom_toTopOf="@id/hero_synopsis"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="2025 · 2h 21m · 15 · Drama, Mystery" />
+
+    <TextView
+        android:id="@+id/hero_synopsis"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_2"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textAppearance="@style/TextAppearance.Mango.Body"
+        app:layout_constraintBottom_toTopOf="@id/hero_actions"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_default="wrap"
+        app:layout_constraintWidth_max="@dimen/hero_text_max_width"
+        tools:text="A country solicitor discovers the estate she is settling belonged to a woman who never existed." />
+
+    <LinearLayout
+        android:id="@+id/hero_actions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_4"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/hero_play"
+            style="@style/Widget.Mango.Button"
+            android:text="@string/action_play" />
+
+        <Button
+            android:id="@+id/hero_details"
+            style="@style/Widget.Mango.Button"
+            android:layout_marginStart="@dimen/space_2"
+            android:text="@string/action_details" />
+
+    </LinearLayout>
+
+</merge>

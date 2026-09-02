@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -81,4 +82,14 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.serialization.json)
+
+    // Chosen over the alternatives for its bitmap pool and its willingness to
+    // decode straight into RGB_565, which halves the memory a screen of
+    // artwork occupies. On a 1 GB stick that is the difference that matters.
+    //
+    // Deliberately used without an AppGlideModule: the only settings this
+    // application needs are per-request, so they live in ImageLoader rather
+    // than costing an annotation processor on every build.
+    implementation(libs.glide)
 }

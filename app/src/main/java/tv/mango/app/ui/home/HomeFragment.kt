@@ -11,22 +11,34 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.launch
 import tv.mango.app.R
 import tv.mango.app.data.FailureReason
 import tv.mango.app.data.UiState
 import tv.mango.app.databinding.FragmentHomeBinding
 import tv.mango.app.di.appGraph
-import tv.mango.app.models.ContentRow
+import tv.mango.app.models.HomeContent
 import tv.mango.app.models.MediaItem
 import tv.mango.app.navigation.NavigationHost
 import tv.mango.app.ui.core.ContentRowsAdapter
 
 /**
- * The home screen: rows of content the viewer moves through with the D-pad.
+ * The home screen: a cinematic hero, and rows of content beneath it.
  *
- * The cinematic hero arrives with real artwork in the next phase; the rows and
- * the focus behaviour beneath it are complete.
+ * Two behaviours here are worth explaining, because both exist to keep the
+ * screen from doing work it does not need to do.
+ *
+ * **The hero follows focus, but only while it can be seen.** Moving along a row
+ * changes what the hero is describing, which makes browsing feel like reading
+ * rather than like picking from a grid. Once the rows have scrolled up over the
+ * hero, focus changes stop touching it entirely - no text updates, and above
+ * all no backdrop decode for an image nobody is looking at. The pending title
+ * is remembered, so scrolling back up shows the right one immediately.
+ *
+ * **Updates are debounced.** Holding a direction on the remote crosses a dozen
+ * cards a second. Without the delay that would be a dozen backdrop loads,
+ * eleven of them cancelled before they finished.
  */
 class HomeFragment : Fragment() {
 
@@ -40,7 +52,26 @@ class HomeFragment : Fragment() {
 
     private val rowsAdapter = ContentRowsAdapter(
         onItemSelected = ::openDetail,
+        onItemFocused = ::onCardFocused,
     )
+
+    /** How far the rows have been scrolled up over the hero, in pixels. */
+    private var scrolledBy = 0
+
+    /** The title the hero should be showing once it is visible again. */
+    private var pendingHeroItem: MediaItem? = null
+
+    private val applyHeroItem = Runnable {
+        val item = pendingHeroItem ?: return@Runnable
+        if (isHeroVisible()) binding?.hero?.show(item)
+    }
+
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            scrolledBy = (scrolledBy + dy).coerceAtLeast(0)
+            updateHeroForScroll()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,10 +85,22 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding?.rows?.adapter = rowsAdapter
+        val views = binding ?: return
 
-        // Collection is tied to STARTED, so a screen that is not visible is not
-        // holding a request open or updating views nobody can see.
+        // Rows begin below the hero and scroll up over it. Clipping is already
+        // off, so they draw across it rather than being cut at the inset.
+        views.rows.setPadding(
+            0,
+            resources.getDimensionPixelSize(R.dimen.hero_height),
+            0,
+            resources.getDimensionPixelSize(R.dimen.safe_area_vertical),
+        )
+        views.rows.adapter = rowsAdapter
+        views.rows.addOnScrollListener(scrollListener)
+
+        views.hero.onPlay = ::openDetail
+        views.hero.onDetails = ::openDetail
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collect { render(it) }
@@ -65,25 +108,19 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun render(state: UiState<List<ContentRow>>) {
+    private fun render(state: UiState<HomeContent>) {
         val views = binding ?: return
         when (state) {
             is UiState.Loading -> {
-                // Deliberately blank. A spinner here would be a continuous
-                // animation on a screen that is about to fill in a moment; the
-                // charcoal surface is a calmer wait than a moving one.
+                // Deliberately blank. A spinner would be a continuous animation
+                // on a screen about to fill in a moment; the charcoal surface is
+                // a calmer wait than a moving one.
                 views.rows.visibility = View.GONE
+                views.hero.visibility = View.INVISIBLE
                 views.message.visibility = View.GONE
             }
 
-            is UiState.Content -> {
-                views.message.visibility = View.GONE
-                views.rows.visibility = View.VISIBLE
-                rowsAdapter.submit(state.value)
-                // Focus has to land somewhere the moment content appears, or
-                // the remote does nothing on the first press.
-                views.rows.post { views.rows.requestFocus() }
-            }
+            is UiState.Content -> showContent(state.value)
 
             is UiState.Empty -> showMessage(R.string.error_empty_title, null)
 
@@ -96,9 +133,59 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private fun showContent(content: HomeContent) {
+        val views = binding ?: return
+        views.message.visibility = View.GONE
+        views.hero.visibility = View.VISIBLE
+        views.rows.visibility = View.VISIBLE
+
+        pendingHeroItem = content.featured
+        views.hero.show(content.featured)
+        rowsAdapter.submit(content.rows)
+
+        // Focus has to land somewhere the instant content appears, or the first
+        // press of the remote does nothing. The hero's primary action is the
+        // most useful place for it to be.
+        views.hero.post { views.hero.focusPrimaryAction() }
+    }
+
+    private fun onCardFocused(item: MediaItem) {
+        pendingHeroItem = item
+        val views = binding ?: return
+        views.hero.removeCallbacks(applyHeroItem)
+        if (isHeroVisible()) {
+            views.hero.postDelayed(applyHeroItem, HERO_DEBOUNCE_MS)
+        }
+    }
+
+    /**
+     * Fades the hero out as the rows climb over it, and takes it out of the
+     * focus path once it is gone - a viewer pressing up should never land on an
+     * invisible button.
+     */
+    private fun updateHeroForScroll() {
+        val views = binding ?: return
+        val fadeOver = resources.getDimensionPixelSize(R.dimen.hero_height).toFloat()
+        val alpha = (1f - scrolledBy / fadeOver).coerceIn(0f, 1f)
+        views.hero.alpha = alpha
+
+        val visible = alpha > VISIBILITY_THRESHOLD
+        val wanted = if (visible) View.VISIBLE else View.INVISIBLE
+        if (views.hero.visibility != wanted) {
+            views.hero.visibility = wanted
+            // Coming back into view, it may be describing a title the viewer
+            // moved away from several rows ago.
+            if (visible) pendingHeroItem?.let(views.hero::show)
+        }
+    }
+
+    private fun isHeroVisible(): Boolean =
+        binding?.hero?.let { it.visibility == View.VISIBLE && it.alpha > VISIBILITY_THRESHOLD } == true
+
     private fun showMessage(titleRes: Int, bodyRes: Int?) {
         val views = binding ?: return
         views.rows.visibility = View.GONE
+        views.hero.visibility = View.INVISIBLE
         views.message.visibility = View.VISIBLE
         views.message.setMessage(titleRes, bodyRes)
         views.message.setAction(R.string.action_retry) { viewModel.retry() }
@@ -110,11 +197,22 @@ class HomeFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        // The adapter outlives the view; leaving it attached would keep the
-        // whole hierarchy alive behind it.
-        binding?.rows?.adapter = null
+        binding?.let {
+            it.hero.removeCallbacks(applyHeroItem)
+            it.rows.removeOnScrollListener(scrollListener)
+            // The adapter outlives the view; leaving it attached would keep the
+            // whole hierarchy alive behind it.
+            it.rows.adapter = null
+        }
         binding = null
         super.onDestroyView()
     }
-}
 
+    private companion object {
+        /** Long enough to outlast held-down navigation, short enough to feel immediate. */
+        const val HERO_DEBOUNCE_MS = 220L
+
+        /** Below this the hero is effectively gone and stops taking focus. */
+        const val VISIBILITY_THRESHOLD = 0.05f
+    }
+}

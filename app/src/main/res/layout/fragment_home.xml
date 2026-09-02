@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  The hero sits behind the rows rather than above them in a column, and the
+  rows are inset from the top so they begin below it. Moving down scrolls the
+  rows up over the hero and reclaims the whole screen for content, which is
+  what a viewer who is browsing rather than deciding actually wants.
+-->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <tv.mango.app.ui.home.HeroView
+        android:id="@+id/hero"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/hero_height"
+        android:layout_gravity="top"
+        android:paddingStart="@dimen/safe_area_horizontal"
+        android:paddingTop="@dimen/safe_area_vertical"
+        android:paddingEnd="@dimen/safe_area_horizontal"
+        android:paddingBottom="@dimen/space_4" />
 
     <tv.mango.app.ui.core.RowsRecyclerView
         android:id="@+id/rows"

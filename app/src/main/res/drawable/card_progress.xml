@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The resume indicator along the bottom edge of a partly watched card.
+
+  A layer-list driven by the drawable's level rather than a ProgressBar: the
+  bar is a rectangle that never animates and never reports state, and a
+  ProgressBar on every card in a row would be a great deal of view for that.
+  Setting the level on the parent clips the accent layer to the right width.
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/hairline" />
+        </shape>
+    </item>
+
+    <item>
+        <clip
+            android:clipOrientation="horizontal"
+            android:gravity="start">
+            <shape android:shape="rectangle">
+                <solid android:color="@color/accent" />
+            </shape>
+        </clip>
+    </item>
+
+</layer-list>

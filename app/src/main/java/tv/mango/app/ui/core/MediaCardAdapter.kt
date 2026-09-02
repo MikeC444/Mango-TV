@@ -2,10 +2,12 @@ package tv.mango.app.ui.core
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import tv.mango.app.R
+import tv.mango.app.cache.ImageLoader
 import tv.mango.app.models.MediaItem
 
 /**
@@ -67,6 +69,9 @@ class MediaCardAdapter(
     ) : RecyclerView.ViewHolder(card) {
 
         private val artwork: ImageView = card.findViewById(R.id.artwork)
+        private val progress: View = card.findViewById(R.id.progress)
+        private val posterWidth = card.resources.getDimensionPixelSize(R.dimen.card_poster_width)
+        private val posterHeight = card.resources.getDimensionPixelSize(R.dimen.card_poster_height)
         private var item: MediaItem? = null
 
         init {
@@ -79,22 +84,58 @@ class MediaCardAdapter(
             card.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) item?.let(onFocused)
             }
+
+            // Every card inflates its progress bar from the same drawable
+            // resource, and those instances share one constant state. Without
+            // this, setting the level for one partly watched card would set it
+            // for every card on the screen.
+            progress.background = progress.background?.mutate()
         }
 
         fun bind(item: MediaItem) {
             this.item = item
-            // Artwork arrives in the next phase, behind the image pipeline. The
-            // card's placeholder surface stands in until then.
-            artwork.setImageDrawable(null)
-            card.contentDescription = card.context.getString(R.string.cd_poster, item.title)
+
+            // Decoded at exactly the card's size, never at the artwork's.
+            ImageLoader.loadPoster(artwork, item.images.poster, posterWidth, posterHeight)
+
+            if (item.isPartiallyWatched) {
+                progress.visibility = View.VISIBLE
+                // Drawable levels run 0..10000.
+                progress.background?.level = (item.progress * MAX_LEVEL).toInt()
+            } else {
+                progress.visibility = View.GONE
+            }
+
+            card.contentDescription = buildDescription(item)
+        }
+
+        /**
+         * Cards carry no visible text, so the whole of what a card is has to be
+         * said here for anyone using a screen reader. Progress is included
+         * because it is otherwise conveyed only by a coloured bar.
+         */
+        private fun buildDescription(item: MediaItem): CharSequence {
+            val context = card.context
+            val base = context.getString(R.string.cd_poster, item.title)
+            if (!item.isPartiallyWatched) return base
+            val percent = (item.progress * 100).toInt()
+            return base + ", " + context.getString(R.string.cd_progress, percent)
         }
 
         fun recycle() {
             item = null
-            artwork.setImageDrawable(null)
+            // Cancels any request still in flight. Without this a load started
+            // for a card that has scrolled away can still complete and deliver
+            // the wrong artwork into a view now showing something else.
+            ImageLoader.clear(artwork)
+            progress.visibility = View.GONE
             // A recycled holder must never arrive scaled or lit from whatever
             // it was last used for.
             card.resetFocusState()
+        }
+
+        private companion object {
+            const val MAX_LEVEL = 10_000f
         }
     }
 }

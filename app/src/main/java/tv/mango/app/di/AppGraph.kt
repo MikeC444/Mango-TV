@@ -25,7 +25,7 @@ class AppGraph(private val application: Context) {
 
     val appContext: Context get() = application
 
-    private val catalogProvider: CatalogProvider by lazy { MockCatalogProvider() }
+    private val catalogProvider: CatalogProvider by lazy { MockCatalogProvider(application) }
 
     val catalogRepository: CatalogRepository by lazy { CatalogRepository(catalogProvider) }
 

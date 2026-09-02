@@ -15,9 +15,9 @@ enum class MediaType { MOVIE, SERIES }
 /**
  * Artwork references, held as keys rather than as anything already loaded.
  *
- * Mock content resolves these against bundled artwork; a real provider resolves
- * them to URLs. Nothing above this layer knows the difference, and nothing here
- * holds a bitmap.
+ * Nothing in the model layer holds a bitmap, or a URL. Keys are resolved by
+ * [tv.mango.app.cache.ArtworkSource] at the moment an image is actually
+ * needed, at the size it is actually needed.
  */
 data class MediaImages(
     val poster: String,
@@ -25,23 +25,42 @@ data class MediaImages(
 )
 
 /**
- * The projection a card needs, and nothing more.
+ * A title, as the browsing interface needs it.
  *
- * A row of forty cards holds forty of these, so it deliberately excludes
- * descriptions, cast and episode lists. Those are loaded by the detail screen
- * for the one title being looked at.
+ * Carries enough for a card and for the hero above it - the hero has to follow
+ * the focused card without a round trip, so a short synopsis and the metadata
+ * line travel with the list. It deliberately stops there: cast, seasons and
+ * episode lists belong to the one title being looked at, not to the forty in a
+ * row, and are fetched by the detail screen.
  */
 data class MediaItem(
     val id: MediaId,
     val type: MediaType,
     val title: String,
     val year: Int,
+    val runtimeMinutes: Int,
+    val certification: String,
+    val genres: List<String>,
+    val synopsis: String,
     val images: MediaImages,
-)
+    /**
+     * How far through the viewer is, from 0 to 1. Anything above zero means
+     * the title is partly watched and should offer to resume.
+     */
+    val progress: Float = 0f,
+) {
+    val isPartiallyWatched: Boolean get() = progress > 0f
+}
 
-/** A titled, horizontally scrolling group of titles on the home screen. */
+/** A titled, horizontally scrolling group of titles. */
 data class ContentRow(
     val id: String,
     val title: String,
     val items: List<MediaItem>,
+)
+
+/** Everything the home screen needs, resolved in one pass. */
+data class HomeContent(
+    val featured: MediaItem,
+    val rows: List<ContentRow>,
 )

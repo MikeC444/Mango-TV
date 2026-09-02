@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  One card. Two views: the focusable surface and the artwork on it.
+  One card: the focusable surface, the artwork on it, and a resume indicator.
 
   There is deliberately no title beneath the artwork. Rows of labelled cards
   read as a database; the focused title is named once, in the hero, where there
   is room to say something about it. Keeping text off the card also means the
-  focus scale never re-rasterises glyphs.
+  focus scale never has to re-rasterise glyphs.
 -->
 <tv.mango.app.ui.core.TvCardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/card"
@@ -20,5 +20,13 @@
         android:layout_height="match_parent"
         android:contentDescription="@null"
         android:scaleType="centerCrop" />
+
+    <View
+        android:id="@+id/progress"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/progress_bar_height"
+        android:layout_gravity="bottom"
+        android:background="@drawable/card_progress"
+        android:visibility="gone" />
 
 </tv.mango.app.ui.core.TvCardView>

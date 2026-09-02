@@ -1,34 +1,51 @@
 package tv.mango.app.data.mock
 
-import kotlinx.coroutines.delay
+import android.content.Context
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.serialization.json.Json
 import tv.mango.app.data.DataResult
+import tv.mango.app.data.FailureReason
 import tv.mango.app.data.provider.CatalogProvider
 import tv.mango.app.models.ContentRow
+import tv.mango.app.models.HomeContent
 import tv.mango.app.models.MediaId
 import tv.mango.app.models.MediaImages
 import tv.mango.app.models.MediaItem
 import tv.mango.app.models.MediaType
+import tv.mango.app.utilities.Logger
 
 /**
- * Bundled content, standing in for a real catalogue.
+ * The bundled catalogue, standing in for a content service.
  *
- * Titles here are invented for this project. They exist so focus, navigation,
- * layout and memory behaviour can be exercised against realistic volumes and
+ * Titles are invented for this project. They exist so that focus, scrolling,
+ * layout and image memory can be exercised against realistic volumes and
  * realistic string lengths before any network is involved - a long title has to
  * be seen wrapping in a real row, not imagined.
  *
- * The catalogue moves into a bundled JSON asset with artwork in the next phase.
- * Callers see no difference: they only ever hold the interface.
+ * The asset is read and parsed once, off the main thread, behind a mutex so a
+ * burst of concurrent calls on a cold start cannot each start their own parse.
+ * Callers only ever hold [CatalogProvider], so replacing this with a real
+ * service changes nothing above it.
  */
-class MockCatalogProvider : CatalogProvider {
+class MockCatalogProvider(
+    private val context: Context,
+) : CatalogProvider {
 
-    override suspend fun homeRows(): DataResult<List<ContentRow>> {
-        // A provider is asynchronous by contract. Answering instantly here
-        // would let a screen accidentally depend on data being ready during
-        // its first layout pass, and that assumption would break the day a
-        // real network sits behind this.
-        delay(SIMULATED_LATENCY_MS)
-        return DataResult.Success(ROWS)
+    private val json = Json { ignoreUnknownKeys = true }
+    private val loadLock = Mutex()
+
+    @Volatile
+    private var cached: Catalogue? = null
+
+    override suspend fun homeRows(): DataResult<HomeContent> {
+        val catalogue = load() ?: return DataResult.Failure(FailureReason.UNKNOWN)
+        // Falls back to the first title in the first row rather than throwing:
+        // a catalogue with nothing marked featured is still a usable screen.
+        val featured = catalogue.featured.firstOrNull()
+            ?: catalogue.rows.firstOrNull()?.items?.firstOrNull()
+            ?: return DataResult.Failure(FailureReason.NOT_FOUND)
+        return DataResult.Success(HomeContent(featured = featured, rows = catalogue.rows))
     }
 
     override suspend fun browse(
@@ -36,74 +53,88 @@ class MockCatalogProvider : CatalogProvider {
         page: Int,
         pageSize: Int,
     ): DataResult<List<MediaItem>> {
-        delay(SIMULATED_LATENCY_MS)
-        val all = CATALOGUE.filter { it.type == type }
+        val catalogue = load() ?: return DataResult.Failure(FailureReason.UNKNOWN)
+        val all = catalogue.byType(type)
         val from = page * pageSize
         if (from >= all.size) return DataResult.Success(emptyList())
         return DataResult.Success(all.subList(from, minOf(from + pageSize, all.size)))
     }
 
+    override suspend fun title(id: MediaId): DataResult<MediaItem> {
+        val catalogue = load() ?: return DataResult.Failure(FailureReason.UNKNOWN)
+        return catalogue.byId[id]
+            ?.let { DataResult.Success(it) }
+            ?: DataResult.Failure(FailureReason.NOT_FOUND)
+    }
+
+    private suspend fun load(): Catalogue? {
+        cached?.let { return it }
+        return loadLock.withLock {
+            // Checked again inside the lock: several screens can ask at once on
+            // a cold start, and only the first should do the work.
+            cached ?: parse()?.also { cached = it }
+        }
+    }
+
+    private fun parse(): Catalogue? = try {
+        val text = context.assets.open(ASSET_NAME).bufferedReader().use { it.readText() }
+        val parsed = json.decodeFromString(CatalogJson.serializer(), text)
+
+        val byId = parsed.titles.mapNotNull { title ->
+            // An unrecognised type costs this one title, the same way a bad row
+            // reference costs one card.
+            val type = MediaType.entries.firstOrNull { it.name == title.type }
+                ?: return@mapNotNull null
+            val id = MediaId(title.id)
+            id to MediaItem(
+                id = id,
+                type = type,
+                title = title.title,
+                year = title.year,
+                runtimeMinutes = title.runtimeMinutes,
+                certification = title.certification,
+                genres = title.genres,
+                synopsis = title.synopsis,
+                images = MediaImages(
+                    poster = "poster_${title.id}",
+                    backdrop = "backdrop_${title.id}",
+                ),
+                progress = title.progress,
+            )
+        }.toMap()
+
+        Catalogue(
+            byId = byId,
+            rows = parsed.rows.map { row ->
+                ContentRow(
+                    id = row.id,
+                    title = row.title,
+                    // mapNotNull rather than a lookup that can throw: one bad
+                    // reference in the data should cost that one card, not the
+                    // whole screen.
+                    items = row.titleIds.mapNotNull { byId[MediaId(it)] },
+                )
+            },
+            featured = parsed.featured.mapNotNull { byId[MediaId(it)] },
+        )
+    } catch (error: Exception) {
+        // A malformed bundled asset is a build problem, not something the
+        // viewer can act on. It surfaces as an ordinary failure state.
+        Logger.e("Could not read the bundled catalogue", error)
+        null
+    }
+
+    private class Catalogue(
+        val byId: Map<MediaId, MediaItem>,
+        val rows: List<ContentRow>,
+        val featured: List<MediaItem>,
+    ) {
+        private val ordered = byId.values.toList()
+
+        fun byType(type: MediaType): List<MediaItem> = ordered.filter { it.type == type }
+    }
+
     private companion object {
-
-        const val SIMULATED_LATENCY_MS = 120L
-
-        private fun movie(id: String, title: String, year: Int) = MediaItem(
-            id = MediaId(id),
-            type = MediaType.MOVIE,
-            title = title,
-            year = year,
-            images = MediaImages(poster = "poster_$id", backdrop = "backdrop_$id"),
-        )
-
-        private fun series(id: String, title: String, year: Int) = MediaItem(
-            id = MediaId(id),
-            type = MediaType.SERIES,
-            title = title,
-            year = year,
-            images = MediaImages(poster = "poster_$id", backdrop = "backdrop_$id"),
-        )
-
-        val CATALOGUE = listOf(
-            movie("m01", "The Salt Road", 2024),
-            movie("m02", "Northern Lights", 2023),
-            movie("m03", "A Quiet Inheritance", 2025),
-            movie("m04", "Ninety Miles of Water", 2022),
-            movie("m05", "The Cartographer", 2024),
-            movie("m06", "Slow Burning Season", 2021),
-            movie("m07", "Harbour", 2025),
-            movie("m08", "The Weight of Small Things", 2023),
-            movie("m09", "Meridian", 2024),
-            movie("m10", "Every Room Facing West", 2022),
-            movie("m11", "Cold Open", 2025),
-            movie("m12", "The Long Field", 2020),
-            movie("m13", "Ash and Amber", 2024),
-            movie("m14", "Signal Hill", 2023),
-            movie("m15", "The Second Summer", 2025),
-            movie("m16", "Undertow", 2021),
-            series("s01", "The Glasshouse", 2024),
-            series("s02", "Provenance", 2023),
-            series("s03", "Low Country", 2025),
-            series("s04", "The Understudy", 2022),
-            series("s05", "Nightjar", 2024),
-            series("s06", "Continental Drift", 2023),
-            series("s07", "The Reading Room", 2025),
-            series("s08", "Fathom", 2021),
-            series("s09", "Quarter Light", 2024),
-            series("s10", "The Border Trilogy", 2022),
-            series("s11", "Estuary", 2025),
-            series("s12", "Foundry", 2023),
-        )
-
-        private val movies = CATALOGUE.filter { it.type == MediaType.MOVIE }
-        private val series = CATALOGUE.filter { it.type == MediaType.SERIES }
-
-        val ROWS = listOf(
-            ContentRow("continue", "Continue Watching", movies.take(5) + series.take(2)),
-            ContentRow("trending", "Trending Now", CATALOGUE.shuffled(java.util.Random(7)).take(12)),
-            ContentRow("movies", "Popular Movies", movies),
-            ContentRow("series", "Popular Series", series),
-            ContentRow("recent", "Recently Added", CATALOGUE.takeLast(10)),
-            ContentRow("recommended", "Recommended For You", CATALOGUE.shuffled(java.util.Random(19)).take(12)),
-        )
+        const val ASSET_NAME = "mock_catalog.json"
     }
 }

@@ -22,6 +22,7 @@
 
     <!-- Sections -->
     <string name="label_featured">Featured</string>
+    <string name="label_continue_watching">Continue Watching</string>
     <string name="label_cast">Cast</string>
     <string name="label_episodes">Episodes</string>
     <string name="label_season">Season %1$d</string>
@@ -42,4 +43,9 @@
     <string name="cd_progress">%1$d percent watched</string>
 
     <string name="placeholder_body">This section arrives in a later phase of the build.</string>
+
+    <!-- Formatting -->
+    <string name="format_hours_minutes">%1$dh %2$dm</string>
+    <string name="format_minutes">%1$dm</string>
+    <string name="format_per_episode">%1$s per episode</string>
 </resources>

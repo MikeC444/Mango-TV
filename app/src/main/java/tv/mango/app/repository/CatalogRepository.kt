@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.flowOn
 import tv.mango.app.data.DataResult
 import tv.mango.app.data.UiState
 import tv.mango.app.data.provider.CatalogProvider
-import tv.mango.app.models.ContentRow
+import tv.mango.app.models.HomeContent
 import tv.mango.app.models.MediaItem
 import tv.mango.app.models.MediaType
 
@@ -23,9 +23,9 @@ class CatalogRepository(
     private val catalog: CatalogProvider,
 ) {
 
-    fun homeRows(): Flow<UiState<List<ContentRow>>> = flow {
+    fun home(): Flow<UiState<HomeContent>> = flow {
         emit(UiState.Loading)
-        emit(catalog.homeRows().toUiState { it.isEmpty() })
+        emit(catalog.homeRows().toUiState { it.rows.isEmpty() })
     }.flowOn(Dispatchers.IO)
 
     fun browse(type: MediaType, page: Int, pageSize: Int = DEFAULT_PAGE_SIZE): Flow<UiState<List<MediaItem>>> = flow {

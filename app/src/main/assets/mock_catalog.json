@@ -1,0 +1,209 @@
+{
+  "titles": [
+    {
+      "id": "m01", "type": "MOVIE", "title": "The Salt Road", "year": 2024,
+      "runtimeMinutes": 134, "certification": "15",
+      "genres": ["Drama", "Adventure"],
+      "synopsis": "A cartographer retraces a trade route her grandfather walked, and finds the map was never the point.",
+      "progress": 0.42
+    },
+    {
+      "id": "m02", "type": "MOVIE", "title": "Northern Lights", "year": 2023,
+      "runtimeMinutes": 118, "certification": "12",
+      "genres": ["Drama"],
+      "synopsis": "Two estranged sisters spend a winter running their father's failing harbour hotel.",
+      "progress": 0.0
+    },
+    {
+      "id": "m03", "type": "MOVIE", "title": "A Quiet Inheritance", "year": 2025,
+      "runtimeMinutes": 141, "certification": "15",
+      "genres": ["Drama", "Mystery"],
+      "synopsis": "A country solicitor discovers the estate she is settling belonged to a woman who never existed.",
+      "progress": 0.77
+    },
+    {
+      "id": "m04", "type": "MOVIE", "title": "Ninety Miles of Water", "year": 2022,
+      "runtimeMinutes": 108, "certification": "12",
+      "genres": ["Thriller", "Drama"],
+      "synopsis": "A lighthouse keeper and the stranger he pulls from the surf spend four days waiting for a boat.",
+      "progress": 0.0
+    },
+    {
+      "id": "m05", "type": "MOVIE", "title": "The Cartographer", "year": 2024,
+      "runtimeMinutes": 126, "certification": "15",
+      "genres": ["Mystery", "Drama"],
+      "synopsis": "Every map he draws is accurate. None of them match the country he is standing in.",
+      "progress": 0.15
+    },
+    {
+      "id": "m06", "type": "MOVIE", "title": "Slow Burning Season", "year": 2021,
+      "runtimeMinutes": 97, "certification": "12",
+      "genres": ["Drama"],
+      "synopsis": "A vineyard, a drought, and a family that has run out of ways to avoid the conversation.",
+      "progress": 0.0
+    },
+    {
+      "id": "m07", "type": "MOVIE", "title": "Harbour", "year": 2025,
+      "runtimeMinutes": 112, "certification": "PG",
+      "genres": ["Drama", "Comedy"],
+      "synopsis": "A retired ferry captain agrees to teach one last apprentice, against his considerable better judgement.",
+      "progress": 0.0
+    },
+    {
+      "id": "m08", "type": "MOVIE", "title": "The Weight of Small Things", "year": 2023,
+      "runtimeMinutes": 129, "certification": "15",
+      "genres": ["Drama"],
+      "synopsis": "A restorer of broken porcelain takes a commission she should have refused.",
+      "progress": 0.61
+    },
+    {
+      "id": "m09", "type": "MOVIE", "title": "Meridian", "year": 2024,
+      "runtimeMinutes": 147, "certification": "15",
+      "genres": ["Science Fiction", "Drama"],
+      "synopsis": "The observatory has been recording the same signal for sixty years. This morning it changed.",
+      "progress": 0.0
+    },
+    {
+      "id": "m10", "type": "MOVIE", "title": "Every Room Facing West", "year": 2022,
+      "runtimeMinutes": 104, "certification": "12",
+      "genres": ["Drama", "Romance"],
+      "synopsis": "An architect builds a house for a client who will not say who is going to live in it.",
+      "progress": 0.0
+    },
+    {
+      "id": "m11", "type": "MOVIE", "title": "Cold Open", "year": 2025,
+      "runtimeMinutes": 99, "certification": "15",
+      "genres": ["Thriller"],
+      "synopsis": "A live broadcast overruns by eleven minutes, and nobody in the gallery will say why.",
+      "progress": 0.0
+    },
+    {
+      "id": "m12", "type": "MOVIE", "title": "The Long Field", "year": 2020,
+      "runtimeMinutes": 122, "certification": "12",
+      "genres": ["Drama", "History"],
+      "synopsis": "Three generations work the same acre, and each one buries something in it.",
+      "progress": 0.0
+    },
+    {
+      "id": "m13", "type": "MOVIE", "title": "Ash and Amber", "year": 2024,
+      "runtimeMinutes": 116, "certification": "15",
+      "genres": ["Drama", "Mystery"],
+      "synopsis": "A perfumer reconstructs a scent from memory, and with it a night she had agreed to forget.",
+      "progress": 0.0
+    },
+    {
+      "id": "m14", "type": "MOVIE", "title": "Signal Hill", "year": 2023,
+      "runtimeMinutes": 131, "certification": "15",
+      "genres": ["Thriller", "Drama"],
+      "synopsis": "The relay station has one operator, one road out, and a message it is not supposed to have received.",
+      "progress": 0.0
+    },
+    {
+      "id": "m15", "type": "MOVIE", "title": "The Second Summer", "year": 2025,
+      "runtimeMinutes": 106, "certification": "PG",
+      "genres": ["Drama", "Romance"],
+      "synopsis": "They agreed to meet again in twenty years. Only one of them wrote it down.",
+      "progress": 0.0
+    },
+    {
+      "id": "m16", "type": "MOVIE", "title": "Undertow", "year": 2021,
+      "runtimeMinutes": 94, "certification": "15",
+      "genres": ["Thriller"],
+      "synopsis": "A coastguard diver keeps finding the same wreck in places it has no business being.",
+      "progress": 0.0
+    },
+    {
+      "id": "s01", "type": "SERIES", "title": "The Glasshouse", "year": 2024,
+      "runtimeMinutes": 52, "certification": "15",
+      "genres": ["Drama", "Mystery"],
+      "synopsis": "A botanical institute closes for restoration, and its archivist begins reading the founder's private ledgers.",
+      "progress": 0.33
+    },
+    {
+      "id": "s02", "type": "SERIES", "title": "Provenance", "year": 2023,
+      "runtimeMinutes": 48, "certification": "15",
+      "genres": ["Drama", "Crime"],
+      "synopsis": "An auction house authenticator learns that the most valuable thing she sells is her own signature.",
+      "progress": 0.0
+    },
+    {
+      "id": "s03", "type": "SERIES", "title": "Low Country", "year": 2025,
+      "runtimeMinutes": 55, "certification": "15",
+      "genres": ["Drama"],
+      "synopsis": "A district nurse covers ninety miles of marshland and knows every household's secrets but her own.",
+      "progress": 0.0
+    },
+    {
+      "id": "s04", "type": "SERIES", "title": "The Understudy", "year": 2022,
+      "runtimeMinutes": 44, "certification": "12",
+      "genres": ["Drama"],
+      "synopsis": "She has covered the part for six years. Tonight the call comes, and she is not sure she wants it.",
+      "progress": 0.0
+    },
+    {
+      "id": "s05", "type": "SERIES", "title": "Nightjar", "year": 2024,
+      "runtimeMinutes": 50, "certification": "15",
+      "genres": ["Thriller", "Mystery"],
+      "synopsis": "A rural police station reopens a case that everyone involved would prefer stayed closed.",
+      "progress": 0.08
+    },
+    {
+      "id": "s06", "type": "SERIES", "title": "Continental Drift", "year": 2023,
+      "runtimeMinutes": 47, "certification": "12",
+      "genres": ["Documentary"],
+      "synopsis": "Six geologists, four continents, and one argument that has been running since 1968.",
+      "progress": 0.0
+    },
+    {
+      "id": "s07", "type": "SERIES", "title": "The Reading Room", "year": 2025,
+      "runtimeMinutes": 41, "certification": "PG",
+      "genres": ["Drama"],
+      "synopsis": "A legal deposit library, its last full-time cataloguer, and eleven million books nobody has asked for.",
+      "progress": 0.0
+    },
+    {
+      "id": "s08", "type": "SERIES", "title": "Fathom", "year": 2021,
+      "runtimeMinutes": 53, "certification": "15",
+      "genres": ["Science Fiction", "Drama"],
+      "synopsis": "The deep-water station is rated for eighteen months. They are in year four.",
+      "progress": 0.0
+    },
+    {
+      "id": "s09", "type": "SERIES", "title": "Quarter Light", "year": 2024,
+      "runtimeMinutes": 46, "certification": "12",
+      "genres": ["Drama"],
+      "synopsis": "A driving instructor in a small town hears more confessions than the parish priest.",
+      "progress": 0.0
+    },
+    {
+      "id": "s10", "type": "SERIES", "title": "The Border Trilogy", "year": 2022,
+      "runtimeMinutes": 58, "certification": "15",
+      "genres": ["Drama", "History"],
+      "synopsis": "Three families, one valley, and a line on a map that moves twice in a century.",
+      "progress": 0.0
+    },
+    {
+      "id": "s11", "type": "SERIES", "title": "Estuary", "year": 2025,
+      "runtimeMinutes": 49, "certification": "15",
+      "genres": ["Crime", "Drama"],
+      "synopsis": "The tide gives the river back everything it takes, eventually, and usually at the wrong moment.",
+      "progress": 0.0
+    },
+    {
+      "id": "s12", "type": "SERIES", "title": "Foundry", "year": 2023,
+      "runtimeMinutes": 51, "certification": "12",
+      "genres": ["Drama", "History"],
+      "synopsis": "The last bell foundry in the country takes an order that will outlast everyone who casts it.",
+      "progress": 0.0
+    }
+  ],
+  "rows": [
+    { "id": "continue",    "title": "Continue Watching",     "titleIds": ["m01", "m03", "s01", "m08", "m05", "s05"] },
+    { "id": "trending",    "title": "Trending Now",          "titleIds": ["m09", "s03", "m13", "s11", "m07", "s08", "m14", "s02", "m11", "s09", "m04", "s12"] },
+    { "id": "movies",      "title": "Popular Movies",        "titleIds": ["m01", "m02", "m03", "m04", "m05", "m06", "m07", "m08", "m09", "m10", "m11", "m12", "m13", "m14", "m15", "m16"] },
+    { "id": "series",      "title": "Popular Series",        "titleIds": ["s01", "s02", "s03", "s04", "s05", "s06", "s07", "s08", "s09", "s10", "s11", "s12"] },
+    { "id": "recent",      "title": "Recently Added",        "titleIds": ["m15", "s11", "m07", "s07", "m03", "s03", "m11", "m09", "s05", "m13"] },
+    { "id": "recommended", "title": "Recommended For You",   "titleIds": ["m05", "s08", "m09", "s02", "m14", "s05", "m16", "s10", "m04", "s12", "m12", "s06"] }
+  ],
+  "featured": ["m03", "s01", "m09", "m01", "s03"]
+}
