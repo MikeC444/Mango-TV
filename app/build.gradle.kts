@@ -92,4 +92,11 @@ dependencies {
     // application needs are per-request, so they live in ImageLoader rather
     // than costing an annotation processor on every build.
     implementation(libs.glide)
+
+    // Watchlist membership and playback positions: a set of identifiers and a
+    // map of identifier to position. DataStore covers that reactively in a
+    // few hundred lines, where Room would cost an annotation processor on
+    // every build for queries this data does not have. Room becomes the right
+    // answer when the library grows real ones - sorting, filtering, joins.
+    implementation(libs.androidx.datastore.preferences)
 }

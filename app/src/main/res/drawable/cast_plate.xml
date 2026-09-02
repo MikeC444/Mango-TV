@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Stands in for a portrait. A plain disc rather than a generic silhouette
+     icon, which would be more graphic than the interface wants and would say
+     nothing a blank plate does not. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="@color/surface_raised" />
+</shape>

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The detail screen.
+
+  A backdrop across the top with the poster and the words over it, then a
+  scrolling column beneath. Imagery leads and the metadata follows, so the
+  screen reads as being about a film rather than as a record of one.
+
+  The whole thing sits inside a NestedScrollView so a long cast list or a
+  season of episodes can run past the bottom of the screen, and so the D-pad
+  brings each section into view as it reaches it.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/detail_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/safe_area_vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:orientation="vertical">
+
+            <!-- Backdrop, poster and the primary information. -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/detail_backdrop_height"
+                android:clipChildren="false">
+
+                <ImageView
+                    android:id="@+id/detail_backdrop"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:contentDescription="@string/cd_backdrop"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@drawable/scrim_hero"
+                    app:layout_constraintBottom_toBottomOf="@id/detail_backdrop"
+                    app:layout_constraintEnd_toEndOf="@id/detail_backdrop"
+                    app:layout_constraintStart_toStartOf="@id/detail_backdrop"
+                    app:layout_constraintTop_toTopOf="@id/detail_backdrop" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:background="@drawable/scrim_bottom"
+                    app:layout_constraintBottom_toBottomOf="@id/detail_backdrop"
+                    app:layout_constraintEnd_toEndOf="@id/detail_backdrop"
+                    app:layout_constraintStart_toStartOf="@id/detail_backdrop" />
+
+                <ImageView
+                    android:id="@+id/detail_poster"
+                    android:layout_width="@dimen/detail_poster_width"
+                    android:layout_height="@dimen/detail_poster_height"
+                    android:layout_marginStart="@dimen/safe_area_horizontal"
+                    android:layout_marginBottom="@dimen/space_4"
+                    android:contentDescription="@null"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/detail_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_4"
+                    android:layout_marginEnd="@dimen/safe_area_horizontal"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textAppearance="@style/TextAppearance.Mango.Display"
+                    app:layout_constraintBottom_toTopOf="@id/detail_meta"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toEndOf="@id/detail_poster"
+                    app:layout_constraintWidth_default="wrap"
+                    app:layout_constraintWidth_max="@dimen/hero_text_max_width" />
+
+                <TextView
+                    android:id="@+id/detail_meta"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_4"
+                    android:layout_marginTop="@dimen/space_2"
+                    android:textAppearance="@style/TextAppearance.Mango.Label"
+                    app:layout_constraintBottom_toBottomOf="@id/detail_poster"
+                    app:layout_constraintStart_toEndOf="@id/detail_poster" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Actions. -->
+            <LinearLayout
+                android:id="@+id/detail_actions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/safe_area_horizontal"
+                android:layout_marginTop="@dimen/space_4"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/action_play"
+                    style="@style/Widget.Mango.Button"
+                    android:text="@string/action_play" />
+
+                <Button
+                    android:id="@+id/action_restart"
+                    style="@style/Widget.Mango.Button"
+                    android:layout_marginStart="@dimen/space_2"
+                    android:text="@string/action_start_over"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/action_library"
+                    style="@style/Widget.Mango.Button"
+                    android:layout_marginStart="@dimen/space_2"
+                    android:text="@string/action_add_to_library" />
+
+                <Button
+                    android:id="@+id/action_trailer"
+                    style="@style/Widget.Mango.Button"
+                    android:layout_marginStart="@dimen/space_2"
+                    android:text="@string/action_trailer" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/detail_synopsis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/safe_area_horizontal"
+                android:layout_marginTop="@dimen/space_4"
+                android:maxWidth="@dimen/detail_text_max_width"
+                android:textAppearance="@style/TextAppearance.Mango.Body" />
+
+            <!-- Seasons and episodes. Gone for a film. -->
+            <tv.mango.app.ui.detail.SeasonsView
+                android:id="@+id/detail_seasons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_5"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/cast_heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/safe_area_horizontal"
+                android:layout_marginTop="@dimen/space_5"
+                android:text="@string/label_cast"
+                android:textAppearance="@style/TextAppearance.Mango.Overline"
+                android:visibility="gone" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/cast_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_2"
+                android:clipToPadding="false"
+                android:paddingStart="@dimen/safe_area_horizontal"
+                android:paddingEnd="@dimen/safe_area_horizontal"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <tv.mango.app.ui.common.MessageView
+        android:id="@+id/message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|start"
+        android:layout_marginStart="@dimen/safe_area_horizontal"
+        android:visibility="gone" />
+
+</FrameLayout>

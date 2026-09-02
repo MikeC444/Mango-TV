@@ -4,8 +4,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import tv.mango.app.R
+import tv.mango.app.models.MediaType
 import tv.mango.app.ui.browse.BrowseFragment
 import tv.mango.app.ui.common.PlaceholderFragment
+import tv.mango.app.ui.detail.DetailFragment
 import tv.mango.app.ui.home.HomeFragment
 
 /**
@@ -127,8 +129,8 @@ class Navigator(
         Route.Search -> PlaceholderFragment.of(R.string.nav_search)
         Route.Library -> PlaceholderFragment.of(R.string.nav_library)
         Route.Settings -> PlaceholderFragment.of(R.string.nav_settings)
-        is Route.MovieDetail -> PlaceholderFragment.of(R.string.nav_movies)
-        is Route.SeriesDetail -> PlaceholderFragment.of(R.string.nav_series)
+        is Route.MovieDetail -> DetailFragment.of(route.id, MediaType.MOVIE)
+        is Route.SeriesDetail -> DetailFragment.of(route.id, MediaType.SERIES)
     }
 
     private fun Route.tag(): String = this::class.java.name

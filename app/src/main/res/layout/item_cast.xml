@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A cast member: a plate, a name, a part. Not focusable - the cast row is
+     information, not a set of destinations, so the D-pad passes it by. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/cast_item_width"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="@dimen/cast_avatar_size"
+        android:layout_height="@dimen/cast_avatar_size"
+        android:background="@drawable/cast_plate" />
+
+    <TextView
+        android:id="@+id/cast_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_1"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textAppearance="@style/TextAppearance.Mango.CardTitle" />
+
+    <TextView
+        android:id="@+id/cast_role"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_quarter"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.Mango.CardMeta" />
+
+</LinearLayout>

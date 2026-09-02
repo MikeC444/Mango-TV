@@ -71,5 +71,7 @@
     <dimen name="detail_backdrop_height">440dp</dimen>
     <dimen name="cast_avatar_size">88dp</dimen>
     <dimen name="cast_item_width">104dp</dimen>
+    <dimen name="detail_text_max_width">620dp</dimen>
+    <dimen name="season_tab_min_width">120dp</dimen>
 
 </resources>

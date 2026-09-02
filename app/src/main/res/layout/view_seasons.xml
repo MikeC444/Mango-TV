@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:parentTag="android.widget.LinearLayout">
+
+    <!-- Season selector. Hidden for a series with only one season, where a row
+         of one button would be a control that does nothing. -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/season_tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:paddingStart="@dimen/safe_area_horizontal"
+        android:paddingEnd="@dimen/safe_area_horizontal" />
+
+    <TextView
+        android:id="@+id/episodes_heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/safe_area_horizontal"
+        android:layout_marginTop="@dimen/space_3"
+        android:text="@string/label_episodes"
+        android:textAppearance="@style/TextAppearance.Mango.Overline" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/episode_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_2"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingStart="@dimen/safe_area_horizontal"
+        android:paddingEnd="@dimen/safe_area_horizontal" />
+
+</merge>

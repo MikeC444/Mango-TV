@@ -3,9 +3,15 @@ package tv.mango.app.di
 import android.content.Context
 import androidx.fragment.app.Fragment
 import tv.mango.app.MangoApplication
+import tv.mango.app.data.local.LibraryStore
 import tv.mango.app.data.mock.MockCatalogProvider
+import tv.mango.app.data.mock.MockCatalogSource
+import tv.mango.app.data.mock.MockDetailProvider
 import tv.mango.app.data.provider.CatalogProvider
+import tv.mango.app.data.provider.MovieProvider
+import tv.mango.app.data.provider.SeriesProvider
 import tv.mango.app.repository.CatalogRepository
+import tv.mango.app.repository.LibraryRepository
 
 /**
  * The application's object graph.
@@ -25,9 +31,24 @@ class AppGraph(private val application: Context) {
 
     val appContext: Context get() = application
 
-    private val catalogProvider: CatalogProvider by lazy { MockCatalogProvider(application) }
+    /** Shared so the bundled assets are parsed once between both providers. */
+    private val mockSource: MockCatalogSource by lazy { MockCatalogSource(application) }
 
-    val catalogRepository: CatalogRepository by lazy { CatalogRepository(catalogProvider) }
+    private val catalogProvider: CatalogProvider by lazy { MockCatalogProvider(mockSource) }
+
+    private val detailProvider: MockDetailProvider by lazy { MockDetailProvider(mockSource) }
+
+    private val movieProvider: MovieProvider get() = detailProvider
+
+    private val seriesProvider: SeriesProvider get() = detailProvider
+
+    val catalogRepository: CatalogRepository by lazy {
+        CatalogRepository(catalogProvider, movieProvider, seriesProvider)
+    }
+
+    val libraryRepository: LibraryRepository by lazy {
+        LibraryRepository(LibraryStore(application))
+    }
 
     companion object {
         fun from(context: Context): AppGraph =

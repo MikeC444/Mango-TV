@@ -8,10 +8,14 @@ import kotlinx.coroutines.flow.flowOn
 import tv.mango.app.data.DataResult
 import tv.mango.app.data.UiState
 import tv.mango.app.data.provider.CatalogProvider
+import tv.mango.app.data.provider.MovieProvider
+import tv.mango.app.data.provider.SeriesProvider
+import tv.mango.app.models.Episode
 import tv.mango.app.models.HomeContent
 import tv.mango.app.models.MediaId
 import tv.mango.app.models.MediaItem
 import tv.mango.app.models.MediaType
+import tv.mango.app.models.TitleDetail
 
 /**
  * Turns provider results into the states a screen can render.
@@ -23,6 +27,8 @@ import tv.mango.app.models.MediaType
  */
 class CatalogRepository(
     private val catalog: CatalogProvider,
+    private val movies: MovieProvider,
+    private val series: SeriesProvider,
 ) {
 
     fun home(): Flow<UiState<HomeContent>> = flow {
@@ -50,6 +56,24 @@ class CatalogRepository(
     suspend fun title(id: MediaId): DataResult<MediaItem> = withContext(Dispatchers.IO) {
         catalog.title(id)
     }
+
+    /**
+     * Full detail for one title.
+     *
+     * Routed by type so films and series can be served by different systems
+     * later without the detail screen needing to know that they are.
+     */
+    suspend fun detail(id: MediaId, type: MediaType): DataResult<TitleDetail> =
+        withContext(Dispatchers.IO) {
+            when (type) {
+                MediaType.MOVIE -> movies.movie(id)
+                MediaType.SERIES -> series.series(id)
+            }
+        }
+
+    /** One season's episodes, loaded when that season is selected. */
+    suspend fun episodes(id: MediaId, season: Int): DataResult<List<Episode>> =
+        withContext(Dispatchers.IO) { series.episodes(id, season) }
 
     private inline fun <T> DataResult<T>.toUiState(isEmpty: (T) -> Boolean): UiState<T> =
         when (this) {

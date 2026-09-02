@@ -48,4 +48,8 @@
     <string name="format_hours_minutes">%1$dh %2$dm</string>
     <string name="format_minutes">%1$dm</string>
     <string name="format_per_episode">%1$s per episode</string>
+
+    <string name="format_episode_title">%1$d. %2$s</string>
+    <string name="cd_episode">Episode %1$d, %2$s. %3$s</string>
+    <string name="cd_in_library">In your library</string>
 </resources>
