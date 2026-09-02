@@ -23,6 +23,9 @@
     <dimen name="safe_area_horizontal">48dp</dimen>
     <dimen name="safe_area_vertical">27dp</dimen>
 
+    <!-- Brand mark shown over the hero, top-start of the home screen. -->
+    <dimen name="home_logo_height">40dp</dimen>
+
     <!-- Navigation rail. Collapsed it is a quiet strip of icons in its own
          reserved column, so the rail's bounds never overlap the content next
          to it - both so nothing underneath is covered and so the platform's
