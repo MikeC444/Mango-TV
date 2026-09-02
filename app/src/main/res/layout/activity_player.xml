@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  surface_type is texture_view rather than the default surface_view.
+  A SurfaceView punches a hole through the window for the compositor to draw
+  into directly, which is fast but can drop a frame to black whenever
+  anything else touches the window's composition around it - the transient
+  system bars this screen shows on swipe being exactly that. A TextureView is
+  ordinary view-hierarchy content instead, costing a little more but never
+  flashing black for that reason.
+-->
 <androidx.media3.ui.PlayerView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/player_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/black"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:keepScreenOn="true"
     app:resize_mode="fit"
     app:show_subtitle_button="true"
+    app:surface_type="texture_view"
     app:use_controller="true" />

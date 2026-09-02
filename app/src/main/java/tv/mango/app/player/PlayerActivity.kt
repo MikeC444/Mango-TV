@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.KeyEvent
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
@@ -50,6 +51,7 @@ class PlayerActivity : AppCompatActivity() {
     // not allow lateinit on one.
     private var progressId: MediaId? = null
     private var resumePoint: ResumePoint? = null
+    private var playerView: PlayerView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,7 +72,16 @@ class PlayerActivity : AppCompatActivity() {
 
         val exoPlayer = ExoPlayer.Builder(this).build()
         player = exoPlayer
-        findViewById<PlayerView>(R.id.player_view).player = exoPlayer
+        val views = findViewById<PlayerView>(R.id.player_view)
+        playerView = views
+        views.player = exoPlayer
+        // A D-pad press only reaches PlayerView's own "show the controls"
+        // handling if PlayerView is actually the focused view - nothing else
+        // on this screen ever takes focus, so without this the remote would
+        // have nothing to press to bring the controls back once they hide.
+        // Posted rather than called immediately: a view cannot reliably take
+        // focus before its first layout pass has happened.
+        views.post { views.requestFocus() }
 
         exoPlayer.addListener(object : Player.Listener {
             override fun onEvents(player: Player, events: Player.Events) {
@@ -164,6 +175,20 @@ class PlayerActivity : AppCompatActivity() {
         lifecycleScope.launch { library.recordProgress(id, fraction, point) }
     }
 
+    /**
+     * Offers every key event to the player view first.
+     *
+     * PlayerView's own dispatchKeyEvent is what decides whether a D-pad press
+     * should reveal the controls or act on them, but the platform only ever
+     * calls it if PlayerView is somewhere in the currently-focused view's
+     * ancestor chain. Requesting focus in onCreate covers the common case;
+     * this covers the rest - a focus request that silently failed, or focus
+     * having moved somewhere unexpected - so the remote is never left with a
+     * hidden controller nothing can bring back.
+     */
+    override fun dispatchKeyEvent(event: KeyEvent): Boolean =
+        playerView?.dispatchKeyEvent(event) == true || super.dispatchKeyEvent(event)
+
     private fun hideSystemBars() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         WindowInsetsControllerCompat(window, window.decorView).apply {
@@ -183,6 +208,7 @@ class PlayerActivity : AppCompatActivity() {
         recordProgress()
         player?.release()
         player = null
+        playerView = null
         super.onDestroy()
     }
 
