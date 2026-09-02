@@ -11,12 +11,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import tv.mango.app.R
 import tv.mango.app.addon.AddonInstaller
 import tv.mango.app.cache.ImageLoader
 import tv.mango.app.databinding.FragmentAddAddonBinding
 import tv.mango.app.di.appGraph
+import tv.mango.app.pairing.QrCodeGenerator
 
 /**
  * Paste a manifest URL, see what the add-on says about itself, confirm.
@@ -58,8 +61,28 @@ class AddAddonFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.state.collect(::render)
+                launch { viewModel.state.collect(::render) }
+                launch { viewModel.pairingUrl.collect(::renderPairing) }
             }
+        }
+    }
+
+    /**
+     * The QR panel is simply absent, not an error state, when there is no
+     * address to offer yet - most often because the pairing server is still
+     * starting, occasionally because the device has no network at all.
+     */
+    private suspend fun renderPairing(url: String?) {
+        if (url == null) {
+            binding?.addAddonPairing?.visibility = View.GONE
+            return
+        }
+        val sizePx = resources.getDimensionPixelSize(R.dimen.qr_code_size)
+        val bitmap = withContext(Dispatchers.Default) { QrCodeGenerator.generate(url, sizePx) }
+        val views = binding ?: return
+        if (bitmap != null) {
+            views.addAddonQr.setImageBitmap(bitmap)
+            views.addAddonPairing.visibility = View.VISIBLE
         }
     }
 
@@ -90,6 +113,7 @@ class AddAddonFragment : Fragment() {
             is AddAddonState.NeedsConfiguration -> {
                 views.addAddonConfiguration.visibility = View.VISIBLE
                 views.addAddonConfigureUrl.text = state.preview.configureUrl
+                syncUrlField(state.preview.manifestUrl)
             }
 
             is AddAddonState.Failed -> {
@@ -108,6 +132,7 @@ class AddAddonFragment : Fragment() {
         val views = binding ?: return
         val manifest = preview.manifest
 
+        syncUrlField(preview.manifestUrl)
         views.addAddonPreview.visibility = View.VISIBLE
         views.addAddonName.text = manifest.name
         views.addAddonVersion.text = getString(R.string.label_version, manifest.version)
@@ -137,6 +162,16 @@ class AddAddonFragment : Fragment() {
         }
     }
 
+    /**
+     * Keeps the manual field showing whichever address is actually being
+     * previewed, including one that arrived from a phone rather than being
+     * typed - so the field never disagrees with what is on screen below it.
+     */
+    private fun syncUrlField(url: String) {
+        val field = binding?.addAddonUrl ?: return
+        if (field.text?.toString() != url) field.setText(url)
+    }
+
     private fun errorFor(reason: AddonInstaller.Preview.Reason): Int = when (reason) {
         AddonInstaller.Preview.Reason.INVALID_URL -> R.string.add_addon_error_invalid_url
         AddonInstaller.Preview.Reason.UNREACHABLE -> R.string.add_addon_error_unreachable
@@ -146,7 +181,10 @@ class AddAddonFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        binding?.let { ImageLoader.clear(it.addAddonLogo) }
+        binding?.let {
+            ImageLoader.clear(it.addAddonLogo)
+            it.addAddonQr.setImageBitmap(null)
+        }
         binding = null
         super.onDestroyView()
     }

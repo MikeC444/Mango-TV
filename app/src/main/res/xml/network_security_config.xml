@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Add-ons are arbitrary, user-supplied services - there is no fixed domain
+  list to allow-list, and a meaningful share of real Stremio add-ons run
+  self-hosted on a home network over plain HTTP rather than HTTPS. Without
+  this, the platform default on API 28+ silently blocks every one of them:
+  the request never leaves the device and the failure looks identical to the
+  add-on being offline.
+
+  The local pairing server (tv.mango.app.pairing) is unaffected by this file
+  either way - this config governs the app's own outbound connections, not
+  who may connect to a socket the app itself opened.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>

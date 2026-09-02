@@ -111,6 +111,11 @@ dependencies {
     // screen may query at once.
     implementation(libs.okhttp)
 
+    // Renders the QR code on the Add Add-on screen. Pure Java, no transitive
+    // Android dependencies of its own - it only draws a bitmap from text
+    // already in hand, nothing here touches the network.
+    implementation(libs.zxing.core)
+
     testImplementation(libs.junit)
     testImplementation(libs.kotlin.test.junit)
     testImplementation(libs.okhttp.mockwebserver)
