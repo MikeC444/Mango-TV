@@ -2,11 +2,14 @@ package tv.mango.app.ui.addon
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import tv.mango.app.addon.AddonInstaller
+import tv.mango.app.pairing.AddonPairingServer
+import tv.mango.app.pairing.LanAddress
 
 /**
  * Everything on screen while installing one add-on.
@@ -33,6 +36,26 @@ class AddAddonViewModel(
     private val _state = MutableStateFlow<AddAddonState>(AddAddonState.Idle)
     val state: StateFlow<AddAddonState> = _state.asStateFlow()
 
+    /**
+     * Where a phone should point its camera to enter a URL instead of the
+     * television remote. Null until the local server is up and a network
+     * address for it has been found - on a device with no network at all
+     * this just never becomes non-null, and the screen falls back to the
+     * field beside it without an error anyone has to read.
+     */
+    private val _pairingUrl = MutableStateFlow<String?>(null)
+    val pairingUrl: StateFlow<String?> = _pairingUrl.asStateFlow()
+
+    private val pairingServer = AddonPairingServer(onUrlReceived = ::preview)
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            val port = pairingServer.start() ?: return@launch
+            val address = LanAddress.find() ?: return@launch
+            _pairingUrl.value = "http://$address:$port${pairingServer.path}"
+        }
+    }
+
     fun preview(url: String) {
         if (url.isBlank()) return
         _state.value = AddAddonState.Loading
@@ -58,5 +81,10 @@ class AddAddonViewModel(
     /** Back to the URL field, whether the viewer cancelled or is trying a different address. */
     fun reset() {
         _state.value = AddAddonState.Idle
+    }
+
+    override fun onCleared() {
+        pairingServer.stop()
+        super.onCleared()
     }
 }

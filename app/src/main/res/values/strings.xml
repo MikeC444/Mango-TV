@@ -69,6 +69,10 @@
 
     <!-- Add-ons: installing one -->
     <string name="add_addon_title">Add Add-on</string>
+    <string name="add_addon_pairing_title">Scan with your phone</string>
+    <string name="add_addon_pairing_body">Point your phone\'s camera at the code to type the address there instead of on the remote.</string>
+    <string name="cd_add_addon_qr">A code linking to a page for entering an add-on address on your phone</string>
+    <string name="add_addon_manual_label">Or enter it here</string>
     <string name="add_addon_url_hint">Add-on manifest URL</string>
     <string name="action_preview">Preview</string>
     <string name="action_install">Install</string>

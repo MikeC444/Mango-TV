@@ -79,5 +79,6 @@
     <dimen name="addon_logo_size">56dp</dimen>
     <dimen name="settings_row_min_width">420dp</dimen>
     <dimen name="settings_content_max_width">760dp</dimen>
+    <dimen name="qr_code_size">176dp</dimen>
 
 </resources>
