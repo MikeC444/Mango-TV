@@ -54,7 +54,7 @@ class SearchViewModel(
     val state: StateFlow<SearchState> = query
         .debounce(SEARCH_DEBOUNCE_MS)
         .distinctUntilChanged()
-        .flatMapLatest { raw ->
+        .flatMapLatest<String, SearchState> { raw ->
             val trimmed = raw.trim()
             if (trimmed.isEmpty()) {
                 flowOf(SearchState.Idle)
