@@ -18,6 +18,20 @@
     <color name="surface_overlay">#FF1C1C1F</color>
     <color name="hairline">#FF2A2A2E</color>
 
+    <!--
+      Liquid glass. A panel is never opaque colour - it is a translucent tint
+      plus a hairline border plus a faint top sheen, all sitting over whatever
+      artwork is already on screen. Two tints only: a quiet resting glass and a
+      slightly brighter one for a panel that is itself focused (a card, a
+      button), so the whole language stays legible rather than a gradient of
+      one-off opacities.
+    -->
+    <color name="glass_fill">#4D141416</color>
+    <color name="glass_fill_focused">#6B1C1C1F</color>
+    <color name="glass_sheen">#14FFFFFF</color>
+    <color name="glass_stroke">#26FFFFFF</color>
+    <color name="glass_stroke_focused">#40D9A05B</color>
+
     <!-- Warm off-white. Pure white is harsh at 10 feet in a dark room. -->
     <color name="text_primary">#FFF2EFE9</color>
     <color name="text_secondary">#FF9C9A96</color>

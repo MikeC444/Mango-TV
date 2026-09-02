@@ -80,6 +80,17 @@ class TvCardView @JvmOverloads constructor(
             defaultFocusHighlightEnabled = false
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            // A shadow is never clipped by clipToOutline - the platform draws
+            // it outside the view's own bounds - so tinting it is the cheapest
+            // way to get an actual glow past a card's edge rather than one
+            // that stops dead at it. Pre-28 falls back to the platform's
+            // default dark shadow, which still carries the lift.
+            val glow = ContextCompat.getColor(context, R.color.accent)
+            outlineSpotShadowColor = glow
+            outlineAmbientShadowColor = glow
+        }
+
         foreground = focusOverlay
     }
 

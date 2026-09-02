@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One recent search. Tapping it re-runs that search. -->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/chip_height"
+    android:layout_marginEnd="@dimen/space_2"
+    android:background="@drawable/chip_background"
+    android:clickable="true"
+    android:ellipsize="end"
+    android:focusable="true"
+    android:focusableInTouchMode="false"
+    android:gravity="center"
+    android:maxLines="1"
+    android:paddingStart="@dimen/space_3"
+    android:paddingEnd="@dimen/space_3"
+    android:textAppearance="@style/TextAppearance.Mango.Label"
+    android:textColor="@color/button_text" />

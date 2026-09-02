@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  A large liquid-glass surface: the hero's text panel, the detail screen's
+  info card. Three flat layers rather than a real blur - a translucent tint,
+  a faint top sheen so it reads as glass rather than a dark rectangle, and a
+  hairline border to hold its edge over whatever artwork is behind it. All
+  three are cheap, static drawables; nothing here is rasterised at runtime.
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/glass_fill" />
+            <corners android:radius="@dimen/panel_corner_large" />
+        </shape>
+    </item>
+
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="90"
+                android:startColor="@color/glass_sheen"
+                android:centerColor="@color/transparent"
+                android:endColor="@color/transparent"
+                android:type="linear" />
+            <corners android:radius="@dimen/panel_corner_large" />
+        </shape>
+    </item>
+
+    <item>
+        <shape android:shape="rectangle">
+            <stroke
+                android:width="@dimen/glass_stroke_width"
+                android:color="@color/glass_stroke" />
+            <corners android:radius="@dimen/panel_corner_large" />
+        </shape>
+    </item>
+
+</layer-list>

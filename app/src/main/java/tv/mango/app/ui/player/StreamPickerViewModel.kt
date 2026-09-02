@@ -61,6 +61,9 @@ class StreamPickerViewModel(
     /** What to show as the screen's heading - null only if this screen was reached without a request. */
     val displayTitle: String? = request?.let(::titleFor)
 
+    /** The title's own backdrop, shown dimmed behind the source list for the same cinematic feel as the rest of the app. */
+    val displayBackdrop: String? = request?.item?.images?.backdrop
+
     init {
         val req = request
         if (req == null) {

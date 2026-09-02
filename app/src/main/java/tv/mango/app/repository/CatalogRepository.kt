@@ -58,6 +58,46 @@ class CatalogRepository(
     }
 
     /**
+     * Titles whose name contains [query], across both films and series.
+     *
+     * Composed entirely from [CatalogProvider.browse] rather than a dedicated
+     * search resource: the provider seam has no search method of its own, and
+     * giving it one - for an add-on-backed implementation that would mean
+     * protocol support this application does not otherwise use - is a larger
+     * change than a search screen needs. A bounded number of pages of each
+     * type is fetched and matched by title instead, which is exact for the
+     * bundled catalogue and still useful against a real one.
+     */
+    suspend fun search(query: String): DataResult<List<MediaItem>> = withContext(Dispatchers.IO) {
+        val needle = query.trim()
+        if (needle.isEmpty()) return@withContext DataResult.Success(emptyList())
+
+        val matches = mutableListOf<MediaItem>()
+        for (type in MediaType.entries) {
+            when (val result = matchesOf(type, needle)) {
+                is DataResult.Success -> matches += result.value
+                is DataResult.Failure -> return@withContext result
+            }
+        }
+        DataResult.Success(matches)
+    }
+
+    /** Fails only when the very first page of [type] fails outright. */
+    private suspend fun matchesOf(type: MediaType, needle: String): DataResult<List<MediaItem>> {
+        val found = mutableListOf<MediaItem>()
+        for (page in 0 until SEARCH_PAGE_LIMIT) {
+            val items = when (val result = catalog.browse(type, page, DEFAULT_PAGE_SIZE)) {
+                is DataResult.Success -> result.value
+                is DataResult.Failure -> if (page == 0) return result else break
+            }
+            if (items.isEmpty()) break
+            found += items.filter { it.title.contains(needle, ignoreCase = true) }
+            if (items.size < DEFAULT_PAGE_SIZE) break
+        }
+        return DataResult.Success(found)
+    }
+
+    /**
      * Full detail for one title.
      *
      * Routed by type so films and series can be served by different systems
@@ -87,5 +127,8 @@ class CatalogRepository(
          * enough that a page's artwork fits comfortably in the image cache.
          */
         const val DEFAULT_PAGE_SIZE = 24
+
+        /** Pages of each type search will look through before giving up. */
+        private const val SEARCH_PAGE_LIMIT = 4
     }
 }

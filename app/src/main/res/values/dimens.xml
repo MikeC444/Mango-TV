@@ -36,8 +36,8 @@
 
     <!-- Card geometry. Sizes are fixed so images can be decoded at exactly the
          pixels required and never larger. -->
-    <dimen name="card_poster_width">148dp</dimen>
-    <dimen name="card_poster_height">222dp</dimen>
+    <dimen name="card_poster_width">160dp</dimen>
+    <dimen name="card_poster_height">240dp</dimen>
     <dimen name="card_landscape_width">260dp</dimen>
     <dimen name="card_landscape_height">146dp</dimen>
     <dimen name="card_continue_width">300dp</dimen>
@@ -45,7 +45,10 @@
     <dimen name="card_episode_width">224dp</dimen>
     <dimen name="card_episode_height">126dp</dimen>
     <dimen name="card_gap">16dp</dimen>
-    <dimen name="card_corner">4dp</dimen>
+    <!-- Large by earlier television standards on purpose: a small radius reads
+         as an Android list item, a generous one reads as a poster on a glass
+         shelf. -->
+    <dimen name="card_corner">14dp</dimen>
 
     <!-- Focus. A card lifts 10dp toward the viewer; only the focused card ever
          casts a shadow. -->
@@ -57,17 +60,24 @@
     <dimen name="row_spacing">32dp</dimen>
 
     <!-- Hero. Substantial without swallowing the first content row. -->
-    <dimen name="hero_height">380dp</dimen>
-    <dimen name="hero_text_max_width">520dp</dimen>
+    <dimen name="hero_height">440dp</dimen>
+    <dimen name="hero_text_max_width">560dp</dimen>
 
     <!-- Buttons sized for confident D-pad targets at a distance. -->
-    <dimen name="button_height">48dp</dimen>
-    <dimen name="button_min_width">160dp</dimen>
+    <dimen name="button_height">52dp</dimen>
+    <dimen name="button_min_width">170dp</dimen>
     <dimen name="button_padding_horizontal">28dp</dimen>
-    <dimen name="button_corner">3dp</dimen>
+    <dimen name="button_corner">14dp</dimen>
 
     <dimen name="progress_bar_height">3dp</dimen>
     <dimen name="hairline_width">1dp</dimen>
+
+    <!-- Liquid glass panels. Large sits behind the hero and the detail info
+         card; the smaller one is every other glass surface - rows, chips,
+         settings and add-on cards. -->
+    <dimen name="panel_corner_large">28dp</dimen>
+    <dimen name="panel_corner">18dp</dimen>
+    <dimen name="glass_stroke_width">1dp</dimen>
 
     <!-- Detail screen. -->
     <dimen name="detail_poster_width">200dp</dimen>
@@ -84,5 +94,13 @@
     <dimen name="settings_row_min_width">420dp</dimen>
     <dimen name="settings_content_max_width">760dp</dimen>
     <dimen name="qr_code_size">176dp</dimen>
+
+    <!-- Search. A search field is a button the size of a sentence: tall and
+         obvious rather than a dense text box. -->
+    <dimen name="search_field_height">64dp</dimen>
+    <dimen name="search_field_corner">32dp</dimen>
+    <dimen name="search_field_max_width">640dp</dimen>
+    <dimen name="chip_height">40dp</dimen>
+    <dimen name="chip_corner">20dp</dimen>
 
 </resources>

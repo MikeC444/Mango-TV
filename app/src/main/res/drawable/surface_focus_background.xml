@@ -3,21 +3,31 @@
   The focus treatment for rows that are not artwork.
 
   A poster lifts and brightens because it is an object being chosen between. A
-  rail destination or a cast member is a line in a list, and giving it the same
-  physicality would flatten the difference. Focus here is a raised surface
-  behind the item, with the text coming up to full brightness alongside it -
-  two cues, neither of them colour alone.
+  rail destination, a cast member, a settings row or an add-on card is a line
+  in a list, and giving it the same physicality would flatten the difference.
+  Instead it rests as a quiet glass card at all times - the "glass card" look
+  the add-ons and settings screens are meant to have even before anything is
+  focused - and focus brightens that same glass and picks up an accent edge,
+  rather than swapping in an unrelated flat colour.
 -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_focused="true">
-        <shape android:shape="rectangle">
-            <solid android:color="@color/surface_raised" />
-            <corners android:radius="@dimen/button_corner" />
-        </shape>
+        <layer-list>
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="@color/glass_fill_focused" />
+                    <corners android:radius="@dimen/panel_corner" />
+                </shape>
+            </item>
+            <item>
+                <shape android:shape="rectangle">
+                    <stroke
+                        android:width="@dimen/glass_stroke_width"
+                        android:color="@color/glass_stroke_focused" />
+                    <corners android:radius="@dimen/panel_corner" />
+                </shape>
+            </item>
+        </layer-list>
     </item>
-    <item>
-        <shape android:shape="rectangle">
-            <solid android:color="@color/transparent" />
-        </shape>
-    </item>
+    <item android:drawable="@drawable/glass_card" />
 </selector>
