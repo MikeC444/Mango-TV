@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import tv.mango.app.R
@@ -66,7 +67,25 @@ class NavRail @JvmOverloads constructor(
         }
         addView(items)
 
+        addView(buildLogo())
+
         buildItems()
+    }
+
+    /**
+     * The brand mark, flush into the screen's own top-left corner rather than
+     * inset with the rest of the rail's content - the same corner the rail
+     * itself starts from. Living here rather than on the home hero means
+     * every section shows it, not just Home.
+     */
+    private fun buildLogo(): ImageView {
+        val size = resources.getDimensionPixelSize(R.dimen.nav_logo_size)
+        return ImageView(context).apply {
+            layoutParams = LayoutParams(size, size, Gravity.TOP or Gravity.START)
+            setImageResource(R.drawable.logo_mango)
+            contentDescription = null
+            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+        }
     }
 
     private fun buildItems() {
