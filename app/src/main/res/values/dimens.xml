@@ -23,8 +23,9 @@
     <dimen name="safe_area_horizontal">48dp</dimen>
     <dimen name="safe_area_vertical">27dp</dimen>
 
-    <!-- Brand mark shown over the hero, top-start of the home screen. -->
-    <dimen name="home_logo_height">40dp</dimen>
+    <!-- Brand mark at the top of the navigation rail, present on every
+         screen rather than only the home hero. -->
+    <dimen name="nav_logo_size">56dp</dimen>
 
     <!-- The floating info panel a focused card shows below itself. Fixed
          rather than measured off the card, so its width does not visibly
