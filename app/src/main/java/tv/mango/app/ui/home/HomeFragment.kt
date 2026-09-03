@@ -251,11 +251,12 @@ class HomeFragment : Fragment() {
     }
 
     /** Every long press opens the same quick-action menu; only a Continue Watching card gets an extra row. */
-    private fun onCardLongPressed(item: MediaItem): Boolean {
+    private fun onCardLongPressed(item: MediaItem, anchor: View): Boolean {
         val host = activity as? NavigationHost ?: return false
         CardActionSheet(
             context = requireContext(),
             item = item,
+            anchor = anchor,
             library = appGraph.libraryRepository,
             scope = viewLifecycleOwner.lifecycleScope,
             onPlay = ::playFromSheet,

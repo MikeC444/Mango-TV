@@ -22,6 +22,11 @@ import tv.mango.app.repository.LibraryRepository
  * detail screen it opens - the point is skipping that trip on a remote where
  * every trip costs several D-pad presses.
  *
+ * It opens as though it were part of the poster itself: the panel grows out
+ * of [anchor]'s own position and size rather than simply appearing centred,
+ * so the menu reads as this title's own controls rather than an unrelated
+ * popup that happens to have opened on top of it.
+ *
  * A plain [Dialog] rather than a DialogFragment: nothing here needs to survive
  * a rotation or a process-death Bundle round trip - this is fixed-orientation
  * hardware and the dialog is gone again in a couple of seconds either way -
@@ -32,6 +37,7 @@ import tv.mango.app.repository.LibraryRepository
 class CardActionSheet(
     context: Context,
     private val item: MediaItem,
+    private val anchor: View,
     private val library: LibraryRepository,
     private val scope: CoroutineScope,
     private val onPlay: (MediaItem) -> Unit,
@@ -53,6 +59,13 @@ class CardActionSheet(
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         binding = DialogCardActionsBinding.inflate(LayoutInflater.from(context))
         setContentView(binding.root)
+
+        // Hidden until show() can measure the panel's real, laid-out size and
+        // position it against the anchor - otherwise the very first frame
+        // would flash the panel at full size before the reveal transform
+        // below ever got a chance to apply.
+        binding.root.alpha = 0f
+        binding.actionPanel.alpha = 0f
 
         binding.actionHeaderType.setText(
             if (item.type == MediaType.MOVIE) R.string.label_movie else R.string.label_series,
@@ -89,7 +102,64 @@ class CardActionSheet(
 
     override fun show() {
         super.show()
+
+        binding.root.animate()
+            .alpha(1f)
+            .setDuration(MotionSpec.DURATION_STANDARD)
+            .setInterpolator(MotionSpec.standard)
+            .start()
+
+        // Waits for the panel's own layout pass - its wrap_content height
+        // depends on the title's line count, known only once measured - so
+        // the shrink-to-anchor starting point below is computed against its
+        // real size rather than a guess.
+        binding.actionPanel.post(::revealFromAnchor)
+
         binding.actionPlay.root.post { binding.actionPlay.root.requestFocus() }
+    }
+
+    /**
+     * Parks the panel over [anchor] at [anchor]'s own size, then animates it
+     * to its resting size and centred position - the "grows out of the
+     * poster" motion. Falls back to a plain fade if the anchor has scrolled
+     * off screen and been recycled in the moment it took to get here.
+     */
+    private fun revealFromAnchor() {
+        val panel = binding.actionPanel
+        if (!anchor.isAttachedToWindow || panel.width == 0 || panel.height == 0) {
+            panel.alpha = 1f
+            return
+        }
+
+        val anchorLocation = IntArray(2)
+        anchor.getLocationOnScreen(anchorLocation)
+        val panelLocation = IntArray(2)
+        panel.getLocationOnScreen(panelLocation)
+
+        val anchorCenterX = anchorLocation[0] + anchor.width / 2f
+        val anchorCenterY = anchorLocation[1] + anchor.height / 2f
+        val panelCenterX = panelLocation[0] + panel.width / 2f
+        val panelCenterY = panelLocation[1] + panel.height / 2f
+
+        val startScaleX = (anchor.width / panel.width.toFloat()).coerceIn(MIN_SCALE, 1f)
+        val startScaleY = (anchor.height / panel.height.toFloat()).coerceIn(MIN_SCALE, 1f)
+
+        panel.pivotX = panel.width / 2f
+        panel.pivotY = panel.height / 2f
+        panel.scaleX = startScaleX
+        panel.scaleY = startScaleY
+        panel.translationX = anchorCenterX - panelCenterX
+        panel.translationY = anchorCenterY - panelCenterY
+
+        panel.animate()
+            .alpha(1f)
+            .scaleX(1f)
+            .scaleY(1f)
+            .translationX(0f)
+            .translationY(0f)
+            .setDuration(MotionSpec.DURATION_EMPHASIZED)
+            .setInterpolator(MotionSpec.emphasized)
+            .start()
     }
 
     private fun toggleWatchlist() {
@@ -118,5 +188,10 @@ class CardActionSheet(
         binding.actionWatched.root.setText(
             if (watched) R.string.action_unmark_watched else R.string.action_mark_watched,
         )
+    }
+
+    private companion object {
+        /** A poster is narrower and shorter than the panel; never shrink past legibility. */
+        const val MIN_SCALE = 0.35f
     }
 }
