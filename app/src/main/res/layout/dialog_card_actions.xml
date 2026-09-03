@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The long-press quick-action menu. The window itself is full-screen and
+  transparent (see Theme.Mango.ActionSheet); this root paints the dim scrim
+  and centres one glass panel of actions over it.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/scrim_strong">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/glass_panel"
+        android:orientation="vertical"
+        android:padding="@dimen/space_3">
+
+        <TextView
+            android:id="@+id/action_header_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Mango.Overline"
+            android:textColor="@color/accent" />
+
+        <TextView
+            android:id="@+id/action_header_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_half"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textAppearance="@style/TextAppearance.Mango.Title" />
+
+        <include
+            android:id="@+id/action_play"
+            layout="@layout/item_card_action"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_3" />
+
+        <include
+            android:id="@+id/action_watchlist"
+            layout="@layout/item_card_action" />
+
+        <include
+            android:id="@+id/action_watched"
+            layout="@layout/item_card_action" />
+
+        <include
+            android:id="@+id/action_details"
+            layout="@layout/item_card_action" />
+
+        <include
+            android:id="@+id/action_similar"
+            layout="@layout/item_card_action" />
+
+        <include
+            android:id="@+id/action_remove_continue_watching"
+            layout="@layout/item_card_action"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</FrameLayout>

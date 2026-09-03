@@ -22,7 +22,9 @@ import tv.mango.app.models.MediaItem
 import tv.mango.app.models.MediaType
 import tv.mango.app.navigation.NavigationHost
 import tv.mango.app.ui.core.BrowseGridLayoutManager
+import tv.mango.app.ui.core.CardActionSheet
 import tv.mango.app.ui.core.CardSpacingDecoration
+import tv.mango.app.ui.core.CardTooltipController
 import tv.mango.app.ui.core.MediaCardAdapter
 
 /**
@@ -49,10 +51,12 @@ class BrowseFragment : Fragment() {
         }
     }
 
-    private val cardAdapter = MediaCardAdapter(onSelected = ::openDetail)
+    private val cardAdapter = MediaCardAdapter(onSelected = ::openDetail, onLongSelected = ::onCardLongPressed)
 
     /** How far the grid has been scrolled up past the screen title, in pixels. */
     private var scrolledBy = 0
+
+    private var tooltipController: CardTooltipController? = null
 
     private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -124,6 +128,8 @@ class BrowseFragment : Fragment() {
             addOnScrollListener(scrollListener)
         }
 
+        tooltipController = CardTooltipController(views.cardTooltip, view).apply { attach() }
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collect { render(it) }
@@ -174,11 +180,27 @@ class BrowseFragment : Fragment() {
         (activity as? NavigationHost)?.openDetail(item)
     }
 
+    private fun onCardLongPressed(item: MediaItem): Boolean {
+        val host = activity as? NavigationHost ?: return false
+        CardActionSheet(
+            context = requireContext(),
+            item = item,
+            library = appGraph.libraryRepository,
+            scope = viewLifecycleOwner.lifecycleScope,
+            onPlay = { host.requestPlayback(it) },
+            onDetails = host::openDetail,
+            onFindSimilar = host::findSimilar,
+        ).show()
+        return true
+    }
+
     override fun onDestroyView() {
         binding?.let {
             it.grid.removeOnScrollListener(scrollListener)
             it.grid.adapter = null
         }
+        tooltipController?.detach()
+        tooltipController = null
         binding = null
         super.onDestroyView()
     }

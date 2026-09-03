@@ -141,6 +141,7 @@ class Navigator(
         Route.AddAddon -> AddAddonFragment()
         is Route.AddonDetail -> AddonDetailFragment.of(route.addonId)
         Route.StreamPicker -> StreamPickerFragment()
+        Route.SimilarTitles -> SearchFragment()
     }
 
     private fun Route.tag(): String = this::class.java.name

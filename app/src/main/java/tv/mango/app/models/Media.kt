@@ -51,6 +51,8 @@ data class MediaItem(
     val runtimeMinutes: Int? = null,
     val certification: String? = null,
     val genres: List<String> = emptyList(),
+    /** An add-on's own rating for the title (e.g. an IMDb score), as text - never computed here. */
+    val rating: String? = null,
     val synopsis: String? = null,
     val images: MediaImages,
     /**

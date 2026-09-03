@@ -142,4 +142,9 @@
 
     </LinearLayout>
 
+    <tv.mango.app.ui.core.CardTooltipView
+        android:id="@+id/card_tooltip"
+        android:layout_width="@dimen/card_tooltip_width"
+        android:layout_height="wrap_content" />
+
 </FrameLayout>

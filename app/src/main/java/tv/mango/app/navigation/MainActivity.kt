@@ -8,6 +8,7 @@ import tv.mango.app.models.Episode
 import tv.mango.app.models.MediaItem
 import tv.mango.app.models.MediaType
 import tv.mango.app.player.PendingPlayback
+import tv.mango.app.ui.search.PendingSimilarSearch
 
 /**
  * The application's only activity.
@@ -66,6 +67,11 @@ class MainActivity : AppCompatActivity(), NavigationHost {
     ) {
         PendingPlayback.set(PendingPlayback.Request(item, episode, startFromBeginning))
         navigator.push(Route.StreamPicker)
+    }
+
+    override fun findSimilar(item: MediaItem) {
+        PendingSimilarSearch.set(item)
+        navigator.push(Route.SimilarTitles)
     }
 
     override fun focusNavigation() {

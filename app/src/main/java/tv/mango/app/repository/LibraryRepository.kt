@@ -26,6 +26,9 @@ class LibraryRepository(
     val watchlist: Flow<Set<MediaId>> =
         store.watchlist.map { ids -> ids.mapTo(mutableSetOf(), ::MediaId) }
 
+    fun isWatched(id: MediaId): Flow<Boolean> =
+        store.watched.map { id.value in it }
+
     fun progressOf(id: MediaId): Flow<Float> =
         store.progress.map { it[id.value]?.fraction ?: 0f }
 
@@ -46,6 +49,9 @@ class LibraryRepository(
 
     suspend fun setInWatchlist(id: MediaId, saved: Boolean) =
         store.setInWatchlist(id.value, saved)
+
+    suspend fun setWatched(id: MediaId, watched: Boolean) =
+        store.setWatched(id.value, watched)
 
     suspend fun recordProgress(id: MediaId, fraction: Float, resumePoint: ResumePoint) = store.setProgress(
         id.value,

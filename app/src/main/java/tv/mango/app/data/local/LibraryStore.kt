@@ -48,6 +48,20 @@ class LibraryStore(
                 .orEmpty()
         }
 
+    /**
+     * Marked watched by the viewer, independent of playback progress - a
+     * title can be marked without ever being played in this app (seen
+     * elsewhere), and a title finished here is not implicitly marked, since
+     * finishing already removes it from Continue Watching on its own.
+     */
+    val watched: Flow<Set<String>> = store.data
+        .recoveringFromReadErrors()
+        .map { preferences ->
+            preferences[WATCHED]
+                ?.let { runCatching { json.decodeFromString(SET_SERIALIZER, it) }.getOrNull() }
+                .orEmpty()
+        }
+
     val progress: Flow<Map<String, PlaybackPosition>> = store.data
         .recoveringFromReadErrors()
         .map { preferences ->
@@ -63,6 +77,16 @@ class LibraryStore(
                 .orEmpty()
             val updated = if (saved) current + id else current - id
             preferences[WATCHLIST] = json.encodeToString(SET_SERIALIZER, updated)
+        }
+    }
+
+    suspend fun setWatched(id: String, watched: Boolean) {
+        store.edit { preferences ->
+            val current = preferences[WATCHED]
+                ?.let { runCatching { json.decodeFromString(SET_SERIALIZER, it) }.getOrNull() }
+                .orEmpty()
+            val updated = if (watched) current + id else current - id
+            preferences[WATCHED] = json.encodeToString(SET_SERIALIZER, updated)
         }
     }
 
@@ -113,6 +137,7 @@ class LibraryStore(
 
     private companion object {
         val WATCHLIST = stringPreferencesKey("watchlist")
+        val WATCHED = stringPreferencesKey("watched")
         val PROGRESS = stringPreferencesKey("progress")
 
         val SET_SERIALIZER = SetSerializer(String.serializer())

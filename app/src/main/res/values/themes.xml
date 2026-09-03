@@ -25,4 +25,20 @@
         <item name="android:navigationBarColor">@color/surface_base</item>
     </style>
 
+    <!--
+      The long-press quick-action menu. Full-screen rather than a floating
+      dialog box: the window itself paints the dim scrim so CardActionSheet's
+      own layout controls exactly where the panel sits, the same as every
+      other glass surface in the app, rather than the platform's own dialog
+      chrome boxing it in.
+    -->
+    <style name="Theme.Mango.ActionSheet" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
+
 </resources>
