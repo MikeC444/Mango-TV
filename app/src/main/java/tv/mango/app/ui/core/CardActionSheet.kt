@@ -59,22 +59,25 @@ class CardActionSheet(
         )
         binding.actionHeaderTitle.text = item.title
 
-        binding.actionPlay.setText(R.string.action_sheet_play)
-        binding.actionPlay.setOnClickListener { dismiss(); onPlay(item) }
+        // Each action row is an <include>, which ViewBinding surfaces as its
+        // own nested ItemCardActionBinding rather than the TextView directly
+        // - .root is that TextView.
+        binding.actionPlay.root.setText(R.string.action_sheet_play)
+        binding.actionPlay.root.setOnClickListener { dismiss(); onPlay(item) }
 
-        binding.actionDetails.setText(R.string.action_sheet_details)
-        binding.actionDetails.setOnClickListener { dismiss(); onDetails(item) }
+        binding.actionDetails.root.setText(R.string.action_sheet_details)
+        binding.actionDetails.root.setOnClickListener { dismiss(); onDetails(item) }
 
-        binding.actionSimilar.setText(R.string.action_sheet_find_similar)
-        binding.actionSimilar.setOnClickListener { dismiss(); onFindSimilar(item) }
+        binding.actionSimilar.root.setText(R.string.action_sheet_find_similar)
+        binding.actionSimilar.root.setOnClickListener { dismiss(); onFindSimilar(item) }
 
-        binding.actionWatchlist.setOnClickListener { toggleWatchlist() }
-        binding.actionWatched.setOnClickListener { toggleWatched() }
+        binding.actionWatchlist.root.setOnClickListener { toggleWatchlist() }
+        binding.actionWatched.root.setOnClickListener { toggleWatched() }
 
         onRemoveFromContinueWatching?.let { remove ->
-            binding.actionRemoveContinueWatching.setText(R.string.action_sheet_remove_continue_watching)
-            binding.actionRemoveContinueWatching.visibility = View.VISIBLE
-            binding.actionRemoveContinueWatching.setOnClickListener { dismiss(); remove(item) }
+            binding.actionRemoveContinueWatching.root.setText(R.string.action_sheet_remove_continue_watching)
+            binding.actionRemoveContinueWatching.root.visibility = View.VISIBLE
+            binding.actionRemoveContinueWatching.root.setOnClickListener { dismiss(); remove(item) }
         }
 
         // Read once rather than collected: the sheet is on screen for a few
@@ -86,7 +89,7 @@ class CardActionSheet(
 
     override fun show() {
         super.show()
-        binding.actionPlay.post { binding.actionPlay.requestFocus() }
+        binding.actionPlay.root.post { binding.actionPlay.root.requestFocus() }
     }
 
     private fun toggleWatchlist() {
@@ -106,13 +109,13 @@ class CardActionSheet(
     }
 
     private fun bindWatchlist(inLibrary: Boolean) {
-        binding.actionWatchlist.setText(
+        binding.actionWatchlist.root.setText(
             if (inLibrary) R.string.action_sheet_remove_from_library else R.string.action_sheet_add_to_library,
         )
     }
 
     private fun bindWatched(watched: Boolean) {
-        binding.actionWatched.setText(
+        binding.actionWatched.root.setText(
             if (watched) R.string.action_unmark_watched else R.string.action_mark_watched,
         )
     }
