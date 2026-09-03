@@ -41,6 +41,12 @@ interface NavigationHost {
     )
 
     /**
+     * Opens the search screen already showing titles that share a genre with
+     * [item] - the long-press menu's "Find Similar".
+     */
+    fun findSimilar(item: MediaItem)
+
+    /**
      * Hands focus to the navigation rail.
      *
      * For a screen that has nothing to focus. Without it such a screen depends

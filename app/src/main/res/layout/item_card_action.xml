@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One row in the long-press quick-action menu: a glyph and a label, the
+     same focusable-glass-row treatment every settings and add-on row already
+     uses, so the menu reads as part of the same interface rather than a
+     one-off popup. -->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/space_1"
+    android:background="@drawable/surface_focus_background"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="false"
+    android:gravity="center_vertical|start"
+    android:minWidth="@dimen/settings_row_min_width"
+    android:padding="@dimen/space_2"
+    android:textAppearance="@style/TextAppearance.Mango.Headline" />

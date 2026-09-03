@@ -120,6 +120,7 @@ class MetadataResolver(
             runtimeMinutes = item.runtimeMinutes ?: other.item.runtimeMinutes,
             certification = item.certification ?: other.item.certification,
             genres = item.genres.ifEmpty { other.item.genres },
+            rating = item.rating ?: other.item.rating,
             synopsis = item.synopsis?.takeIf { it.isNotBlank() } ?: other.item.synopsis,
             images = item.images.copy(
                 poster = item.images.poster.ifBlank { other.item.images.poster },

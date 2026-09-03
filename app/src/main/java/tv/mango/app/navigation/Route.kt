@@ -36,4 +36,12 @@ sealed interface Route {
      * a [tv.mango.app.models.MediaItem] is not something a route can carry.
      */
     data object StreamPicker : Route
+
+    /**
+     * Reached from a card's long-press menu. Carries no payload of its own -
+     * the source title travels through
+     * [tv.mango.app.ui.search.PendingSimilarSearch], the same way
+     * [StreamPicker] carries its own request.
+     */
+    data object SimilarTitles : Route
 }

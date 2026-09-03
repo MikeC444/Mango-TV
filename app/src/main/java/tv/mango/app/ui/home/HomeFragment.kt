@@ -25,6 +25,8 @@ import tv.mango.app.models.Episode
 import tv.mango.app.models.HomeContent
 import tv.mango.app.models.MediaItem
 import tv.mango.app.navigation.NavigationHost
+import tv.mango.app.ui.core.CardActionSheet
+import tv.mango.app.ui.core.CardTooltipController
 import tv.mango.app.ui.core.ContentRowsAdapter
 
 /**
@@ -66,6 +68,8 @@ class HomeFragment : Fragment() {
     /** The title the hero should be showing once it is visible again. */
     private var pendingHeroItem: MediaItem? = null
 
+    private var tooltipController: CardTooltipController? = null
+
     private val applyHeroItem = Runnable {
         val item = pendingHeroItem ?: return@Runnable
         if (isHeroVisible()) binding?.hero?.show(item)
@@ -102,6 +106,8 @@ class HomeFragment : Fragment() {
         )
         views.rows.adapter = rowsAdapter
         views.rows.addOnScrollListener(scrollListener)
+
+        tooltipController = CardTooltipController(views.cardTooltip, view).apply { attach() }
 
         // Not just requestPlayback(item): the hero can be showing a Continue
         // Watching card the viewer scrolled to, and pressing Play there has
@@ -241,10 +247,32 @@ class HomeFragment : Fragment() {
         (activity as? NavigationHost)?.requestPlayback(item, episode, startFromBeginning = false)
     }
 
+    /**
+     * The long-press menu's Play action - unlike a tap, it never opens Detail
+     * first. That trip is exactly what the menu exists to skip.
+     */
+    private fun playFromSheet(item: MediaItem) {
+        if (item.resume != null) playItem(item) else (activity as? NavigationHost)?.requestPlayback(item)
+    }
+
+    /** Every long press opens the same quick-action menu; only a Continue Watching card gets an extra row. */
     private fun onCardLongPressed(item: MediaItem): Boolean {
-        val resume = item.resume ?: return false
-        viewModel.removeFromContinueWatching(resume.id)
-        Toast.makeText(requireContext(), R.string.continue_watching_removed, Toast.LENGTH_SHORT).show()
+        val host = activity as? NavigationHost ?: return false
+        CardActionSheet(
+            context = requireContext(),
+            item = item,
+            library = appGraph.libraryRepository,
+            scope = viewLifecycleOwner.lifecycleScope,
+            onPlay = ::playFromSheet,
+            onDetails = host::openDetail,
+            onFindSimilar = host::findSimilar,
+            onRemoveFromContinueWatching = item.resume?.let { resume ->
+                {
+                    viewModel.removeFromContinueWatching(resume.id)
+                    Toast.makeText(requireContext(), R.string.continue_watching_removed, Toast.LENGTH_SHORT).show()
+                }
+            },
+        ).show()
         return true
     }
 
@@ -256,6 +284,8 @@ class HomeFragment : Fragment() {
             // whole hierarchy alive behind it.
             it.rows.adapter = null
         }
+        tooltipController?.detach()
+        tooltipController = null
         binding = null
         super.onDestroyView()
     }

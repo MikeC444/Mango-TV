@@ -9,9 +9,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.stateIn
 import tv.mango.app.data.DataResult
 import tv.mango.app.data.FailureReason
@@ -46,22 +49,39 @@ class SearchViewModel(
     /** Every keystroke lands here; [state] only actually searches once typing pauses. */
     private val query = MutableStateFlow("")
 
+    /**
+     * An explicit "Find Similar" request, from a card's long-press menu -
+     * distinct from [query] because it should never wait out the typing
+     * debounce, and matches by genre rather than by title.
+     */
+    private val similarTrigger = MutableStateFlow<MediaItem?>(null)
+
     private val _recentSearches = MutableStateFlow<List<String>>(emptyList())
     val recentSearches: StateFlow<List<String>> = _recentSearches.asStateFlow()
 
     val popularSearches: List<String> = POPULAR_SEARCHES
 
-    val state: StateFlow<SearchState> = query
-        .debounce(SEARCH_DEBOUNCE_MS)
-        .distinctUntilChanged()
-        .flatMapLatest<String, SearchState> { raw ->
-            val trimmed = raw.trim()
-            if (trimmed.isEmpty()) {
-                flowOf(SearchState.Idle)
-            } else {
-                flow {
+    val state: StateFlow<SearchState> = merge(
+        query.debounce(SEARCH_DEBOUNCE_MS).distinctUntilChanged().map<String, SearchTrigger> { SearchTrigger.Typed(it) },
+        similarTrigger.filterNotNull().map<MediaItem, SearchTrigger> { SearchTrigger.Similar(it) },
+    )
+        .flatMapLatest<SearchTrigger, SearchState> { trigger ->
+            when (trigger) {
+                is SearchTrigger.Typed -> {
+                    val trimmed = trigger.text.trim()
+                    if (trimmed.isEmpty()) {
+                        flowOf(SearchState.Idle)
+                    } else {
+                        flow {
+                            emit(SearchState.Loading)
+                            emit(runSearch(trimmed))
+                        }
+                    }
+                }
+
+                is SearchTrigger.Similar -> flow {
                     emit(SearchState.Loading)
-                    emit(runSearch(trimmed))
+                    emit(runSimilar(trigger.item))
                 }
             }
         }
@@ -84,10 +104,26 @@ class SearchViewModel(
         query.value = trimmed
     }
 
+    /** Runs immediately, bypassing the typing debounce - a long press is already an explicit choice. */
+    fun findSimilar(item: MediaItem) {
+        similarTrigger.value = item
+    }
+
     private suspend fun runSearch(trimmed: String): SearchState = when (val result = repository.search(trimmed)) {
         is DataResult.Success ->
             if (result.value.isEmpty()) SearchState.Empty(trimmed) else SearchState.Content(result.value)
         is DataResult.Failure -> SearchState.Error(result.reason)
+    }
+
+    private suspend fun runSimilar(item: MediaItem): SearchState = when (val result = repository.similarTo(item)) {
+        is DataResult.Success ->
+            if (result.value.isEmpty()) SearchState.Empty(item.title) else SearchState.Content(result.value)
+        is DataResult.Failure -> SearchState.Error(result.reason)
+    }
+
+    private sealed interface SearchTrigger {
+        data class Typed(val text: String) : SearchTrigger
+        data class Similar(val item: MediaItem) : SearchTrigger
     }
 
     private fun remember(query: String) {

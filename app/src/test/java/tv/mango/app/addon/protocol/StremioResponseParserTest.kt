@@ -37,7 +37,8 @@ class StremioResponseParserTest {
                       "poster": "https://example.test/p.jpg",
                       "background": "https://example.test/b.jpg",
                       "releaseInfo": "1994",
-                      "genres": ["Drama"]
+                      "genres": ["Drama"],
+                      "imdbRating": "9.3"
                     }
                   ]
                 }
@@ -51,6 +52,7 @@ class StremioResponseParserTest {
         assertEquals("A Film", item.title)
         assertEquals(1994, item.year)
         assertEquals(listOf("Drama"), item.genres)
+        assertEquals("9.3", item.rating)
         assertEquals("https://example.test/p.jpg", item.images.poster)
     }
 
@@ -67,6 +69,7 @@ class StremioResponseParserTest {
         assertNull(item.year)
         assertNull(item.runtimeMinutes)
         assertNull(item.synopsis)
+        assertNull(item.rating)
         assertTrue(item.genres.isEmpty())
     }
 

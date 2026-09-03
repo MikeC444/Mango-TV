@@ -106,6 +106,11 @@ class MediaCardAdapter(
 
         fun bind(item: MediaItem) {
             this.item = item
+            // Read by CardTooltipController's global focus listener, so the
+            // floating info panel can show something for whichever card the
+            // platform just focused without every screen wiring its own
+            // focus callback through to it.
+            card.setTag(R.id.card_media_item, item)
 
             // Decoded at exactly the card's size, never at the artwork's.
             ImageLoader.loadPoster(artwork, item.images.poster, posterWidth, posterHeight)
@@ -138,6 +143,7 @@ class MediaCardAdapter(
 
         fun recycle() {
             item = null
+            card.setTag(R.id.card_media_item, null)
             // Cancels any request still in flight. Without this a load started
             // for a card that has scrolled away can still complete and deliver
             // the wrong artwork into a view now showing something else.

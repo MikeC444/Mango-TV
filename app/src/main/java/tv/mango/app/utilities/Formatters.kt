@@ -58,6 +58,7 @@ object Formatters {
         }
         return listOfNotNull(
             item.year?.toString(),
+            item.rating?.let { context.getString(R.string.format_rating, it) },
             length,
             item.certification,
             item.genres.joinToString(", ").takeIf { it.isNotEmpty() },

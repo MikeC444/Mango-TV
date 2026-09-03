@@ -71,19 +71,37 @@ class CatalogRepository(
     suspend fun search(query: String): DataResult<List<MediaItem>> = withContext(Dispatchers.IO) {
         val needle = query.trim()
         if (needle.isEmpty()) return@withContext DataResult.Success(emptyList())
+        scanByType { it.title.contains(needle, ignoreCase = true) }
+    }
 
-        val matches = mutableListOf<MediaItem>()
+    /**
+     * Other titles sharing at least one genre with [item], across both films
+     * and series - the closest this catalogue can honestly offer to "similar
+     * titles". There is no recommendation data or add-on capability behind a
+     * real one, so this leans on the one signal every title already carries.
+     */
+    suspend fun similarTo(item: MediaItem): DataResult<List<MediaItem>> = withContext(Dispatchers.IO) {
+        if (item.genres.isEmpty()) return@withContext DataResult.Success(emptyList())
+        scanByType { it.id != item.id && it.genres.any { genre -> genre in item.genres } }
+    }
+
+    /** Every title of every type matching [matches], scanned a bounded number of pages at a time. */
+    private suspend fun scanByType(matches: (MediaItem) -> Boolean): DataResult<List<MediaItem>> {
+        val found = mutableListOf<MediaItem>()
         for (type in MediaType.entries) {
-            when (val result = matchesOf(type, needle)) {
-                is DataResult.Success -> matches += result.value
-                is DataResult.Failure -> return@withContext result
+            when (val result = pagedMatches(type, matches)) {
+                is DataResult.Success -> found += result.value
+                is DataResult.Failure -> return result
             }
         }
-        DataResult.Success(matches)
+        return DataResult.Success(found)
     }
 
     /** Fails only when the very first page of [type] fails outright. */
-    private suspend fun matchesOf(type: MediaType, needle: String): DataResult<List<MediaItem>> {
+    private suspend fun pagedMatches(
+        type: MediaType,
+        matches: (MediaItem) -> Boolean,
+    ): DataResult<List<MediaItem>> {
         val found = mutableListOf<MediaItem>()
         for (page in 0 until SEARCH_PAGE_LIMIT) {
             val items = when (val result = catalog.browse(type, page, DEFAULT_PAGE_SIZE)) {
@@ -91,7 +109,7 @@ class CatalogRepository(
                 is DataResult.Failure -> if (page == 0) return result else break
             }
             if (items.isEmpty()) break
-            found += items.filter { it.title.contains(needle, ignoreCase = true) }
+            found += items.filter(matches)
             if (items.size < DEFAULT_PAGE_SIZE) break
         }
         return DataResult.Success(found)

@@ -25,7 +25,9 @@ import tv.mango.app.di.appGraph
 import tv.mango.app.models.MediaItem
 import tv.mango.app.navigation.NavigationHost
 import tv.mango.app.ui.core.BrowseGridLayoutManager
+import tv.mango.app.ui.core.CardActionSheet
 import tv.mango.app.ui.core.CardSpacingDecoration
+import tv.mango.app.ui.core.CardTooltipController
 import tv.mango.app.ui.core.MediaCardAdapter
 
 /**
@@ -49,10 +51,12 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private val resultsAdapter = MediaCardAdapter(onSelected = ::openDetail)
+    private val resultsAdapter = MediaCardAdapter(onSelected = ::openDetail, onLongSelected = ::onCardLongPressed)
 
     /** Retried on request, since the failed state itself carries no query. */
     private var lastQuery: String = ""
+
+    private var tooltipController: CardTooltipController? = null
 
     private val queryWatcher = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
@@ -97,6 +101,8 @@ class SearchFragment : Fragment() {
             adapter = resultsAdapter
         }
 
+        tooltipController = CardTooltipController(views.cardTooltip, view).apply { attach() }
+
         views.searchField.addTextChangedListener(queryWatcher)
         views.searchField.setOnEditorActionListener { textView, actionId, event ->
             val committed = actionId == EditorInfo.IME_ACTION_SEARCH ||
@@ -107,6 +113,20 @@ class SearchFragment : Fragment() {
 
         // Fixed, never empty - bound once rather than on every state change.
         bindChips(views.searchPopularChips, viewModel.popularSearches)
+
+        // Reached from a card's long-press menu: the field shows what the
+        // search was seeded from, the same way picking a chip would, but the
+        // results themselves come from a genre match rather than the title
+        // this text would otherwise search for - detached and reattached so
+        // setting it here does not also fire an ordinary typed search.
+        PendingSimilarSearch.take()?.let { item ->
+            views.searchField.removeTextChangedListener(queryWatcher)
+            views.searchField.setText(item.title)
+            views.searchField.setSelection(item.title.length)
+            views.searchField.addTextChangedListener(queryWatcher)
+            lastQuery = item.title
+            viewModel.findSimilar(item)
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -214,11 +234,27 @@ class SearchFragment : Fragment() {
         (activity as? NavigationHost)?.openDetail(item)
     }
 
+    private fun onCardLongPressed(item: MediaItem): Boolean {
+        val host = activity as? NavigationHost ?: return false
+        CardActionSheet(
+            context = requireContext(),
+            item = item,
+            library = appGraph.libraryRepository,
+            scope = viewLifecycleOwner.lifecycleScope,
+            onPlay = { host.requestPlayback(it) },
+            onDetails = host::openDetail,
+            onFindSimilar = host::findSimilar,
+        ).show()
+        return true
+    }
+
     override fun onDestroyView() {
         binding?.let {
             it.searchField.removeTextChangedListener(queryWatcher)
             it.searchResults.adapter = null
         }
+        tooltipController?.detach()
+        tooltipController = null
         binding = null
         super.onDestroyView()
     }

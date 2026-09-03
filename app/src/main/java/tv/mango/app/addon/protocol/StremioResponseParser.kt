@@ -67,6 +67,7 @@ object StremioResponseParser {
             runtimeMinutes = parseRuntimeMinutes(meta.str("runtime")),
             certification = meta.str("certification"),
             genres = meta.firstStrList("genres", "genre"),
+            rating = meta.firstStr("imdbRating", "rating"),
             synopsis = meta.firstStr("description", "overview"),
             images = MediaImages(
                 // Artwork travels as absolute URLs, which the image pipeline

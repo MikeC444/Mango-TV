@@ -121,4 +121,22 @@
     <string name="stream_picker_torrent_unsupported">Torrent source · not playable here</string>
     <string name="stream_quality_unknown">Unknown quality</string>
     <string name="player_error">Couldn\'t play this source.</string>
+
+    <!-- Rating, shown alongside year and runtime wherever an add-on supplies one -->
+    <string name="format_rating">%1$s ★</string>
+
+    <!-- Watched -->
+    <string name="action_mark_watched">✓ Mark as Watched</string>
+    <string name="action_unmark_watched">Mark as Unwatched</string>
+
+    <!-- The long-press quick-action menu -->
+    <string name="label_movie">Movie</string>
+    <string name="label_series">Series</string>
+    <string name="action_sheet_play">▶ Play</string>
+    <string name="action_sheet_add_to_library">＋ Add to Library</string>
+    <string name="action_sheet_remove_from_library">✓ In Library</string>
+    <string name="action_sheet_details">ℹ Details</string>
+    <string name="action_sheet_find_similar">🔍 Find Similar</string>
+    <string name="action_sheet_remove_continue_watching">✕ Remove from Continue Watching</string>
+    <string name="cd_card_long_press">Hold Select for more actions</string>
 </resources>
