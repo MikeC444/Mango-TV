@@ -24,7 +24,6 @@ import tv.mango.app.navigation.NavigationHost
 import tv.mango.app.ui.core.BrowseGridLayoutManager
 import tv.mango.app.ui.core.CardActionSheet
 import tv.mango.app.ui.core.CardSpacingDecoration
-import tv.mango.app.ui.core.CardTooltipController
 import tv.mango.app.ui.core.MediaCardAdapter
 
 /**
@@ -55,8 +54,6 @@ class BrowseFragment : Fragment() {
 
     /** How far the grid has been scrolled up past the screen title, in pixels. */
     private var scrolledBy = 0
-
-    private var tooltipController: CardTooltipController? = null
 
     private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -128,8 +125,6 @@ class BrowseFragment : Fragment() {
             addOnScrollListener(scrollListener)
         }
 
-        tooltipController = CardTooltipController(views.cardTooltip, view).apply { attach() }
-
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collect { render(it) }
@@ -199,8 +194,6 @@ class BrowseFragment : Fragment() {
             it.grid.removeOnScrollListener(scrollListener)
             it.grid.adapter = null
         }
-        tooltipController?.detach()
-        tooltipController = null
         binding = null
         super.onDestroyView()
     }

@@ -26,7 +26,6 @@ import tv.mango.app.models.HomeContent
 import tv.mango.app.models.MediaItem
 import tv.mango.app.navigation.NavigationHost
 import tv.mango.app.ui.core.CardActionSheet
-import tv.mango.app.ui.core.CardTooltipController
 import tv.mango.app.ui.core.ContentRowsAdapter
 
 /**
@@ -68,8 +67,6 @@ class HomeFragment : Fragment() {
     /** The title the hero should be showing once it is visible again. */
     private var pendingHeroItem: MediaItem? = null
 
-    private var tooltipController: CardTooltipController? = null
-
     private val applyHeroItem = Runnable {
         val item = pendingHeroItem ?: return@Runnable
         if (isHeroVisible()) binding?.hero?.show(item)
@@ -106,8 +103,6 @@ class HomeFragment : Fragment() {
         )
         views.rows.adapter = rowsAdapter
         views.rows.addOnScrollListener(scrollListener)
-
-        tooltipController = CardTooltipController(views.cardTooltip, view).apply { attach() }
 
         // Not just requestPlayback(item): the hero can be showing a Continue
         // Watching card the viewer scrolled to, and pressing Play there has
@@ -284,8 +279,6 @@ class HomeFragment : Fragment() {
             // whole hierarchy alive behind it.
             it.rows.adapter = null
         }
-        tooltipController?.detach()
-        tooltipController = null
         binding = null
         super.onDestroyView()
     }

@@ -27,12 +27,6 @@
          screen rather than only the home hero. -->
     <dimen name="nav_logo_size">56dp</dimen>
 
-    <!-- The floating info panel a focused card shows below itself. Fixed
-         rather than measured off the card, so its width does not visibly
-         hop between a short and a long title. -->
-    <dimen name="card_tooltip_width">240dp</dimen>
-    <dimen name="card_tooltip_gap">10dp</dimen>
-
     <!-- Navigation rail. Collapsed it is a quiet strip of icons in its own
          reserved column, so the rail's bounds never overlap the content next
          to it - both so nothing underneath is covered and so the platform's
