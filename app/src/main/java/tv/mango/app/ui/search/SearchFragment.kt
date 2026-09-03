@@ -229,11 +229,12 @@ class SearchFragment : Fragment() {
         (activity as? NavigationHost)?.openDetail(item)
     }
 
-    private fun onCardLongPressed(item: MediaItem): Boolean {
+    private fun onCardLongPressed(item: MediaItem, anchor: View): Boolean {
         val host = activity as? NavigationHost ?: return false
         CardActionSheet(
             context = requireContext(),
             item = item,
+            anchor = anchor,
             library = appGraph.libraryRepository,
             scope = viewLifecycleOwner.lifecycleScope,
             onPlay = { host.requestPlayback(it) },

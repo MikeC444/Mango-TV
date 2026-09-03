@@ -104,6 +104,10 @@
     <dimen name="settings_content_max_width">760dp</dimen>
     <dimen name="qr_code_size">176dp</dimen>
 
+    <!-- The long-press quick-action menu: a compact panel centred on
+         screen, not a full settings-width one. -->
+    <dimen name="action_sheet_width">300dp</dimen>
+
     <!-- Search. A search field is a button the size of a sentence: tall and
          obvious rather than a dense text box. -->
     <dimen name="search_field_height">64dp</dimen>

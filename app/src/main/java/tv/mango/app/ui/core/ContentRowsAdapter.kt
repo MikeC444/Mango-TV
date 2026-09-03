@@ -2,6 +2,7 @@ package tv.mango.app.ui.core
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -21,7 +22,7 @@ class ContentRowsAdapter(
     /** Called as focus moves between cards, so the hero can follow the selection. */
     private val onItemFocused: (MediaItem) -> Unit = {},
     /** See [MediaCardAdapter]'s own parameter of the same name. */
-    private val onItemLongSelected: (MediaItem) -> Boolean = { false },
+    private val onItemLongSelected: (MediaItem, View) -> Boolean = { _, _ -> false },
 ) : RecyclerView.Adapter<ContentRowsAdapter.RowViewHolder>() {
 
     private var rows: List<ContentRow> = emptyList()
@@ -69,7 +70,7 @@ class ContentRowsAdapter(
         sharedPool: RecyclerView.RecycledViewPool?,
         onItemSelected: (MediaItem) -> Unit,
         onItemFocused: (MediaItem) -> Unit,
-        onItemLongSelected: (MediaItem) -> Boolean,
+        onItemLongSelected: (MediaItem, View) -> Boolean,
     ) : RecyclerView.ViewHolder(container) {
 
         private val title: TextView = container.findViewById(R.id.row_title)
