@@ -27,7 +27,6 @@ import tv.mango.app.navigation.NavigationHost
 import tv.mango.app.ui.core.BrowseGridLayoutManager
 import tv.mango.app.ui.core.CardActionSheet
 import tv.mango.app.ui.core.CardSpacingDecoration
-import tv.mango.app.ui.core.CardTooltipController
 import tv.mango.app.ui.core.MediaCardAdapter
 
 /**
@@ -55,8 +54,6 @@ class SearchFragment : Fragment() {
 
     /** Retried on request, since the failed state itself carries no query. */
     private var lastQuery: String = ""
-
-    private var tooltipController: CardTooltipController? = null
 
     private val queryWatcher = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
@@ -100,8 +97,6 @@ class SearchFragment : Fragment() {
             descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
             adapter = resultsAdapter
         }
-
-        tooltipController = CardTooltipController(views.cardTooltip, view).apply { attach() }
 
         views.searchField.addTextChangedListener(queryWatcher)
         views.searchField.setOnEditorActionListener { textView, actionId, event ->
@@ -253,8 +248,6 @@ class SearchFragment : Fragment() {
             it.searchField.removeTextChangedListener(queryWatcher)
             it.searchResults.adapter = null
         }
-        tooltipController?.detach()
-        tooltipController = null
         binding = null
         super.onDestroyView()
     }
