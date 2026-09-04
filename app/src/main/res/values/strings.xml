@@ -19,6 +19,8 @@
     <string name="action_add_to_library">Add to Library</string>
     <string name="action_remove_from_library">In Library</string>
     <string name="action_retry">Retry</string>
+    <string name="refresh_in_progress">Refreshing…</string>
+    <string name="refresh_failed">Couldn\'t refresh. Showing what was loaded earlier.</string>
 
     <!-- Sections -->
     <string name="label_featured">Featured</string>

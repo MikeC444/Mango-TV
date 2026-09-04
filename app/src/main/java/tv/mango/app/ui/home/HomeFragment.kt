@@ -23,12 +23,14 @@ import tv.mango.app.R
 import tv.mango.app.cache.ImageLoader
 import tv.mango.app.data.FailureReason
 import tv.mango.app.data.UiState
+import tv.mango.app.data.refresh.Refreshable
 import tv.mango.app.databinding.FragmentHomeBinding
 import tv.mango.app.di.appGraph
 import tv.mango.app.models.Episode
 import tv.mango.app.models.HomeContent
 import tv.mango.app.models.MediaItem
 import tv.mango.app.navigation.NavigationHost
+import tv.mango.app.navigation.RefreshableScreen
 import tv.mango.app.settings.home.BackgroundConfig
 import tv.mango.app.settings.home.BackgroundType
 import tv.mango.app.settings.home.ContentWidth
@@ -66,7 +68,7 @@ import tv.mango.app.ui.core.ContentRowsAdapter
  * built-in defaults while [tv.mango.app.repository.HomeScreenConfigRepository]'s
  * first read is still in flight.
  */
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), RefreshableScreen {
 
     private var binding: FragmentHomeBinding? = null
 
@@ -110,6 +112,17 @@ class HomeFragment : Fragment() {
     private var rotationCandidates: List<MediaItem> = emptyList()
     private var rotationIndex = 0
 
+    /**
+     * Whether the screen has been populated at least once.
+     *
+     * Focus is claimed on the first content and never again. This matters more
+     * than it looks: the state combines a live Continue Watching flow, so
+     * content is re-emitted whenever playback progress changes - and without
+     * this, finishing an episode would yank a viewer three rows down back to
+     * the hero.
+     */
+    private var hasShownContent = false
+
     private val applyHeroItem = Runnable {
         val item = pendingHeroItem ?: return@Runnable
         if (isHeroVisible()) binding?.hero?.show(item)
@@ -139,6 +152,13 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val views = binding ?: return
 
+        // The fragment instance survives in the back stack while its view does
+        // not, so this counter outlives the RecyclerView it describes. The new
+        // list starts at the top, and a stale value here would fade the hero
+        // out and block focus into its Play and Details buttons while the rows
+        // are in fact scrolled to the top.
+        scrolledBy = 0
+
         views.rows.adapter = rowsAdapter
         views.rows.addOnScrollListener(scrollListener)
 
@@ -157,6 +177,10 @@ class HomeFragment : Fragment() {
                 viewModel.state.collect { render(it) }
             }
         }
+    }
+
+    override fun refresh() {
+        viewModel.refresh()
     }
 
     /** Sizes the hero (or removes it) and insets the rows to match - Settings -> Home Screen -> Hero and Home Layout. */
@@ -240,9 +264,19 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun render(state: UiState<HomeContent>) {
+    private fun render(state: Refreshable<HomeContent>) {
         val views = binding ?: return
-        when (state) {
+
+        views.refreshStatus.visibility =
+            if (state.isRefreshing || state.refreshFailed) View.VISIBLE else View.GONE
+        if (state.isRefreshing) {
+            views.refreshStatus.setText(R.string.refresh_in_progress)
+        } else if (state.refreshFailed) {
+            // The screen still works; it is simply no newer than it was.
+            views.refreshStatus.setText(R.string.refresh_failed)
+        }
+
+        when (val content = state.content) {
             is UiState.Loading -> {
                 // Deliberately blank. A spinner would be a continuous animation
                 // on a screen about to fill in a moment; the charcoal surface is
@@ -252,11 +286,11 @@ class HomeFragment : Fragment() {
                 views.message.visibility = View.GONE
             }
 
-            is UiState.Content -> showContent(state.value)
+            is UiState.Content -> showContent(content.value)
 
             is UiState.Empty -> showMessage(R.string.error_empty_title, null)
 
-            is UiState.Error -> when (state.reason) {
+            is UiState.Error -> when (content.reason) {
                 FailureReason.NETWORK ->
                     showMessage(R.string.error_network_title, R.string.error_network_body)
                 else ->
@@ -281,13 +315,20 @@ class HomeFragment : Fragment() {
 
             buildRotationCandidates(content)
             scheduleRotation()
+        }
 
-            // Focus has to land somewhere the instant content appears, or the
-            // first press of the remote does nothing. The hero's primary
-            // action is the most useful place for it to be.
-            views.hero.post { views.hero.focusPrimaryAction() }
-        } else {
-            views.rows.post { views.rows.requestFocus() }
+        // Focus has to land somewhere the instant content first appears, or
+        // the first press of the remote does nothing. On every later emission
+        // - the state combines a live Continue Watching flow, so content is
+        // re-emitted whenever playback progress changes - it must stay where
+        // the viewer left it instead of being reclaimed.
+        if (!hasShownContent) {
+            hasShownContent = true
+            if (heroConfig.enabled) {
+                views.hero.post { views.hero.focusPrimaryAction() }
+            } else {
+                views.rows.post { views.rows.requestFocus() }
+            }
         }
     }
 

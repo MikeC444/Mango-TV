@@ -39,12 +39,6 @@
          large text but not for body copy. -->
     <color name="text_tertiary">#FF7E7E83</color>
     <color name="text_on_accent">#FF120D06</color>
-    <!-- The default look of a Widget.Mango.Button, before RuntimeTheme applies
-         its own theme-derived colour - see tv.mango.app.ui.core.MangoButton. -->
-    <color name="button_text">@color/text_primary</color>
-    <!-- A detail screen's season tabs: readable in every one of
-         season_tab_background's states (focused, selected, resting). -->
-    <color name="season_tab_text">@color/text_primary</color>
 
     <!-- Muted amber ochre. Warm and restrained; never neon. -->
     <color name="accent">#FFD9A05B</color>
