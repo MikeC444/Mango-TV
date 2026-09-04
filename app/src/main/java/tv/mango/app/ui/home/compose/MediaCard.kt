@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,11 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import tv.mango.app.models.MediaItem
 
 /** Poster aspect ratio the whole application uses - see `card_poster_width`/`card_poster_height`. */
@@ -44,7 +39,14 @@ private const val POSTER_ASPECT = 130f / 195f
  * The NuvioTV-style poster card: rounded artwork, a focus scale-and-glow (no
  * separate elevation/shadow animator - one `scale` on the whole card reads
  * identically at ten feet and costs one animated float), a watched check and
- * a Continue Watching progress bar.
+ * a Continue Watching progress bar. No title beneath the artwork - the
+ * poster itself is the identity, the same as NuvioTV's own rows.
+ *
+ * The outer padding matters more than it looks: without it, a card at its
+ * focused 1.08x scale grows past its own row slot and visibly overlaps the
+ * next card mid-scroll, which reads as the whole row juddering as focus
+ * moves. The padding gives the scale room to grow into that never belongs
+ * to a neighbour.
  *
  * Deliberately its own implementation rather than reusing [tv.mango.app.ui.core.TvCardView]:
  * that class is tied to the View focus/animation system Browse, Search and
@@ -72,9 +74,7 @@ fun MediaCard(
     val heightPx = (widthPx / POSTER_ASPECT).toInt()
 
     Box(
-        modifier = modifier
-            .width(widthDp.dp)
-            .padding(vertical = 6.dp),
+        modifier = modifier.padding(8.dp),
     ) {
         Box(
             modifier = Modifier
@@ -147,19 +147,5 @@ fun MediaCard(
                 }
             }
         }
-
-        BasicText(
-            text = item.title,
-            style = TextStyle(
-                color = colors.primaryText,
-                fontSize = 14.sp,
-                fontWeight = if (focused) FontWeight.SemiBold else FontWeight.Normal,
-            ),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier
-                .padding(top = 6.dp)
-                .width(widthDp.dp),
-        )
     }
 }
