@@ -10,9 +10,9 @@ import android.view.View
 import android.view.ViewOutlineProvider
 import android.widget.FrameLayout
 import tv.mango.app.R
-import tv.mango.app.settings.home.AnimationLevel
-import tv.mango.app.settings.home.FocusEffect
-import tv.mango.app.theme.RuntimeTheme
+import tv.mango.app.theme.AnimationLevel
+import tv.mango.app.theme.FocusEffect
+import tv.mango.app.theme.ThemeDefaults
 import tv.mango.app.theme.ThemeDrawables
 import tv.mango.app.theme.ThemeDrawables.cardRadiusDp
 
@@ -29,11 +29,9 @@ import tv.mango.app.theme.ThemeDrawables.cardRadiusDp
  * [setClipToOutline] cannot shave it.
  *
  * Style - corner radius, focus effect, focus scale, colours - is read from
- * [RuntimeTheme] once, at construction, rather than re-read on every bind: it
- * is the same for every card on a given screen, and the screen itself is
- * rebuilt whenever a viewer's appearance settings change (see [RuntimeTheme]'s
- * own documentation for why that is enough to call this "live"). What does
- * vary per bind - a card's size and its optional caption - is applied
+ * [ThemeDefaults] once, at construction, rather than re-read on every bind: it
+ * is fixed for the lifetime of the process, so there is nothing to pick up
+ * later. What does vary per bind - a card's size and its optional caption - is applied
  * separately, by [tv.mango.app.ui.core.MediaCardAdapter], because it varies
  * per *row*, not per screen.
  */
@@ -43,9 +41,9 @@ class TvCardView @JvmOverloads constructor(
     defStyleAttr: Int = 0,
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
-    private val cardConfig = RuntimeTheme.config.value.cards
-    private val accessibility = RuntimeTheme.config.value.accessibility
-    private val colors = RuntimeTheme.colors
+    private val cardConfig = ThemeDefaults.cards
+    private val accessibility = ThemeDefaults.accessibility
+    private val colors = ThemeDefaults.colors
 
     private val cornerRadius = cardConfig.cornerRadius.cardRadiusDp() * resources.displayMetrics.density
     private val focusElevation = resources.getDimension(R.dimen.focus_elevation)

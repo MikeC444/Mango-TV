@@ -73,10 +73,9 @@ data class MediaItem(
     /**
      * Whether the viewer has explicitly marked this title watched - see
      * [tv.mango.app.repository.LibraryRepository.isWatched]. Never set by a
-     * catalogue provider; only [tv.mango.app.ui.home.HomeViewModel] populates
-     * it, by combining a row's items with the library's own watched marks, so
-     * Home's optional watched badge (Settings -> Home Screen -> Catalog Rows)
-     * has something real to show.
+     * catalogue provider; a screen wanting the watched badge to show real
+     * marks has to combine a row's items with the library's own watched marks
+     * itself.
      */
     val watched: Boolean = false,
 ) {

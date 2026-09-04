@@ -74,27 +74,10 @@
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>
-    <string name="settings_home_screen_title">Home Screen</string>
-    <string name="settings_home_screen_subtitle">Customise layout, colours, glass, hero and more</string>
     <string name="settings_addons_title">Add-ons</string>
     <string name="settings_addons_subtitle">Manage installed add-ons</string>
 
     <!-- Settings -> Home Screen -->
-    <string name="home_screen_settings_title">Home Screen</string>
-    <string name="home_screen_settings_subtitle">Everything here applies to the real Home screen the moment you change it.</string>
-    <string name="home_screen_section_layout">Home Layout</string>
-    <string name="home_screen_section_rows">Catalog Rows</string>
-    <string name="home_screen_section_cards">Poster &amp; Card Layout</string>
-    <string name="home_screen_section_colors">Colours &amp; Accents</string>
-    <string name="home_screen_section_glass">Liquid Glass</string>
-    <string name="home_screen_section_hero">Hero</string>
-    <string name="home_screen_section_background">Background</string>
-    <string name="home_screen_section_navigation">Navigation</string>
-    <string name="home_screen_section_typography">Typography</string>
-    <string name="home_screen_section_accessibility">Accessibility</string>
-    <string name="home_screen_section_presets">Presets</string>
-    <string name="home_screen_section_preview">Preview Home Screen</string>
-    <string name="home_screen_section_reset">Reset Home Screen</string>
 
     <!-- Settings -> Home Screen: row labels shared by more than one screen -->
     <string name="row_home_density">Home Density</string>
@@ -171,19 +154,6 @@
 
     <!-- Settings -> Home Screen -> Presets -->
     <string name="presets_subtitle">Applying a preset only changes how Home looks - never your watch history, watchlist or add-ons.</string>
-    <string name="preset_default">Default</string>
-    <string name="preset_default_description">Balanced layout, standard posters, default Liquid Glass</string>
-    <string name="preset_cinematic">Cinematic</string>
-    <string name="preset_cinematic_description">Large hero, large posters, spacious layout, stronger glass</string>
-    <string name="preset_compact">Compact</string>
-    <string name="preset_compact_description">Smaller hero, smaller posters, more titles visible</string>
-    <string name="preset_minimal">Minimal</string>
-    <string name="preset_minimal_description">Minimal rows, minimal information, a clean interface</string>
-    <string name="preset_liquid_glass">Liquid Glass</string>
-    <string name="preset_liquid_glass_description">Maximum glass aesthetic, large rounded cards, strong focus effects</string>
-    <string name="preset_streamer">Streamer</string>
-    <string name="preset_streamer_description">Wide crimson-accented hero, flat borderless posters, accent focus ring</string>
-    <string name="preset_custom">Custom</string>
 
     <!-- Settings -> Home Screen -> Preview Home Screen -->
     <string name="preview_title">Preview Home Screen</string>

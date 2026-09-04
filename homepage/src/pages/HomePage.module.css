@@ -1,0 +1,14 @@
+.rows {
+  margin-top: -8vh;
+  position: relative;
+  z-index: var(--mango-z-hero-content);
+  display: flex;
+  flex-direction: column;
+  gap: var(--mango-space-2);
+}
+
+@media (max-width: 900px) {
+  .rows {
+    margin-top: var(--mango-space-5);
+  }
+}

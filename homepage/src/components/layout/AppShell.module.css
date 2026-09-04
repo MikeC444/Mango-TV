@@ -1,0 +1,8 @@
+.shell {
+  min-height: 100vh;
+  background: var(--mango-bg);
+}
+
+.content {
+  padding-bottom: var(--mango-space-9);
+}

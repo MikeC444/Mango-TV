@@ -7,14 +7,6 @@ import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.StateListDrawable
 import android.util.StateSet
 import androidx.core.graphics.ColorUtils
-import tv.mango.app.settings.home.BlurLevel
-import tv.mango.app.settings.home.BorderLevel
-import tv.mango.app.settings.home.CornerRadiusOption
-import tv.mango.app.settings.home.FocusEffect
-import tv.mango.app.settings.home.FocusVisibility
-import tv.mango.app.settings.home.GlassConfig
-import tv.mango.app.settings.home.GlassEffectLevel
-import tv.mango.app.settings.home.GlowLevel
 
 /**
  * Builds every "liquid glass" and accent-carrying surface in the application

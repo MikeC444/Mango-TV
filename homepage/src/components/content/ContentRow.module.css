@@ -1,0 +1,39 @@
+.row {
+  position: relative;
+  padding: var(--mango-space-3) 0;
+}
+
+.title {
+  font-size: var(--mango-fs-row-title);
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  color: var(--mango-text-primary);
+  margin: 0 var(--mango-safe-x) var(--mango-space-3);
+}
+
+.track {
+  display: flex;
+  gap: var(--mango-space-3);
+  overflow-x: auto;
+  scroll-padding-left: var(--mango-safe-x);
+  padding: var(--mango-space-2) var(--mango-safe-x) var(--mango-space-4);
+}
+
+.edge {
+  position: absolute;
+  top: var(--mango-space-3);
+  bottom: 0;
+  width: var(--mango-safe-x);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.edgeLeft {
+  left: 0;
+  background: linear-gradient(to right, var(--mango-bg), transparent);
+}
+
+.edgeRight {
+  right: 0;
+  background: linear-gradient(to left, var(--mango-bg), transparent);
+}

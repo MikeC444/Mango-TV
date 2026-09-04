@@ -14,7 +14,7 @@ import tv.mango.app.databinding.DialogCardActionsBinding
 import tv.mango.app.models.MediaItem
 import tv.mango.app.models.MediaType
 import tv.mango.app.repository.LibraryRepository
-import tv.mango.app.theme.RuntimeTheme
+import tv.mango.app.theme.ThemeDefaults
 import tv.mango.app.theme.ThemeDrawables
 import tv.mango.app.theme.ThemeDrawables.panelRadiusDp
 
@@ -168,8 +168,8 @@ class CardActionSheet(
     }
 
     private fun applyTheme() {
-        val colors = RuntimeTheme.colors
-        val glass = RuntimeTheme.config.value.glass
+        val colors = ThemeDefaults.colors
+        val glass = ThemeDefaults.glass
         val density = context.resources.displayMetrics.density
         val panelCorner = glass.cornerRadius.panelRadiusDp() * density
         val rowCorner = context.resources.getDimension(R.dimen.panel_corner) / 2f

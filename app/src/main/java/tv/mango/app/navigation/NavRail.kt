@@ -8,10 +8,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import tv.mango.app.R
-import tv.mango.app.settings.home.HomeScreenConfig
-import tv.mango.app.settings.home.NavItemId
-import tv.mango.app.settings.home.NavStyle
-import tv.mango.app.theme.RuntimeTheme
+import tv.mango.app.theme.ThemeDefaults
 import tv.mango.app.theme.ThemeDrawables
 import tv.mango.app.ui.core.MotionSpec
 
@@ -30,12 +27,10 @@ import tv.mango.app.ui.core.MotionSpec
  * anything on Android. The content itself never moves either way.
  *
  * Unlike every other screen in the application, this view is never rebuilt on
- * navigation - [tv.mango.app.navigation.MainActivity] owns exactly one - so it
- * is the one piece of chrome [tv.mango.app.theme.RuntimeTheme]'s own
- * documentation calls out as needing to observe live changes rather than pick
- * them up fresh at construction. [applyConfig] is that observation's target,
- * called from [tv.mango.app.navigation.MainActivity] every time the
- * configuration changes.
+ * navigation - [tv.mango.app.navigation.MainActivity] owns exactly one - but
+ * since its appearance is [tv.mango.app.theme.ThemeDefaults]'s fixed values
+ * rather than anything that can change at runtime, it applies them once, here
+ * at construction, the same as every other screen.
  */
 class NavRail @JvmOverloads constructor(
     context: Context,
@@ -48,7 +43,6 @@ class NavRail @JvmOverloads constructor(
     private val navItems = ArrayList<NavItemView>(DESTINATIONS.size)
 
     private var expanded = false
-    private var style: NavStyle = NavStyle.AUTO
 
     /** Invoked when the viewer selects a destination. */
     var onSectionSelected: ((Route.Section) -> Unit)? = null
@@ -58,14 +52,14 @@ class NavRail @JvmOverloads constructor(
      * on one item would see a half-settled state. Deferring the check by one
      * frame lets focus land before the rail decides whether it still holds it.
      */
-    private val settleFocus = Runnable { applyExpansion(hasFocus()) }
+    private val settleFocus = Runnable { setExpanded(hasFocus()) }
 
     init {
         clipChildren = false
 
         scrim = View(context).apply {
             layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
-            background = ThemeDrawables.navRailScrim(RuntimeTheme.colors)
+            background = ThemeDrawables.navRailScrim(ThemeDefaults.colors)
             alpha = 0f
             // Purely decorative, and never in the focus path.
             isFocusable = false
@@ -129,42 +123,9 @@ class NavRail @JvmOverloads constructor(
         navItems.forEach { it.isCurrent = it.section == section }
     }
 
-    /** Moves focus onto the destination currently on screen, skipping any a viewer has hidden. */
+    /** Moves focus onto the destination currently on screen. */
     fun focusCurrentSection() {
-        (navItems.firstOrNull { it.isCurrent && it.visibility == VISIBLE }
-            ?: navItems.firstOrNull { it.visibility == VISIBLE })
-            ?.requestFocus()
-    }
-
-    /**
-     * Applies a viewer's Navigation and Colours & Accents settings - which
-     * destinations are reachable, how the rail behaves, and every colour it
-     * draws with. Home and Settings are never hidden, whatever a viewer has
-     * turned off: see [tv.mango.app.settings.home.NavigationConfig.isVisible].
-     */
-    fun applyConfig(config: HomeScreenConfig) {
-        style = config.navigation.style
-        navItems.forEach { item ->
-            val id = item.section.toNavItemId()
-            item.visibility = if (id == null || config.navigation.isVisible(id)) VISIBLE else GONE
-            item.applyTheme(RuntimeTheme.colors)
-        }
-        scrim.background = ThemeDrawables.navRailScrim(RuntimeTheme.colors)
-
-        when (style) {
-            NavStyle.EXPANDED -> applyExpansion(true)
-            NavStyle.COLLAPSED -> applyExpansion(false)
-            NavStyle.AUTO -> applyExpansion(hasFocus())
-        }
-    }
-
-    private fun applyExpansion(focusWantsExpansion: Boolean) {
-        val value = when (style) {
-            NavStyle.EXPANDED -> true
-            NavStyle.COLLAPSED -> false
-            NavStyle.AUTO -> focusWantsExpansion
-        }
-        setExpanded(value)
+        (navItems.firstOrNull { it.isCurrent } ?: navItems.firstOrNull())?.requestFocus()
     }
 
     private fun setExpanded(value: Boolean) {
@@ -213,14 +174,5 @@ class NavRail @JvmOverloads constructor(
             Destination(Route.Library, R.drawable.ic_library, R.string.nav_library),
             Destination(Route.Settings, R.drawable.ic_settings, R.string.nav_settings),
         )
-
-        fun Route.Section.toNavItemId(): NavItemId? = when (this) {
-            Route.Home -> NavItemId.HOME
-            Route.Movies -> NavItemId.MOVIES
-            Route.Series -> NavItemId.SERIES
-            Route.Search -> NavItemId.SEARCH
-            Route.Library -> NavItemId.LIBRARY
-            Route.Settings -> NavItemId.SETTINGS
-        }
     }
 }

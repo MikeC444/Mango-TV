@@ -1,0 +1,27 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--mango-space-4);
+  padding: 0 var(--mango-safe-x) var(--mango-space-8);
+}
+
+.tile {
+  position: relative;
+  height: 120px;
+  border-radius: var(--mango-radius-lg);
+  border: 1px solid var(--mango-border);
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-end;
+  padding: var(--mango-space-4);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--mango-text-primary);
+  transition: transform var(--mango-duration-base) var(--mango-ease), box-shadow var(--mango-duration-base) var(--mango-ease);
+}
+
+.tile[data-focused] {
+  transform: scale(var(--mango-focus-scale-lg));
+  box-shadow: var(--mango-focus-ring), var(--mango-shadow-lg);
+}

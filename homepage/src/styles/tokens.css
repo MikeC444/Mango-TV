@@ -1,0 +1,86 @@
+/*
+  Mango design tokens.
+  Dark, cinematic, near-black — not pure black, so elevation still reads on
+  a TV panel. One warm accent (mango orange/red), used sparingly.
+*/
+:root {
+  /* Surfaces — neutral, stepped for depth without ever hitting pure black */
+  --mango-bg: #0a0908;
+  --mango-surface-0: #0e0d0c;
+  --mango-surface-1: #16140f;
+  --mango-surface-2: #201c17;
+  --mango-surface-3: #2b251d;
+  --mango-border: rgba(255, 255, 255, 0.08);
+  --mango-border-strong: rgba(255, 255, 255, 0.16);
+
+  /* Text */
+  --mango-text-primary: #f5f1ea;
+  --mango-text-secondary: rgba(245, 241, 234, 0.72);
+  --mango-text-tertiary: rgba(245, 241, 234, 0.48);
+  --mango-text-on-accent: #1a0d02;
+
+  /* Accent — a warm mango orange-red, used only for selection/emphasis */
+  --mango-accent: #ff7a33;
+  --mango-accent-strong: #ff5c2e;
+  --mango-accent-soft: rgba(255, 122, 51, 0.16);
+  --mango-accent-glow: rgba(255, 122, 51, 0.45);
+
+  /* Feedback */
+  --mango-success: #4caf6d;
+  --mango-danger: #e04b4b;
+
+  /* Focus ring / glow — the single most important visual signal in the app */
+  --mango-focus-ring: 0 0 0 3px var(--mango-accent), 0 8px 28px -6px var(--mango-accent-glow);
+  --mango-focus-scale: 1.08;
+  --mango-focus-scale-lg: 1.045;
+
+  /* Elevation shadows */
+  --mango-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --mango-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --mango-shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.55);
+  --mango-shadow-hero: 0 32px 80px rgba(0, 0, 0, 0.6);
+
+  /* Radius — restrained, never pill-shaped, never heavy */
+  --mango-radius-sm: 4px;
+  --mango-radius-md: 6px;
+  --mango-radius-lg: 10px;
+
+  /* Spacing scale (8px grid) */
+  --mango-space-1: 4px;
+  --mango-space-2: 8px;
+  --mango-space-3: 12px;
+  --mango-space-4: 16px;
+  --mango-space-5: 24px;
+  --mango-space-6: 32px;
+  --mango-space-7: 48px;
+  --mango-space-8: 64px;
+  --mango-space-9: 96px;
+
+  /* TV-safe overscan margin */
+  --mango-safe-x: clamp(24px, 5vw, 96px);
+  --mango-safe-top: clamp(20px, 4vh, 56px);
+
+  /* Typography */
+  --mango-font: 'Inter', 'Helvetica Neue', Arial, system-ui, -apple-system, sans-serif;
+  --mango-fs-body: clamp(15px, 1.1vw, 18px);
+  --mango-fs-meta: clamp(13px, 0.95vw, 15px);
+  --mango-fs-card-title: clamp(14px, 1vw, 16px);
+  --mango-fs-row-title: clamp(18px, 1.4vw, 22px);
+  --mango-fs-hero-title: clamp(32px, 4.6vw, 64px);
+  --mango-fs-page-title: clamp(24px, 2.4vw, 34px);
+
+  /* Motion */
+  --mango-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --mango-duration-fast: 150ms;
+  --mango-duration-base: 220ms;
+  --mango-duration-slow: 340ms;
+
+  /* Layout */
+  --mango-nav-height: 76px;
+  --mango-card-width: clamp(160px, 15vw, 240px);
+  --mango-card-width-lg: clamp(200px, 19vw, 300px);
+  --mango-z-nav: 100;
+  --mango-z-hero-content: 10;
+  --mango-z-modal: 1000;
+  --mango-z-toast: 1100;
+}

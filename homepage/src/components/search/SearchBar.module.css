@@ -1,0 +1,137 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mango-space-5);
+  min-width: 0;
+  max-width: 100%;
+}
+
+.fieldRow {
+  display: flex;
+  align-items: center;
+  gap: var(--mango-space-3);
+}
+
+.field {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--mango-space-3);
+  padding: 16px 20px;
+  border-radius: var(--mango-radius-md);
+  background: var(--mango-surface-1);
+  border: 1px solid var(--mango-border);
+  font-size: 20px;
+  color: var(--mango-text-primary);
+  min-height: 60px;
+}
+
+.field svg {
+  width: 22px;
+  height: 22px;
+  color: var(--mango-text-tertiary);
+  flex: none;
+}
+
+.text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.placeholder {
+  color: var(--mango-text-tertiary);
+}
+
+.cursor {
+  display: inline-block;
+  width: 2px;
+  height: 22px;
+  background: var(--mango-accent);
+  margin-left: 2px;
+  animation: blink 1s step-end infinite;
+  vertical-align: middle;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.filters {
+  display: flex;
+  gap: var(--mango-space-2);
+}
+
+.filterPill {
+  border: 1px solid var(--mango-border-strong);
+  background: var(--mango-surface-1);
+  color: var(--mango-text-secondary);
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform var(--mango-duration-fast) var(--mango-ease), box-shadow var(--mango-duration-fast) var(--mango-ease),
+    background var(--mango-duration-fast) var(--mango-ease), color var(--mango-duration-fast) var(--mango-ease);
+}
+
+.filterPill[data-active='true'] {
+  background: var(--mango-text-primary);
+  color: #101010;
+  border-color: transparent;
+}
+
+.filterPill[data-focused] {
+  box-shadow: var(--mango-focus-ring);
+  transform: scale(1.05);
+}
+
+.keyboard {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: var(--mango-space-2);
+  width: 100%;
+  max-width: 720px;
+}
+
+@media (max-width: 560px) {
+  .keyboard {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+.key {
+  aspect-ratio: 1;
+  border: none;
+  border-radius: var(--mango-radius-sm);
+  background: var(--mango-surface-1);
+  color: var(--mango-text-primary);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--mango-duration-fast) var(--mango-ease), box-shadow var(--mango-duration-fast) var(--mango-ease),
+    background var(--mango-duration-fast) var(--mango-ease);
+}
+
+.key[data-focused] {
+  background: var(--mango-accent);
+  color: var(--mango-text-on-accent);
+  box-shadow: var(--mango-focus-ring);
+  transform: scale(1.08);
+}
+
+.keyWide {
+  grid-column: span 2;
+}
+
+.key svg {
+  width: 18px;
+  height: 18px;
+}
