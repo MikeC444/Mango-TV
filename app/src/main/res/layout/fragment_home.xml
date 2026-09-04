@@ -25,6 +25,18 @@
         android:layout_height="match_parent"
         android:visibility="gone" />
 
+    <!-- Refresh state. Top corner, out of the content's way: a refresh is
+         worth acknowledging but is not what the viewer came for. -->
+    <TextView
+        android:id="@+id/refresh_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="@dimen/safe_area_vertical"
+        android:layout_marginEnd="@dimen/safe_area_horizontal"
+        android:textAppearance="@style/TextAppearance.Mango.Label"
+        android:visibility="gone" />
+
     <tv.mango.app.ui.common.MessageView
         android:id="@+id/message"
         android:layout_width="wrap_content"

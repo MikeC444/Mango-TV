@@ -1,8 +1,10 @@
 package tv.mango.app.navigation
 
 import android.os.Bundle
+import android.view.KeyEvent
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import tv.mango.app.R
 import tv.mango.app.databinding.ActivityMainBinding
 import tv.mango.app.models.Episode
 import tv.mango.app.models.MediaItem
@@ -76,6 +78,28 @@ class MainActivity : AppCompatActivity(), NavigationHost {
 
     override fun focusNavigation() {
         binding.navRail.focusCurrentSection()
+    }
+
+    /**
+     * Routes the remote's Menu key to the visible screen as a refresh.
+     *
+     * Content is fetched once per launch and kept, so refreshing is something
+     * the viewer asks for rather than something that happens to them. Menu is
+     * the conventional options key on a Fire TV remote and is otherwise unused.
+     *
+     * Handled at the activity because key events dispatch to the focused view
+     * and then to the activity - they do not bubble back up through ancestor
+     * key listeners, so a listener on a fragment's root would never see this.
+     */
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+            val visible = supportFragmentManager.findFragmentById(R.id.content_container)
+            (visible as? RefreshableScreen)?.let {
+                it.refresh()
+                return true
+            }
+        }
+        return super.onKeyDown(keyCode, event)
     }
 
     override fun openDetail(item: MediaItem) {
