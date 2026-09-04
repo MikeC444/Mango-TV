@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A single text field over a dim scrim - Edit Row's Custom Title, and
+     anywhere else a Home Screen settings screen needs free text rather than a
+     fixed set of options. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/scrim_strong">
+
+    <LinearLayout
+        android:id="@+id/text_input_panel"
+        android:layout_width="@dimen/action_sheet_width"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/space_3">
+
+        <TextView
+            android:id="@+id/text_input_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Mango.Headline" />
+
+        <EditText
+            android:id="@+id/text_input_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_2"
+            android:background="@drawable/search_field_background"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingStart="@dimen/space_2"
+            android:paddingEnd="@dimen/space_2"
+            android:paddingTop="@dimen/space_1"
+            android:paddingBottom="@dimen/space_1"
+            android:textAppearance="@style/TextAppearance.Mango.Body"
+            android:textColor="@color/text_primary" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="@dimen/space_3"
+            android:orientation="horizontal">
+
+            <tv.mango.app.ui.core.MangoButton
+                android:id="@+id/text_input_cancel"
+                style="@style/Widget.Mango.Button"
+                android:text="@string/action_cancel" />
+
+            <tv.mango.app.ui.core.MangoButton
+                android:id="@+id/text_input_save"
+                style="@style/Widget.Mango.Button"
+                android:layout_marginStart="@dimen/space_2"
+                android:text="@string/action_save" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

@@ -128,25 +128,25 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <Button
+                    <tv.mango.app.ui.core.MangoButton
                         android:id="@+id/action_play"
                         style="@style/Widget.Mango.Button"
                         android:text="@string/action_play" />
 
-                    <Button
+                    <tv.mango.app.ui.core.MangoButton
                         android:id="@+id/action_restart"
                         style="@style/Widget.Mango.Button"
                         android:layout_marginStart="@dimen/space_2"
                         android:text="@string/action_start_over"
                         android:visibility="gone" />
 
-                    <Button
+                    <tv.mango.app.ui.core.MangoButton
                         android:id="@+id/action_library"
                         style="@style/Widget.Mango.Button"
                         android:layout_marginStart="@dimen/space_2"
                         android:text="@string/action_add_to_library" />
 
-                    <Button
+                    <tv.mango.app.ui.core.MangoButton
                         android:id="@+id/action_trailer"
                         style="@style/Widget.Mango.Button"
                         android:layout_marginStart="@dimen/space_2"

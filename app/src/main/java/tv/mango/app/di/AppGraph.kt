@@ -12,6 +12,7 @@ import tv.mango.app.addon.MetadataResolver
 import tv.mango.app.addon.StreamResolver
 import tv.mango.app.addon.SubtitleResolver
 import tv.mango.app.addon.protocol.StremioProtocolClient
+import tv.mango.app.data.local.HomeScreenConfigStore
 import tv.mango.app.data.local.LibraryStore
 import tv.mango.app.data.mock.MockCatalogProvider
 import tv.mango.app.data.mock.MockCatalogSource
@@ -30,6 +31,7 @@ import tv.mango.app.data.provider.StreamProvider
 import tv.mango.app.data.provider.SubtitleProvider
 import tv.mango.app.network.HttpClientFactory
 import tv.mango.app.repository.CatalogRepository
+import tv.mango.app.repository.HomeScreenConfigRepository
 import tv.mango.app.repository.LibraryRepository
 
 /**
@@ -147,6 +149,17 @@ class AppGraph(private val application: Context) {
     val libraryRepository: LibraryRepository by lazy {
         LibraryRepository(LibraryStore(application))
     }
+
+    /**
+     * Eager rather than `lazy`: [tv.mango.app.MangoApplication] starts
+     * [tv.mango.app.theme.RuntimeTheme] observing this the moment the process
+     * comes up, so the very first screen already reflects a viewer's saved
+     * appearance rather than flashing the built-in defaults first. The
+     * constructor itself does no I/O - only collecting [HomeScreenConfigRepository.config]
+     * touches DataStore, and that happens on a background dispatcher.
+     */
+    val homeScreenConfigRepository: HomeScreenConfigRepository =
+        HomeScreenConfigRepository(HomeScreenConfigStore(application))
 
     companion object {
         fun from(context: Context): AppGraph =

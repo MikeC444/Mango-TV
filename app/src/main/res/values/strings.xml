@@ -72,8 +72,127 @@
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>
+    <string name="settings_home_screen_title">Home Screen</string>
+    <string name="settings_home_screen_subtitle">Customise layout, colours, glass, hero and more</string>
     <string name="settings_addons_title">Add-ons</string>
     <string name="settings_addons_subtitle">Manage installed add-ons</string>
+
+    <!-- Settings -> Home Screen -->
+    <string name="home_screen_settings_title">Home Screen</string>
+    <string name="home_screen_settings_subtitle">Everything here applies to the real Home screen the moment you change it.</string>
+    <string name="home_screen_section_layout">Home Layout</string>
+    <string name="home_screen_section_rows">Catalog Rows</string>
+    <string name="home_screen_section_cards">Poster &amp; Card Layout</string>
+    <string name="home_screen_section_colors">Colours &amp; Accents</string>
+    <string name="home_screen_section_glass">Liquid Glass</string>
+    <string name="home_screen_section_hero">Hero</string>
+    <string name="home_screen_section_background">Background</string>
+    <string name="home_screen_section_navigation">Navigation</string>
+    <string name="home_screen_section_typography">Typography</string>
+    <string name="home_screen_section_accessibility">Accessibility</string>
+    <string name="home_screen_section_presets">Presets</string>
+    <string name="home_screen_section_preview">Preview Home Screen</string>
+    <string name="home_screen_section_reset">Reset Home Screen</string>
+
+    <!-- Settings -> Home Screen: row labels shared by more than one screen -->
+    <string name="row_home_density">Home Density</string>
+    <string name="row_content_width">Content Width</string>
+    <string name="row_poster_size">Poster Size</string>
+    <string name="row_custom_poster_width">Custom Width</string>
+    <string name="row_corner_radius">Corner Radius</string>
+    <string name="row_focus_effect">Focus Effect</string>
+    <string name="row_focus_scale">Focus Scale</string>
+    <string name="row_card_title">Title</string>
+    <string name="row_card_year">Year</string>
+    <string name="row_card_rating">Rating</string>
+    <string name="row_card_runtime">Runtime</string>
+    <string name="row_card_watched">Watched Status</string>
+    <string name="row_accent_colour">Accent Colour</string>
+    <string name="row_custom_colour">Custom Colour</string>
+    <string name="row_primary_background">Primary Background</string>
+    <string name="row_secondary_background">Secondary Background</string>
+    <string name="row_glass_tint">Glass Tint</string>
+    <string name="row_glass_border">Glass Border</string>
+    <string name="row_focus_glow_color">Focus Glow</string>
+    <string name="row_primary_text">Primary Text</string>
+    <string name="row_secondary_text">Secondary Text</string>
+    <string name="row_button_colour">Button Colour</string>
+    <string name="row_selected_nav_colour">Selected Navigation Colour</string>
+    <string name="row_glass_effect">Glass Effect</string>
+    <string name="row_glass_opacity">Glass Opacity</string>
+    <string name="row_glass_blur">Glass Blur</string>
+    <string name="row_glass_glow">Glass Glow</string>
+    <string name="row_focus_glow_level">Focus Glow</string>
+    <string name="row_hero">Hero</string>
+    <string name="row_hero_size">Hero Size</string>
+    <string name="row_hero_artwork">Hero Artwork</string>
+    <string name="row_hero_title">Title</string>
+    <string name="row_hero_description">Description</string>
+    <string name="row_hero_metadata">Metadata</string>
+    <string name="row_hero_play_button">Play Button</string>
+    <string name="row_hero_secondary_actions">Secondary Actions</string>
+    <string name="row_hero_overlay">Hero Overlay</string>
+    <string name="row_hero_rotation">Hero Rotation</string>
+    <string name="row_transition">Transition</string>
+    <string name="row_background_type">Background Type</string>
+    <string name="row_brightness">Brightness</string>
+    <string name="row_opacity">Opacity</string>
+    <string name="row_gradient_strength">Gradient Strength</string>
+    <string name="row_artwork_visibility">Artwork Visibility</string>
+    <string name="row_blur_strength">Blur Strength</string>
+    <string name="row_navigation_style">Navigation Style</string>
+    <string name="row_text_size">Text Size</string>
+    <string name="row_title_size">Title Size</string>
+    <string name="row_metadata_size">Metadata Size</string>
+    <string name="row_animation">Animation</string>
+    <string name="row_focus_visibility">Focus Visibility</string>
+    <string name="row_high_contrast">High Contrast</string>
+    <string name="row_larger_text">Larger Text</string>
+    <string name="value_default">Default</string>
+    <string name="value_on">ON</string>
+    <string name="value_off">OFF</string>
+    <string name="value_always_on">Always On</string>
+
+    <!-- Settings -> Home Screen -> Catalog Rows -->
+    <string name="catalog_rows_subtitle">Show, hide, reorder and edit every row on Home.</string>
+    <string name="hero_row_label">Hero</string>
+    <string name="action_reset_row_order">Reset Row Order</string>
+
+    <!-- Settings -> Home Screen -> Catalog Rows -> Edit Row -->
+    <string name="row_visible">Visible</string>
+    <string name="row_layout_style">Layout</string>
+    <string name="row_progress_bar">Progress Bar</string>
+    <string name="row_watched_indicator">Watched Indicator</string>
+    <string name="row_spacing">Spacing</string>
+    <string name="row_items_displayed">Items Displayed</string>
+    <string name="row_custom_title">Custom Title</string>
+
+    <!-- Settings -> Home Screen -> Presets -->
+    <string name="presets_subtitle">Applying a preset only changes how Home looks - never your watch history, watchlist or add-ons.</string>
+    <string name="preset_default">Default</string>
+    <string name="preset_default_description">Balanced layout, standard posters, default Liquid Glass</string>
+    <string name="preset_cinematic">Cinematic</string>
+    <string name="preset_cinematic_description">Large hero, large posters, spacious layout, stronger glass</string>
+    <string name="preset_compact">Compact</string>
+    <string name="preset_compact_description">Smaller hero, smaller posters, more titles visible</string>
+    <string name="preset_minimal">Minimal</string>
+    <string name="preset_minimal_description">Minimal rows, minimal information, a clean interface</string>
+    <string name="preset_liquid_glass">Liquid Glass</string>
+    <string name="preset_liquid_glass_description">Maximum glass aesthetic, large rounded cards, strong focus effects</string>
+    <string name="preset_custom">Custom</string>
+
+    <!-- Settings -> Home Screen -> Preview Home Screen -->
+    <string name="preview_title">Preview Home Screen</string>
+    <string name="action_apply">Apply</string>
+
+    <!-- Settings -> Home Screen -> Reset Home Screen -->
+    <string name="reset_confirm_title">Reset all Home screen customisation?</string>
+    <string name="reset_confirm_body">This restores the default Home screen appearance and layout. It will not delete watch history, Continue Watching, your watchlist, add-ons or playback data.</string>
+    <string name="action_reset">Reset</string>
+
+    <!-- A viewer\'s own name for a row, and the watched badge on a card -->
+    <string name="action_save">Save</string>
+    <string name="label_watched_mark">✓</string>
 
     <!-- Add-ons: the installed list -->
     <string name="addon_list_title">Add-ons</string>

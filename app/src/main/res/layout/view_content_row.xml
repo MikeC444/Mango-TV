@@ -17,6 +17,6 @@
     <tv.mango.app.ui.core.RowRecyclerView
         android:id="@+id/row_list"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/card_poster_height" />
+        android:layout_height="wrap_content" />
 
 </tv.mango.app.ui.core.RowContainerView>

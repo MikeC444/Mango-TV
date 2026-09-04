@@ -15,6 +15,11 @@ import tv.mango.app.ui.home.HomeFragment
 import tv.mango.app.ui.player.StreamPickerFragment
 import tv.mango.app.ui.search.SearchFragment
 import tv.mango.app.ui.settings.SettingsFragment
+import tv.mango.app.ui.settings.home.CatalogRowsFragment
+import tv.mango.app.ui.settings.home.HomeScreenMenuFragment
+import tv.mango.app.ui.settings.home.HomeScreenOptionsFragment
+import tv.mango.app.ui.settings.home.PresetsFragment
+import tv.mango.app.ui.settings.home.PreviewHomeScreenFragment
 
 /**
  * Screen changes, in one place.
@@ -135,6 +140,12 @@ class Navigator(
         // state rather than a dead entry on the rail.
         Route.Library -> PlaceholderFragment.of(R.string.nav_library)
         Route.Settings -> SettingsFragment()
+        Route.HomeScreenMenu -> HomeScreenMenuFragment()
+        is Route.HomeScreenSection -> HomeScreenOptionsFragment.forSection(route.section)
+        Route.CatalogRows -> CatalogRowsFragment()
+        is Route.EditRow -> HomeScreenOptionsFragment.forRow(route.rowId, route.rowTitle)
+        Route.Presets -> PresetsFragment()
+        Route.PreviewHomeScreen -> PreviewHomeScreenFragment()
         is Route.MovieDetail -> DetailFragment.of(route.id, MediaType.MOVIE)
         is Route.SeriesDetail -> DetailFragment.of(route.id, MediaType.SERIES)
         Route.AddonList -> AddonListFragment()

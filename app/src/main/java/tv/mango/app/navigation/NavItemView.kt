@@ -10,8 +10,10 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import tv.mango.app.R
+import tv.mango.app.theme.MangoColors
+import tv.mango.app.theme.RuntimeTheme
+import tv.mango.app.theme.ThemeDrawables
 import tv.mango.app.ui.core.MotionSpec
 
 /**
@@ -25,7 +27,9 @@ import tv.mango.app.ui.core.MotionSpec
  *
  * The current section is marked separately, by an accent bar at the leading
  * edge - a position and a shape, so which section you are in does not depend on
- * telling two colours apart.
+ * telling two colours apart. Its colour is [MangoColors.selectedNavColor]
+ * specifically - the one colour role in Settings -> Home Screen -> Colours &
+ * Accents named for exactly this.
  */
 class NavItemView @JvmOverloads constructor(
     context: Context,
@@ -37,8 +41,8 @@ class NavItemView @JvmOverloads constructor(
     private val icon: ImageView
     private val label: TextView
 
-    private val colorActive = ContextCompat.getColor(context, R.color.text_primary)
-    private val colorResting = ContextCompat.getColor(context, R.color.text_secondary)
+    private var colorActive = RuntimeTheme.colors.primaryText
+    private var colorResting = RuntimeTheme.colors.secondaryText
 
     lateinit var section: Route.Section
         private set
@@ -64,7 +68,6 @@ class NavItemView @JvmOverloads constructor(
         isFocusableInTouchMode = false
         // The icon and label are decoration; focus lands on the item as a whole.
         descendantFocusability = FOCUS_BLOCK_DESCENDANTS
-        background = ContextCompat.getDrawable(context, R.drawable.nav_item_background)
 
         val padding = resources.getDimensionPixelSize(R.dimen.space_1)
         setPaddingRelative(padding, 0, padding, 0)
@@ -77,6 +80,13 @@ class NavItemView @JvmOverloads constructor(
         indicator = findViewById(R.id.indicator)
         icon = findViewById(R.id.icon)
         label = findViewById(R.id.label)
+
+        applyTheme(RuntimeTheme.colors)
+        background = ThemeDrawables.surfaceFocusBackground(
+            RuntimeTheme.colors,
+            RuntimeTheme.config.value.glass,
+            resources.getDimensionPixelSize(R.dimen.nav_item_corner).toFloat(),
+        )
     }
 
     fun bind(section: Route.Section, iconRes: Int, labelRes: Int) {
@@ -86,6 +96,14 @@ class NavItemView @JvmOverloads constructor(
         // The label carries the name for screen readers even while it is
         // visually collapsed, so the item is never an unlabelled icon.
         contentDescription = context.getString(labelRes)
+        refreshTint()
+    }
+
+    /** Applies the current theme's colours. Called once at construction, and again if a viewer changes them live. */
+    fun applyTheme(colors: MangoColors) {
+        colorActive = colors.primaryText
+        colorResting = colors.secondaryText
+        indicator.background = ThemeDrawables.navIndicator(colors)
         refreshTint()
     }
 

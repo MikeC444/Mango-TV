@@ -101,12 +101,12 @@
             android:layout_marginTop="@dimen/space_4"
             android:orientation="horizontal">
 
-            <Button
+            <tv.mango.app.ui.core.MangoButton
                 android:id="@+id/hero_play"
                 style="@style/Widget.Mango.Button"
                 android:text="@string/action_play" />
 
-            <Button
+            <tv.mango.app.ui.core.MangoButton
                 android:id="@+id/hero_details"
                 style="@style/Widget.Mango.Button"
                 android:layout_marginStart="@dimen/space_2"

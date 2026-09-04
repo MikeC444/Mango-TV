@@ -100,23 +100,23 @@
                 android:layout_marginTop="@dimen/space_4"
                 android:orientation="horizontal">
 
-                <Button
+                <tv.mango.app.ui.core.MangoButton
                     android:id="@+id/addon_detail_toggle_enabled"
                     style="@style/Widget.Mango.Button" />
 
-                <Button
+                <tv.mango.app.ui.core.MangoButton
                     android:id="@+id/addon_detail_move_up"
                     style="@style/Widget.Mango.Button"
                     android:layout_marginStart="@dimen/space_2"
                     android:text="@string/action_move_up" />
 
-                <Button
+                <tv.mango.app.ui.core.MangoButton
                     android:id="@+id/addon_detail_move_down"
                     style="@style/Widget.Mango.Button"
                     android:layout_marginStart="@dimen/space_2"
                     android:text="@string/action_move_down" />
 
-                <Button
+                <tv.mango.app.ui.core.MangoButton
                     android:id="@+id/addon_detail_remove"
                     style="@style/Widget.Mango.Button"
                     android:layout_marginStart="@dimen/space_2"

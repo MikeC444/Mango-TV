@@ -32,6 +32,12 @@ class RowContainerView @JvmOverloads constructor(
 
     override fun hasOverlappingRendering(): Boolean = false
 
+    /** Applies Settings -> Home Screen -> Home Layout's Home Density as the gap below this row. */
+    fun setRowSpacing(bottomPaddingPx: Int) {
+        if (paddingBottom == bottomPaddingPx) return
+        setPadding(paddingLeft, paddingTop, paddingRight, bottomPaddingPx)
+    }
+
     /** Animates the row between active and receded. */
     fun setReceded(receded: Boolean, animate: Boolean = true) {
         val target = if (receded) {

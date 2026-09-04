@@ -28,6 +28,7 @@ class RowRecyclerView @JvmOverloads constructor(
 ) : RecyclerView(context, attrs, defStyleAttr) {
 
     private var lastFocusedPosition = NO_POSITION
+    private var cardGapPx = -1
 
     init {
         val lane = resources.getDimensionPixelSize(R.dimen.safe_area_horizontal)
@@ -39,9 +40,7 @@ class RowRecyclerView @JvmOverloads constructor(
 
         setPadding(lane, 0, lane, 0)
         layoutManager = FocusLaneLayoutManager(context, HORIZONTAL, lane)
-        addItemDecoration(
-            CardSpacingDecoration.Row(resources.getDimensionPixelSize(R.dimen.card_gap)),
-        )
+        setCardGap(resources.getDimensionPixelSize(R.dimen.card_gap))
 
         // Rows have a fixed height, so the parent never needs to re-measure
         // when their contents change.
@@ -79,5 +78,18 @@ class RowRecyclerView @JvmOverloads constructor(
     /** Clears focus memory when a row is rebound to different content. */
     fun resetFocusMemory() {
         lastFocusedPosition = NO_POSITION
+    }
+
+    /**
+     * Applies this row's own [tv.mango.app.settings.home.RowSpacing]. A pooled
+     * row view can arrive already carrying a different row's spacing, so this
+     * replaces the decoration outright rather than trusting the one added the
+     * first time this instance was built.
+     */
+    fun setCardGap(gapPx: Int) {
+        if (gapPx == cardGapPx) return
+        cardGapPx = gapPx
+        while (itemDecorationCount > 0) removeItemDecorationAt(0)
+        addItemDecoration(CardSpacingDecoration.Row(gapPx))
     }
 }

@@ -3,6 +3,7 @@ package tv.mango.app
 import android.app.Application
 import android.os.StrictMode
 import tv.mango.app.di.AppGraph
+import tv.mango.app.theme.RuntimeTheme
 
 /**
  * Application entry point.
@@ -22,6 +23,9 @@ class MangoApplication : Application() {
             enableStrictMode()
         }
         graph = AppGraph(this)
+        // Observes the saved appearance from here on, so the first screen
+        // built already reflects it rather than the built-in defaults.
+        RuntimeTheme.start(graph.homeScreenConfigRepository)
     }
 
     /**

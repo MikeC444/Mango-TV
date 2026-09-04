@@ -6,10 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import tv.mango.app.R
 import tv.mango.app.models.CastMember
+import tv.mango.app.theme.RuntimeTheme
 
 /**
  * The cast row.
@@ -50,8 +50,8 @@ class CastAdapter : RecyclerView.Adapter<CastAdapter.CastViewHolder>() {
         private val name: TextView = view.findViewById(R.id.cast_name)
         private val role: TextView = view.findViewById(R.id.cast_role)
 
-        private val colorActive = ContextCompat.getColor(view.context, R.color.text_primary)
-        private val colorResting = ContextCompat.getColor(view.context, R.color.text_secondary)
+        private val colorActive = RuntimeTheme.colors.primaryText
+        private val colorResting = RuntimeTheme.colors.secondaryText
 
         init {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

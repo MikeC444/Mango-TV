@@ -14,6 +14,9 @@ import tv.mango.app.databinding.DialogCardActionsBinding
 import tv.mango.app.models.MediaItem
 import tv.mango.app.models.MediaType
 import tv.mango.app.repository.LibraryRepository
+import tv.mango.app.theme.RuntimeTheme
+import tv.mango.app.theme.ThemeDrawables
+import tv.mango.app.theme.ThemeDrawables.panelRadiusDp
 
 /**
  * The quick-action menu a long press opens on any poster.
@@ -66,6 +69,8 @@ class CardActionSheet(
         // below ever got a chance to apply.
         binding.root.alpha = 0f
         binding.actionPanel.alpha = 0f
+
+        applyTheme()
 
         binding.actionHeaderType.setText(
             if (item.type == MediaType.MOVIE) R.string.label_movie else R.string.label_series,
@@ -160,6 +165,26 @@ class CardActionSheet(
             .setDuration(MotionSpec.DURATION_EMPHASIZED)
             .setInterpolator(MotionSpec.emphasized)
             .start()
+    }
+
+    private fun applyTheme() {
+        val colors = RuntimeTheme.colors
+        val glass = RuntimeTheme.config.value.glass
+        val density = context.resources.displayMetrics.density
+        val panelCorner = glass.cornerRadius.panelRadiusDp() * density
+        val rowCorner = context.resources.getDimension(R.dimen.panel_corner) / 2f
+
+        binding.actionPanel.background = ThemeDrawables.glassPanel(colors, glass, panelCorner)
+        binding.actionHeaderType.setTextColor(colors.accent)
+
+        listOf(
+            binding.actionPlay.root,
+            binding.actionWatchlist.root,
+            binding.actionWatched.root,
+            binding.actionDetails.root,
+            binding.actionSimilar.root,
+            binding.actionRemoveContinueWatching.root,
+        ).forEach { row -> row.background = ThemeDrawables.surfaceFocusBackground(colors, glass, rowCorner) }
     }
 
     private fun toggleWatchlist() {
