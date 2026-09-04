@@ -77,6 +77,7 @@ class PresetsFragment : Fragment() {
             row(HomePreset.COMPACT, R.string.preset_compact, R.string.preset_compact_description),
             row(HomePreset.MINIMAL, R.string.preset_minimal, R.string.preset_minimal_description),
             row(HomePreset.LIQUID_GLASS, R.string.preset_liquid_glass, R.string.preset_liquid_glass_description),
+            row(HomePreset.STREAMER, R.string.preset_streamer, R.string.preset_streamer_description),
         )
     }
 

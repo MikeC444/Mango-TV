@@ -105,6 +105,7 @@ class HomeScreenMenuFragment : Fragment() {
             HomePreset.COMPACT -> R.string.preset_compact
             HomePreset.MINIMAL -> R.string.preset_minimal
             HomePreset.LIQUID_GLASS -> R.string.preset_liquid_glass
+            HomePreset.STREAMER -> R.string.preset_streamer
             HomePreset.CUSTOM -> R.string.preset_custom
         },
     )

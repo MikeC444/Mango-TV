@@ -278,4 +278,4 @@ data class AccessibilityConfig(
 // ------------------------------------------------------------------------ preset
 
 @Serializable
-enum class HomePreset { DEFAULT, CINEMATIC, COMPACT, MINIMAL, LIQUID_GLASS, CUSTOM }
+enum class HomePreset { DEFAULT, CINEMATIC, COMPACT, MINIMAL, LIQUID_GLASS, STREAMER, CUSTOM }

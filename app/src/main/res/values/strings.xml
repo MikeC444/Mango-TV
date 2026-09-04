@@ -181,6 +181,8 @@
     <string name="preset_minimal_description">Minimal rows, minimal information, a clean interface</string>
     <string name="preset_liquid_glass">Liquid Glass</string>
     <string name="preset_liquid_glass_description">Maximum glass aesthetic, large rounded cards, strong focus effects</string>
+    <string name="preset_streamer">Streamer</string>
+    <string name="preset_streamer_description">Wide crimson-accented hero, flat borderless posters, accent focus ring</string>
     <string name="preset_custom">Custom</string>
 
     <!-- Settings -> Home Screen -> Preview Home Screen -->

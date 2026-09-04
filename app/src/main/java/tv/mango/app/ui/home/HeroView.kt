@@ -9,6 +9,7 @@ import tv.mango.app.R
 import tv.mango.app.cache.ImageLoader
 import tv.mango.app.databinding.ViewHeroBinding
 import tv.mango.app.models.MediaItem
+import tv.mango.app.settings.home.GlassEffectLevel
 import tv.mango.app.settings.home.HeroConfig
 import tv.mango.app.settings.home.HeroArtworkMode
 import tv.mango.app.settings.home.HeroOverlay
@@ -73,11 +74,19 @@ class HeroView @JvmOverloads constructor(
         TypographyScale.apply(binding.heroMeta, META_BASE_SP, TypographyScale.metadataScale(typography, accessibility))
 
         binding.heroEyebrow.setTextColor(colors.accent)
-        binding.heroPanel.background = ThemeDrawables.glassPanel(
-            colors,
-            glass,
-            glass.cornerRadius.panelRadiusDp() * resources.displayMetrics.density,
-        )
+        // A flat "no glass" panel would paint an opaque box over the backdrop;
+        // the two scrims behind this panel already carry the legibility work,
+        // so with glass off the title floats directly on them instead - see
+        // Settings -> Home Screen -> Liquid Glass and the Streamer preset.
+        binding.heroPanel.background = if (glass.effect == GlassEffectLevel.OFF) {
+            null
+        } else {
+            ThemeDrawables.glassPanel(
+                colors,
+                glass,
+                glass.cornerRadius.panelRadiusDp() * resources.displayMetrics.density,
+            )
+        }
 
         val heightRes = when (config.size) {
             tv.mango.app.settings.home.HeroSize.COMPACT -> R.dimen.hero_height_compact
