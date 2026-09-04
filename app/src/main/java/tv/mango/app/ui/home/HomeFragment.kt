@@ -19,12 +19,14 @@ import kotlinx.coroutines.launch
 import tv.mango.app.R
 import tv.mango.app.data.FailureReason
 import tv.mango.app.data.UiState
+import tv.mango.app.data.refresh.Refreshable
 import tv.mango.app.databinding.FragmentHomeBinding
 import tv.mango.app.di.appGraph
 import tv.mango.app.models.Episode
 import tv.mango.app.models.HomeContent
 import tv.mango.app.models.MediaItem
 import tv.mango.app.navigation.NavigationHost
+import tv.mango.app.navigation.RefreshableScreen
 import tv.mango.app.ui.core.CardActionSheet
 import tv.mango.app.ui.core.ContentRowsAdapter
 
@@ -45,7 +47,7 @@ import tv.mango.app.ui.core.ContentRowsAdapter
  * cards a second. Without the delay that would be a dozen backdrop loads,
  * eleven of them cancelled before they finished.
  */
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), RefreshableScreen {
 
     private var binding: FragmentHomeBinding? = null
 
@@ -66,6 +68,17 @@ class HomeFragment : Fragment() {
 
     /** The title the hero should be showing once it is visible again. */
     private var pendingHeroItem: MediaItem? = null
+
+    /**
+     * Whether the screen has been populated at least once.
+     *
+     * Focus is claimed on the first content and never again. This matters more
+     * than it looks: the state combines a live Continue Watching flow, so
+     * content is re-emitted whenever playback progress changes - and without
+     * this, finishing an episode would yank a viewer three rows down back to
+     * the hero.
+     */
+    private var hasShownContent = false
 
     private val applyHeroItem = Runnable {
         val item = pendingHeroItem ?: return@Runnable
@@ -101,6 +114,13 @@ class HomeFragment : Fragment() {
             0,
             resources.getDimensionPixelSize(R.dimen.safe_area_vertical),
         )
+        // The fragment instance survives in the back stack while its view does
+        // not, so this counter outlives the RecyclerView it describes. The new
+        // list starts at the top, and a stale value here would fade the hero
+        // out and block focus into its Play and Details buttons while the rows
+        // are in fact scrolled to the top.
+        scrolledBy = 0
+
         views.rows.adapter = rowsAdapter
         views.rows.addOnScrollListener(scrollListener)
 
@@ -118,9 +138,23 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun render(state: UiState<HomeContent>) {
+    override fun refresh() {
+        viewModel.refresh()
+    }
+
+    private fun render(state: Refreshable<HomeContent>) {
         val views = binding ?: return
-        when (state) {
+
+        views.refreshStatus.visibility =
+            if (state.isRefreshing || state.refreshFailed) View.VISIBLE else View.GONE
+        if (state.isRefreshing) {
+            views.refreshStatus.setText(R.string.refresh_in_progress)
+        } else if (state.refreshFailed) {
+            // The screen still works; it is simply no newer than it was.
+            views.refreshStatus.setText(R.string.refresh_failed)
+        }
+
+        when (val content = state.content) {
             is UiState.Loading -> {
                 // Deliberately blank. A spinner would be a continuous animation
                 // on a screen about to fill in a moment; the charcoal surface is
@@ -130,11 +164,11 @@ class HomeFragment : Fragment() {
                 views.message.visibility = View.GONE
             }
 
-            is UiState.Content -> showContent(state.value)
+            is UiState.Content -> showContent(content.value)
 
             is UiState.Empty -> showMessage(R.string.error_empty_title, null)
 
-            is UiState.Error -> when (state.reason) {
+            is UiState.Error -> when (content.reason) {
                 FailureReason.NETWORK ->
                     showMessage(R.string.error_network_title, R.string.error_network_body)
                 else ->
@@ -153,10 +187,13 @@ class HomeFragment : Fragment() {
         views.hero.show(content.featured)
         rowsAdapter.submit(content.rows)
 
-        // Focus has to land somewhere the instant content appears, or the first
-        // press of the remote does nothing. The hero's primary action is the
-        // most useful place for it to be.
-        views.hero.post { views.hero.focusPrimaryAction() }
+        // Focus has to land somewhere the instant content first appears, or the
+        // first press of the remote does nothing. On every later emission it
+        // must stay where the viewer left it.
+        if (!hasShownContent) {
+            hasShownContent = true
+            views.hero.post { views.hero.focusPrimaryAction() }
+        }
     }
 
     private fun onCardFocused(item: MediaItem) {
