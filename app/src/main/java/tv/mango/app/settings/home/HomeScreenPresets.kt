@@ -20,6 +20,7 @@ object HomeScreenPresets {
         HomePreset.COMPACT -> compact()
         HomePreset.MINIMAL -> minimal()
         HomePreset.LIQUID_GLASS -> liquidGlass()
+        HomePreset.STREAMER -> streamer()
         // Custom is not a preset to apply - it is the label the current
         // configuration already carries once a viewer changes anything.
         HomePreset.CUSTOM -> HomeScreenConfig.default().copy(preset = HomePreset.CUSTOM)
@@ -139,6 +140,54 @@ object HomeScreenPresets {
         navigation = NavigationConfig(style = NavStyle.EXPANDED),
     )
 
+    /**
+     * A crimson-accented, gradient-scrim look styled after the modern streaming
+     * apps built around a single wide hero and flat, borderless poster rows: no
+     * glass panels or scaled-up focus - a card's only tell is the accent ring
+     * around it, and the hero's title floats straight on the backdrop's own
+     * gradient rather than sitting inside a separate surface.
+     */
+    private fun streamer(): HomeScreenConfig = HomeScreenConfig(
+        preset = HomePreset.STREAMER,
+        layout = HomeLayoutConfig(
+            density = HomeDensity.BALANCED,
+            contentWidth = ContentWidth.WIDE,
+            posterSize = PosterSizeOption.MEDIUM,
+        ),
+        cards = CardConfig(
+            cornerRadius = CornerRadiusOption.MEDIUM,
+            focusEffect = FocusEffect.GLOW,
+            focusScale = 1f,
+        ),
+        colors = ColorsConfig(
+            accent = AccentColor.CUSTOM,
+            customAccentArgb = STREAMER_ACCENT_ARGB,
+        ),
+        glass = GlassConfig(
+            effect = GlassEffectLevel.OFF,
+            border = BorderLevel.OFF,
+            glow = GlowLevel.OFF,
+            focusGlow = GlowLevel.SUBTLE,
+            cornerRadius = CornerRadiusOption.MEDIUM,
+        ),
+        hero = HeroConfig(
+            size = HeroSize.LARGE,
+            overlay = HeroOverlay.STRONG,
+            rotation = HeroRotation.OFF,
+            transition = HeroTransition.CROSSFADE,
+        ),
+        background = BackgroundConfig(
+            type = BackgroundType.CINEMATIC,
+            gradientStrength = 0.75f,
+        ),
+    )
+
     /** Matches [tv.mango.app.ui.home.HomeViewModel]'s synthesised Continue Watching row id. */
     private const val DEFAULT_ROW_KEY_CONTINUE = "continue_watching"
+
+    /**
+     * A vivid cinematic red, distinct from the muted [AccentColor.RED] swatch.
+     * `.toInt()` is not a constant expression, so this is a plain `val`.
+     */
+    private val STREAMER_ACCENT_ARGB = 0xFFE5484D.toInt()
 }
