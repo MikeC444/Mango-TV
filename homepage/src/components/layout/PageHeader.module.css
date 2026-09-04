@@ -1,0 +1,16 @@
+.header {
+  padding: calc(var(--mango-nav-height) + var(--mango-space-6)) var(--mango-safe-x) var(--mango-space-5);
+}
+
+.title {
+  font-size: var(--mango-fs-page-title);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--mango-text-primary);
+}
+
+.subtitle {
+  margin-top: var(--mango-space-1);
+  color: var(--mango-text-tertiary);
+  font-size: var(--mango-fs-meta);
+}

@@ -2,19 +2,20 @@ package tv.mango.app.theme
 
 import androidx.annotation.ColorInt
 import androidx.core.graphics.ColorUtils
-import tv.mango.app.settings.home.ColorPalettes
-import tv.mango.app.settings.home.ColorsConfig
 
 /**
- * The palette actually drawn on screen right now, resolved once per
- * [tv.mango.app.settings.home.HomeScreenConfig] change rather than re-derived
- * by every view that needs a colour.
+ * The application's fixed colour palette.
  *
  * Field-for-field, this mirrors `colors.xml` - it is what every shared view
  * class (`TvCardView`, `NavRail`, the glass surfaces built by
  * [ThemeDrawables]...) reads instead of a compiled resource, which is what
- * lets an accent change reach every one of them without a single `@color`
- * reference baked into a drawable anywhere in the application.
+ * lets every one of them share a single definition of "the accent colour"
+ * rather than a `@color` reference baked into each drawable separately.
+ *
+ * This was previously resolved from a viewer-editable `ColorsConfig`; that
+ * customisation UI has been removed along with the native Home screen it was
+ * originally reached from (Settings -> Home Screen -> Colours & Accents), so
+ * [defaults] is now the only palette the application ever draws with.
  */
 data class MangoColors(
     @ColorInt val accent: Int,
@@ -37,23 +38,18 @@ data class MangoColors(
 ) {
     companion object {
 
-        /** The look of the application before a viewer has ever touched a colour control. */
-        fun defaults(): MangoColors = resolve(ColorsConfig())
-
-        fun resolve(colors: ColorsConfig): MangoColors {
-            val accent = colors.customAccentArgb
-                ?: ColorPalettes.accentArgb(colors.accent)
-                ?: DEFAULT_ACCENT
-
-            val primaryText = colors.primaryTextArgb ?: DEFAULT_TEXT_PRIMARY
-            val secondaryText = colors.secondaryTextArgb ?: DEFAULT_TEXT_SECONDARY
-            val primaryBackground = colors.primaryBackgroundArgb ?: DEFAULT_SURFACE_BASE
-            val secondaryBackground = colors.secondaryBackgroundArgb ?: DEFAULT_SURFACE_RAISED
-            val glassTint = colors.glassTintArgb ?: DEFAULT_GLASS_FILL
-            val glassBorder = colors.glassBorderArgb ?: withAlpha(accent, GLASS_BORDER_ACCENT_ALPHA)
-            val focusGlow = colors.focusGlowArgb ?: accent
-            val buttonColor = colors.buttonColorArgb ?: accent
-            val selectedNavColor = colors.selectedNavColorArgb ?: accent
+        /** The application's one fixed palette. */
+        fun defaults(): MangoColors {
+            val accent = DEFAULT_ACCENT
+            val primaryText = DEFAULT_TEXT_PRIMARY
+            val secondaryText = DEFAULT_TEXT_SECONDARY
+            val primaryBackground = DEFAULT_SURFACE_BASE
+            val secondaryBackground = DEFAULT_SURFACE_RAISED
+            val glassTint = DEFAULT_GLASS_FILL
+            val glassBorder = withAlpha(accent, GLASS_BORDER_ACCENT_ALPHA)
+            val focusGlow = accent
+            val buttonColor = accent
+            val selectedNavColor = accent
 
             return MangoColors(
                 accent = accent,

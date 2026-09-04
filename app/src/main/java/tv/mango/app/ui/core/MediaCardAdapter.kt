@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import tv.mango.app.R
 import tv.mango.app.cache.ImageLoader
 import tv.mango.app.models.MediaItem
-import tv.mango.app.theme.RuntimeTheme
+import tv.mango.app.theme.ThemeDefaults
 import tv.mango.app.theme.TypographyScale
 import tv.mango.app.utilities.Formatters
 
@@ -124,9 +124,9 @@ class MediaCardAdapter(
 
             watchedBadge.background = GradientDrawable().apply {
                 shape = GradientDrawable.OVAL
-                setColor(RuntimeTheme.colors.accent)
+                setColor(ThemeDefaults.colors.accent)
             }
-            watchedBadge.setTextColor(RuntimeTheme.colors.textOnAccent)
+            watchedBadge.setTextColor(ThemeDefaults.colors.textOnAccent)
         }
 
         fun bind(item: MediaItem, spec: RowRenderSpec?) {
@@ -166,8 +166,8 @@ class MediaCardAdapter(
             caption.visibility = View.VISIBLE
             card.rasteriseWhileScaling = true
 
-            val typography = RuntimeTheme.config.value.typography
-            val accessibility = RuntimeTheme.config.value.accessibility
+            val typography = ThemeDefaults.typography
+            val accessibility = ThemeDefaults.accessibility
             TypographyScale.apply(captionTitle, CAPTION_TITLE_BASE_SP, TypographyScale.titleScale(typography, accessibility))
             TypographyScale.apply(captionMeta, CAPTION_META_BASE_SP, TypographyScale.metadataScale(typography, accessibility))
 

@@ -1,0 +1,32 @@
+.wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--mango-space-8) var(--mango-safe-x);
+  min-height: 30vh;
+  color: var(--mango-text-tertiary);
+}
+
+.spinner {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid var(--mango-border-strong);
+  border-top-color: var(--mango-accent);
+  animation: spin 900ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--mango-space-4);
+  min-height: unset;
+  padding: var(--mango-space-6) 0;
+}

@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatButton
 import tv.mango.app.R
 import tv.mango.app.theme.MangoColors
-import tv.mango.app.theme.RuntimeTheme
+import tv.mango.app.theme.ThemeDefaults
 import tv.mango.app.theme.ThemeDrawables
 
 /**
@@ -28,12 +28,12 @@ class MangoButton @JvmOverloads constructor(
 ) : AppCompatButton(context, attrs, defStyleAttr) {
 
     init {
-        applyTheme(RuntimeTheme.colors)
+        applyTheme(ThemeDefaults.colors)
     }
 
     fun applyTheme(colors: MangoColors) {
         val cornerRadiusPx = resources.getDimension(R.dimen.button_corner)
-        background = ThemeDrawables.buttonBackground(colors, RuntimeTheme.config.value.glass, cornerRadiusPx)
+        background = ThemeDrawables.buttonBackground(colors, ThemeDefaults.glass, cornerRadiusPx)
         setTextColor(
             ColorStateList(
                 arrayOf(intArrayOf(android.R.attr.state_focused), intArrayOf()),

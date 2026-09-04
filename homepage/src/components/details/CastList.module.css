@@ -1,0 +1,21 @@
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mango-space-2) var(--mango-space-5);
+}
+
+.person {
+  min-width: 140px;
+}
+
+.name {
+  font-weight: 600;
+  color: var(--mango-text-primary);
+  font-size: 14px;
+}
+
+.role {
+  font-size: 13px;
+  color: var(--mango-text-tertiary);
+  margin-top: 2px;
+}

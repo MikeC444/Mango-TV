@@ -1,0 +1,191 @@
+.layout {
+  padding: calc(var(--mango-nav-height) + var(--mango-space-6)) var(--mango-safe-x) var(--mango-space-8);
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: var(--mango-space-7);
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: sticky;
+  top: calc(var(--mango-nav-height) + var(--mango-space-4));
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: var(--mango-space-3);
+  padding: 13px 16px;
+  border-radius: var(--mango-radius-md);
+  border: none;
+  background: transparent;
+  color: var(--mango-text-secondary);
+  font-size: 15px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: transform var(--mango-duration-fast) var(--mango-ease), box-shadow var(--mango-duration-fast) var(--mango-ease),
+    background var(--mango-duration-fast) var(--mango-ease), color var(--mango-duration-fast) var(--mango-ease);
+}
+
+.navItem svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+
+.navItem[data-active='true'] {
+  color: var(--mango-text-primary);
+  background: var(--mango-surface-1);
+}
+
+.navItem[data-focused] {
+  color: var(--mango-text-primary);
+  background: var(--mango-surface-2);
+  box-shadow: var(--mango-focus-ring);
+  transform: translateX(2px);
+}
+
+.panel {
+  min-width: 0;
+}
+
+.panelTitle {
+  font-size: var(--mango-fs-page-title);
+  font-weight: 800;
+  margin-bottom: var(--mango-space-5);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--mango-border);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--mango-space-3) var(--mango-space-5);
+  padding: var(--mango-space-4) 0;
+  border-bottom: 1px solid var(--mango-border);
+}
+
+.rowLabel {
+  font-weight: 600;
+  color: var(--mango-text-primary);
+}
+
+.rowDescription {
+  color: var(--mango-text-tertiary);
+  font-size: 13px;
+  margin-top: 2px;
+  max-width: 46ch;
+}
+
+.optionGroup {
+  display: flex;
+  gap: var(--mango-space-2);
+  flex-wrap: wrap;
+  flex: none;
+}
+
+.option {
+  border: 1px solid var(--mango-border-strong);
+  background: var(--mango-surface-1);
+  color: var(--mango-text-secondary);
+  border-radius: var(--mango-radius-sm);
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform var(--mango-duration-fast) var(--mango-ease), box-shadow var(--mango-duration-fast) var(--mango-ease),
+    background var(--mango-duration-fast) var(--mango-ease), color var(--mango-duration-fast) var(--mango-ease);
+}
+
+.option[data-active='true'] {
+  background: var(--mango-accent);
+  color: var(--mango-text-on-accent);
+  border-color: transparent;
+}
+
+.option[data-focused] {
+  box-shadow: var(--mango-focus-ring);
+  transform: scale(1.05);
+}
+
+.toggle {
+  width: 46px;
+  height: 26px;
+  border-radius: 999px;
+  border: none;
+  background: var(--mango-surface-3);
+  position: relative;
+  cursor: pointer;
+  flex: none;
+  transition: background var(--mango-duration-fast) var(--mango-ease), box-shadow var(--mango-duration-fast) var(--mango-ease);
+}
+
+.toggle::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform var(--mango-duration-fast) var(--mango-ease);
+}
+
+.toggle[data-active='true'] {
+  background: var(--mango-accent);
+}
+
+.toggle[data-active='true']::after {
+  transform: translateX(20px);
+}
+
+.toggle[data-focused] {
+  box-shadow: var(--mango-focus-ring);
+}
+
+.about {
+  color: var(--mango-text-secondary);
+  line-height: 1.7;
+  max-width: 60ch;
+}
+
+.addonRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--mango-space-4);
+  border: 1px solid var(--mango-border);
+  border-radius: var(--mango-radius-md);
+  margin-bottom: var(--mango-space-3);
+}
+
+.addonMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.addonStatus {
+  font-size: 12px;
+  color: var(--mango-success);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}

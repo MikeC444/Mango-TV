@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import tv.mango.app.R
 import tv.mango.app.models.CastMember
-import tv.mango.app.theme.RuntimeTheme
+import tv.mango.app.theme.ThemeDefaults
 
 /**
  * The cast row.
@@ -50,8 +50,8 @@ class CastAdapter : RecyclerView.Adapter<CastAdapter.CastViewHolder>() {
         private val name: TextView = view.findViewById(R.id.cast_name)
         private val role: TextView = view.findViewById(R.id.cast_role)
 
-        private val colorActive = RuntimeTheme.colors.primaryText
-        private val colorResting = RuntimeTheme.colors.secondaryText
+        private val colorActive = ThemeDefaults.colors.primaryText
+        private val colorResting = ThemeDefaults.colors.secondaryText
 
         init {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

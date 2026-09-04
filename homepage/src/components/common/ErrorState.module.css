@@ -1,0 +1,28 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--mango-space-3);
+  padding: var(--mango-space-8) var(--mango-safe-x);
+  min-height: 30vh;
+  text-align: center;
+  color: var(--mango-text-secondary);
+}
+
+.icon {
+  width: 40px;
+  height: 40px;
+  color: var(--mango-text-tertiary);
+}
+
+.title {
+  font-size: var(--mango-fs-row-title);
+  font-weight: 600;
+  color: var(--mango-text-primary);
+}
+
+.message {
+  color: var(--mango-text-tertiary);
+  max-width: 42ch;
+}

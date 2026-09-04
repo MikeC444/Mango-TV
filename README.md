@@ -7,6 +7,10 @@ cheapest stick someone might own.
 Kotlin, Views and RecyclerView, no Compose. Runs entirely on bundled mock
 content — no network, no accounts, no backend.
 
+The one exception is Home: it is a WebView loading `homepage/`, a separate
+React/TypeScript frontend built with its own D-pad-navigation engine. See
+[Home is a WebView now](#home-is-a-webview-now) below.
+
 ---
 
 ## Building
@@ -71,7 +75,7 @@ app/src/main/java/tv/mango/app/
 │                 tracks, resume position.
 ├── ui/
 │   ├── core/     The focus engine and the design system.
-│   ├── home/     Cinematic hero over content rows.
+│   ├── home/     WebViewHomeFragment - hosts homepage/'s built output.
 │   ├── browse/   Movies and TV Shows grids.
 │   ├── detail/   Film and series detail, cast, seasons, episodes.
 │   ├── addon/    Installing, listing and managing add-ons.
@@ -116,18 +120,59 @@ the content. Fifty-six images come to 132 KB.
 
 ---
 
+## Home is a WebView now
+
+Home used to be a native Compose screen (`ui/home/`, a hero over content
+rows). It has been replaced by `WebViewHomeFragment`, which loads
+`homepage/` — a standalone React + TypeScript frontend with its own
+cinematic design system and its own D-pad spatial-navigation engine, driven
+by the arrow-key/Enter/Escape events a WebView already forwards from a Fire
+TV remote. See `homepage/README.md` for how that side is built.
+
+The Settings → Home Screen appearance editor (layout, rows, hero, presets,
+live preview) was removed along with the native screen it customised — there
+is no longer a native Home layout for it to configure. The parts of that
+system other screens actually depended on (card corner radius and focus
+effect, glass surfaces, colours, typography scale, accessibility) survive as
+fixed defaults in `theme/ThemeDefaults.kt`, so Browse, Detail and Settings
+keep exactly the look they had; there is just no longer a settings screen to
+change it from.
+
+**Rebuilding the bundle** — the built output is committed to
+`app/src/main/assets/homepage/`, the same convention `tools/generate_*.py`
+already uses for the bundled artwork, so a normal Gradle build needs no
+Node.js step:
+
+```
+cd homepage
+npm install
+npm run build
+rm -rf ../app/src/main/assets/homepage
+cp -r dist ../app/src/main/assets/homepage
+```
+
+Two things are specific to running inside this WebView rather than a normal
+browser, both already applied in `homepage/`: `vite.config.ts` builds with
+`base: './'` (an absolute base would resolve against the filesystem root
+under `file://`, not this directory), and `main.tsx` uses `HashRouter` rather
+than `BrowserRouter` (there is no server to fall back an arbitrary path to
+`index.html` the way the History API needs).
+
+---
+
 ## What is built, and what is not
 
 Built and green in CI:
 
-- **Focus system** — a focused card rises, grows 5% and brightens over 200ms;
-  the focused item settles into a fixed lane and the list moves beneath it;
-  rows that do not hold focus recede; rows remember where the viewer left off.
+- **Focus system** (native screens) — a focused card rises, grows 5% and
+  brightens over 200ms; rows that do not hold focus recede; rows remember
+  where the viewer left off. Home has its own separate, web-based focus
+  engine — see [Home is a WebView now](#home-is-a-webview-now).
 - **Navigation** — a rail that expands on focus without shifting the content,
   and one Back rule: sections replace each other, details stack, Back from Home
   leaves.
-- **Home** — cinematic hero that follows the focused card and stops working
-  once it scrolls out of sight, over rows of content.
+- **Home** — a WebView-hosted cinematic hero and content rows, with its own
+  D-pad navigation, browsing, search, My List and settings surface.
 - **Movies and TV Shows** — paged grids that derive their column count from the
   width available.
 - **Detail** — backdrop, poster, metadata, synopsis, cast, and for a series a

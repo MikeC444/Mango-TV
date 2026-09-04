@@ -12,7 +12,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import tv.mango.app.R
 import tv.mango.app.theme.MangoColors
-import tv.mango.app.theme.RuntimeTheme
+import tv.mango.app.theme.ThemeDefaults
 import tv.mango.app.theme.ThemeDrawables
 import tv.mango.app.ui.core.MotionSpec
 
@@ -28,8 +28,7 @@ import tv.mango.app.ui.core.MotionSpec
  * The current section is marked separately, by an accent bar at the leading
  * edge - a position and a shape, so which section you are in does not depend on
  * telling two colours apart. Its colour is [MangoColors.selectedNavColor]
- * specifically - the one colour role in Settings -> Home Screen -> Colours &
- * Accents named for exactly this.
+ * specifically - the one colour role named for exactly this.
  */
 class NavItemView @JvmOverloads constructor(
     context: Context,
@@ -41,8 +40,8 @@ class NavItemView @JvmOverloads constructor(
     private val icon: ImageView
     private val label: TextView
 
-    private var colorActive = RuntimeTheme.colors.primaryText
-    private var colorResting = RuntimeTheme.colors.secondaryText
+    private var colorActive = ThemeDefaults.colors.primaryText
+    private var colorResting = ThemeDefaults.colors.secondaryText
 
     lateinit var section: Route.Section
         private set
@@ -81,10 +80,10 @@ class NavItemView @JvmOverloads constructor(
         icon = findViewById(R.id.icon)
         label = findViewById(R.id.label)
 
-        applyTheme(RuntimeTheme.colors)
+        applyTheme(ThemeDefaults.colors)
         background = ThemeDrawables.surfaceFocusBackground(
-            RuntimeTheme.colors,
-            RuntimeTheme.config.value.glass,
+            ThemeDefaults.colors,
+            ThemeDefaults.glass,
             resources.getDimensionPixelSize(R.dimen.nav_item_corner).toFloat(),
         )
     }
