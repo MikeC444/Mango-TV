@@ -1,5 +1,7 @@
 package tv.mango.app.ui.home
 
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,9 +16,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import androidx.core.graphics.ColorUtils
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.launch
 import tv.mango.app.R
+import tv.mango.app.cache.ImageLoader
 import tv.mango.app.data.FailureReason
 import tv.mango.app.data.UiState
 import tv.mango.app.data.refresh.Refreshable
@@ -27,6 +31,15 @@ import tv.mango.app.models.HomeContent
 import tv.mango.app.models.MediaItem
 import tv.mango.app.navigation.NavigationHost
 import tv.mango.app.navigation.RefreshableScreen
+import tv.mango.app.settings.home.BackgroundConfig
+import tv.mango.app.settings.home.BackgroundType
+import tv.mango.app.settings.home.ContentWidth
+import tv.mango.app.settings.home.HeroArtworkMode
+import tv.mango.app.settings.home.HeroConfig
+import tv.mango.app.settings.home.HeroRotation
+import tv.mango.app.settings.home.HeroSize
+import tv.mango.app.settings.home.HomeScreenConfig
+import tv.mango.app.theme.RuntimeTheme
 import tv.mango.app.ui.core.CardActionSheet
 import tv.mango.app.ui.core.ContentRowsAdapter
 
@@ -46,6 +59,14 @@ import tv.mango.app.ui.core.ContentRowsAdapter
  * **Updates are debounced.** Holding a direction on the remote crosses a dozen
  * cards a second. Without the delay that would be a dozen backdrop loads,
  * eleven of them cancelled before they finished.
+ *
+ * A screen's whole appearance - hero, background, layout - is read from
+ * [RuntimeTheme], re-applied on every state emission (see [showContent]) so a
+ * viewer changing it in Settings -> Home Screen sees the new look the moment
+ * they navigate back here - [tv.mango.app.navigation.Navigator] never keeps an
+ * old Home behind Settings on the back stack - and so a restart never shows the
+ * built-in defaults while [tv.mango.app.repository.HomeScreenConfigRepository]'s
+ * first read is still in flight.
  */
 class HomeFragment : Fragment(), RefreshableScreen {
 
@@ -53,7 +74,13 @@ class HomeFragment : Fragment(), RefreshableScreen {
 
     private val viewModel: HomeViewModel by viewModels {
         viewModelFactory {
-            initializer { HomeViewModel(appGraph.catalogRepository, appGraph.libraryRepository) }
+            initializer {
+                HomeViewModel(
+                    appGraph.catalogRepository,
+                    appGraph.libraryRepository,
+                    appGraph.homeScreenConfigRepository,
+                )
+            }
         }
     }
 
@@ -63,11 +90,27 @@ class HomeFragment : Fragment(), RefreshableScreen {
         onItemLongSelected = ::onCardLongPressed,
     )
 
+    /**
+     * A getter, not a one-time read: [tv.mango.app.repository.HomeScreenConfigRepository]'s
+     * first value can still be loading from DataStore the moment this fragment
+     * is first built at a cold start, before it has caught up with whatever a
+     * viewer saved last session. [showContent] re-applies this on every state
+     * emission - including the one that arrives the instant the real
+     * configuration finishes loading - so a restart never shows the built-in
+     * defaults for longer than that first frame.
+     */
+    private val config: HomeScreenConfig get() = RuntimeTheme.config.value
+    private val heroConfig: HeroConfig get() = config.hero
+
     /** How far the rows have been scrolled up over the hero, in pixels. */
     private var scrolledBy = 0
 
     /** The title the hero should be showing once it is visible again. */
     private var pendingHeroItem: MediaItem? = null
+
+    /** What Hero Rotation cycles through while the hero holds focus and nothing has been picked. */
+    private var rotationCandidates: List<MediaItem> = emptyList()
+    private var rotationIndex = 0
 
     /**
      * Whether the screen has been populated at least once.
@@ -85,8 +128,11 @@ class HomeFragment : Fragment(), RefreshableScreen {
         if (isHeroVisible()) binding?.hero?.show(item)
     }
 
+    private val rotateHero = Runnable { rotateHeroItem() }
+
     private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            if (!heroConfig.enabled) return
             scrolledBy = (scrolledBy + dy).coerceAtLeast(0)
             updateHeroForScroll()
         }
@@ -106,14 +152,6 @@ class HomeFragment : Fragment(), RefreshableScreen {
         super.onViewCreated(view, savedInstanceState)
         val views = binding ?: return
 
-        // Rows begin below the hero and scroll up over it. Clipping is already
-        // off, so they draw across it rather than being cut at the inset.
-        views.rows.setPadding(
-            0,
-            resources.getDimensionPixelSize(R.dimen.hero_height),
-            0,
-            resources.getDimensionPixelSize(R.dimen.safe_area_vertical),
-        )
         // The fragment instance survives in the back stack while its view does
         // not, so this counter outlives the RecyclerView it describes. The new
         // list starts at the top, and a stale value here would fade the hero
@@ -123,6 +161,9 @@ class HomeFragment : Fragment(), RefreshableScreen {
 
         views.rows.adapter = rowsAdapter
         views.rows.addOnScrollListener(scrollListener)
+
+        applyHeroLayout(views)
+        applyBackground(config.background, item = null)
 
         // Not just requestPlayback(item): the hero can be showing a Continue
         // Watching card the viewer scrolled to, and pressing Play there has
@@ -140,6 +181,87 @@ class HomeFragment : Fragment(), RefreshableScreen {
 
     override fun refresh() {
         viewModel.refresh()
+    }
+
+    /** Sizes the hero (or removes it) and insets the rows to match - Settings -> Home Screen -> Hero and Home Layout. */
+    private fun applyHeroLayout(views: FragmentHomeBinding) {
+        val heroHeight = if (heroConfig.enabled) {
+            views.hero.visibility = View.VISIBLE
+            views.hero.applyConfig(heroConfig)
+            val widthRes = when (config.layout.contentWidth) {
+                ContentWidth.STANDARD -> R.dimen.hero_text_max_width
+                ContentWidth.WIDE -> R.dimen.hero_text_max_width_wide
+                ContentWidth.MAXIMUM -> R.dimen.hero_text_max_width_maximum
+            }
+            views.hero.applyContentWidth(resources.getDimensionPixelSize(widthRes))
+            resources.getDimensionPixelSize(
+                when (heroConfig.size) {
+                    HeroSize.COMPACT -> R.dimen.hero_height_compact
+                    HeroSize.NORMAL -> R.dimen.hero_height
+                    HeroSize.LARGE -> R.dimen.hero_height_large
+                },
+            )
+        } else {
+            views.hero.visibility = View.GONE
+            resources.getDimensionPixelSize(R.dimen.safe_area_vertical)
+        }
+
+        views.rows.setPadding(
+            0,
+            heroHeight,
+            0,
+            resources.getDimensionPixelSize(R.dimen.safe_area_vertical),
+        )
+    }
+
+    /**
+     * Settings -> Home Screen -> Background. Solid, the default, never touches
+     * either overlay view - the window's own base surface is already exactly
+     * that. Everything else is a cheap flat drawable or the current hero
+     * artwork itself; never a real-time blur, the same rule every glass
+     * surface in the application follows.
+     */
+    private fun applyBackground(background: BackgroundConfig, item: MediaItem?) {
+        val views = binding ?: return
+        val colors = RuntimeTheme.colors
+        val dim = (1f - background.brightness).coerceIn(0f, 1f)
+
+        when (background.type) {
+            BackgroundType.SOLID -> {
+                views.backgroundArtwork.alpha = 0f
+                views.backgroundScrim.setBackgroundColor(Color.argb((dim * 255).toInt(), 0, 0, 0))
+            }
+            BackgroundType.GRADIENT, BackgroundType.CINEMATIC -> {
+                views.backgroundArtwork.alpha = 0f
+                val strength = if (background.type == BackgroundType.CINEMATIC) {
+                    (background.gradientStrength * 1.3f).coerceAtMost(1f)
+                } else {
+                    background.gradientStrength
+                }
+                views.backgroundScrim.background = GradientDrawable(
+                    GradientDrawable.Orientation.TOP_BOTTOM,
+                    intArrayOf(
+                        ColorUtils.setAlphaComponent(colors.secondaryBackground, (strength * 255).toInt()),
+                        ColorUtils.setAlphaComponent(colors.primaryBackground, ((strength + dim).coerceAtMost(1f) * 255).toInt()),
+                    ),
+                )
+            }
+            BackgroundType.DYNAMIC_ARTWORK, BackgroundType.BLURRED_ARTWORK -> {
+                val key = item?.images?.backdrop
+                if (key != null) {
+                    ImageLoader.loadBackdrop(views.backgroundArtwork, key, BACKGROUND_ART_WIDTH_PX, BACKGROUND_ART_HEIGHT_PX)
+                    views.backgroundArtwork.alpha = background.artworkVisibility
+                } else {
+                    views.backgroundArtwork.alpha = 0f
+                }
+                // "Blurred" steps the same cheap stand-in every glass surface
+                // uses: a stronger darkening overlay in place of an actual blur
+                // pass over the artwork.
+                val blurBoost = if (background.type == BackgroundType.BLURRED_ARTWORK) background.blurStrength else 0f
+                val scrimAlpha = (dim + blurBoost).coerceIn(0f, 1f)
+                views.backgroundScrim.setBackgroundColor(Color.argb((scrimAlpha * 255).toInt(), 0, 0, 0))
+            }
+        }
     }
 
     private fun render(state: Refreshable<HomeContent>) {
@@ -180,25 +302,78 @@ class HomeFragment : Fragment(), RefreshableScreen {
     private fun showContent(content: HomeContent) {
         val views = binding ?: return
         views.message.visibility = View.GONE
-        views.hero.visibility = View.VISIBLE
         views.rows.visibility = View.VISIBLE
 
-        pendingHeroItem = content.featured
-        views.hero.show(content.featured)
+        applyHeroLayout(views)
         rowsAdapter.submit(content.rows)
 
-        // Focus has to land somewhere the instant content first appears, or the
-        // first press of the remote does nothing. On every later emission it
-        // must stay where the viewer left it.
+        if (heroConfig.enabled) {
+            views.hero.visibility = View.VISIBLE
+            pendingHeroItem = content.featured
+            views.hero.show(content.featured)
+            applyBackground(config.background, content.featured)
+
+            buildRotationCandidates(content)
+            scheduleRotation()
+        }
+
+        // Focus has to land somewhere the instant content first appears, or
+        // the first press of the remote does nothing. On every later emission
+        // - the state combines a live Continue Watching flow, so content is
+        // re-emitted whenever playback progress changes - it must stay where
+        // the viewer left it instead of being reclaimed.
         if (!hasShownContent) {
             hasShownContent = true
-            views.hero.post { views.hero.focusPrimaryAction() }
+            if (heroConfig.enabled) {
+                views.hero.post { views.hero.focusPrimaryAction() }
+            } else {
+                views.rows.post { views.rows.requestFocus() }
+            }
         }
+    }
+
+    /** Rotation cycles the first non-Continue-Watching row - the closest thing this catalogue has to "featured". */
+    private fun buildRotationCandidates(content: HomeContent) {
+        rotationCandidates = content.rows
+            .firstOrNull { it.id != CONTINUE_WATCHING_ROW_ID }
+            ?.items
+            ?.take(ROTATION_CANDIDATE_LIMIT)
+            .orEmpty()
+        rotationIndex = 0
+    }
+
+    private fun scheduleRotation() {
+        val views = binding ?: return
+        views.hero.removeCallbacks(rotateHero)
+        val interval = heroConfig.rotation.intervalMillis() ?: return
+        if (rotationCandidates.size < 2) return
+        views.hero.postDelayed(rotateHero, interval)
+    }
+
+    /**
+     * Advances to the next rotation candidate, but only while the hero itself
+     * holds focus - the moment a viewer moves into a row, focus leaves the
+     * hero and rotation stops touching it, exactly the "pause while
+     * navigating" behaviour Settings -> Home Screen -> Hero promises.
+     */
+    private fun rotateHeroItem() {
+        val views = binding ?: return
+        if (!views.hero.hasFocus() || !isHeroVisible() || rotationCandidates.isEmpty()) {
+            scheduleRotation()
+            return
+        }
+        rotationIndex = (rotationIndex + 1) % rotationCandidates.size
+        val next = rotationCandidates[rotationIndex]
+        pendingHeroItem = next
+        views.hero.show(next)
+        applyBackground(config.background, next)
+        scheduleRotation()
     }
 
     private fun onCardFocused(item: MediaItem) {
         pendingHeroItem = item
         val views = binding ?: return
+        if (!heroConfig.enabled || heroConfig.artworkMode == HeroArtworkMode.STATIC) return
         views.hero.removeCallbacks(applyHeroItem)
         if (isHeroVisible()) {
             views.hero.postDelayed(applyHeroItem, HERO_DEBOUNCE_MS)
@@ -236,7 +411,8 @@ class HomeFragment : Fragment(), RefreshableScreen {
     }
 
     private fun isHeroVisible(): Boolean =
-        binding?.hero?.let { it.visibility == View.VISIBLE && it.alpha > VISIBILITY_THRESHOLD } == true
+        heroConfig.enabled &&
+            binding?.hero?.let { it.visibility == View.VISIBLE && it.alpha > VISIBILITY_THRESHOLD } == true
 
     private fun showMessage(titleRes: Int, bodyRes: Int?) {
         val views = binding ?: return
@@ -312,7 +488,9 @@ class HomeFragment : Fragment(), RefreshableScreen {
     override fun onDestroyView() {
         binding?.let {
             it.hero.removeCallbacks(applyHeroItem)
+            it.hero.removeCallbacks(rotateHero)
             it.rows.removeOnScrollListener(scrollListener)
+            ImageLoader.clear(it.backgroundArtwork)
             // The adapter outlives the view; leaving it attached would keep the
             // whole hierarchy alive behind it.
             it.rows.adapter = null
@@ -321,11 +499,25 @@ class HomeFragment : Fragment(), RefreshableScreen {
         super.onDestroyView()
     }
 
+    private fun HeroRotation.intervalMillis(): Long? = when (this) {
+        HeroRotation.OFF -> null
+        HeroRotation.SEC_10 -> 10_000L
+        HeroRotation.SEC_15 -> 15_000L
+        HeroRotation.SEC_20 -> 20_000L
+        HeroRotation.SEC_30 -> 30_000L
+    }
+
     private companion object {
         /** Long enough to outlast held-down navigation, short enough to feel immediate. */
         const val HERO_DEBOUNCE_MS = 220L
 
         /** Below this the hero is effectively gone and stops taking focus. */
         const val VISIBILITY_THRESHOLD = 0.05f
+
+        const val ROTATION_CANDIDATE_LIMIT = 6
+        const val CONTINUE_WATCHING_ROW_ID = "continue_watching"
+
+        const val BACKGROUND_ART_WIDTH_PX = 960
+        const val BACKGROUND_ART_HEIGHT_PX = 540
     }
 }

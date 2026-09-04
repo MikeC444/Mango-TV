@@ -17,7 +17,7 @@
         android:maxWidth="@dimen/hero_text_max_width"
         android:textAppearance="@style/TextAppearance.Mango.Body" />
 
-    <Button
+    <tv.mango.app.ui.core.MangoButton
         android:id="@+id/message_action"
         style="@style/Widget.Mango.Button"
         android:layout_marginTop="@dimen/space_4"

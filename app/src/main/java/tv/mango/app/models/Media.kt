@@ -69,6 +69,16 @@ data class MediaItem(
      * instead of a title's usual year and genres.
      */
     val resume: ContinueWatchingItem? = null,
+
+    /**
+     * Whether the viewer has explicitly marked this title watched - see
+     * [tv.mango.app.repository.LibraryRepository.isWatched]. Never set by a
+     * catalogue provider; only [tv.mango.app.ui.home.HomeViewModel] populates
+     * it, by combining a row's items with the library's own watched marks, so
+     * Home's optional watched badge (Settings -> Home Screen -> Catalog Rows)
+     * has something real to show.
+     */
+    val watched: Boolean = false,
 ) {
     val isPartiallyWatched: Boolean get() = progress > 0f
 }

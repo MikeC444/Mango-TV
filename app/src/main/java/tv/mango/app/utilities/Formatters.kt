@@ -66,6 +66,28 @@ object Formatters {
     }
 
     /**
+     * The optional caption line under a card's artwork, built from exactly the
+     * fields a row's own Information toggles ask for - see Settings -> Home
+     * Screen -> Catalog Rows -> Edit Row. Never includes anything toggled off,
+     * and returns `null` rather than an empty string when everything is.
+     */
+    fun cardCaptionLine(
+        context: Context,
+        item: MediaItem,
+        showYear: Boolean,
+        showRating: Boolean,
+        showRuntime: Boolean,
+    ): String? {
+        val length = item.runtimeMinutes.takeIf { showRuntime }?.let { runtime(context, it) }
+        val parts = listOfNotNull(
+            item.year?.toString().takeIf { showYear },
+            item.rating?.let { context.getString(R.string.format_rating, it) }.takeIf { showRating },
+            length,
+        ).filter { it.isNotBlank() }
+        return parts.joinToString(SEPARATOR).takeIf { it.isNotEmpty() }
+    }
+
+    /**
      * "1.4 GB", "700 MB" - a stream's size, for the source picker.
      *
      * Formatted with a fixed locale rather than the device's own: this is a

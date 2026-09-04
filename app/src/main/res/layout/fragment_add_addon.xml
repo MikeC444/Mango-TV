@@ -90,12 +90,12 @@
             android:layout_marginTop="@dimen/space_2"
             android:orientation="horizontal">
 
-            <Button
+            <tv.mango.app.ui.core.MangoButton
                 android:id="@+id/add_addon_primary"
                 style="@style/Widget.Mango.Button"
                 android:text="@string/action_preview" />
 
-            <Button
+            <tv.mango.app.ui.core.MangoButton
                 android:id="@+id/add_addon_cancel"
                 style="@style/Widget.Mango.Button"
                 android:layout_marginStart="@dimen/space_2"

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The shared shape behind every Settings -> Home Screen screen except Preview:
+  a title, an optional one-line description, and a scrolling list of rows. See
+  tv.mango.app.ui.settings.home.SettingsRowAdapter for what fills the list.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingStart="@dimen/safe_area_horizontal"
+    android:paddingTop="@dimen/safe_area_vertical"
+    android:paddingEnd="@dimen/safe_area_horizontal"
+    android:paddingBottom="@dimen/safe_area_vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/screen_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Mango.Title" />
+
+        <TextView
+            android:id="@+id/screen_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_1"
+            android:textAppearance="@style/TextAppearance.Mango.Body"
+            android:visibility="gone" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/options_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/space_3"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/space_4" />
+
+    </LinearLayout>
+
+</FrameLayout>

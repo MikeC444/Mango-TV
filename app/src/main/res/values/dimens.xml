@@ -64,9 +64,15 @@
     <dimen name="row_header_spacing">12dp</dimen>
     <dimen name="row_spacing">32dp</dimen>
 
-    <!-- Hero. Substantial without swallowing the first content row. -->
+    <!-- Hero. Substantial without swallowing the first content row. Compact
+         and Large are Settings -> Home Screen -> Hero's own Hero Size. -->
     <dimen name="hero_height">440dp</dimen>
+    <dimen name="hero_height_compact">320dp</dimen>
+    <dimen name="hero_height_large">560dp</dimen>
     <dimen name="hero_text_max_width">560dp</dimen>
+    <!-- Settings -> Home Screen -> Home Layout's own Content Width. -->
+    <dimen name="hero_text_max_width_wide">680dp</dimen>
+    <dimen name="hero_text_max_width_maximum">800dp</dimen>
     <!-- The hero fades out over this much scroll, not over its own height -
          otherwise a taller hero would stay visible, faintly, behind rows for
          longer than a viewer scrolling past it would expect. -->
@@ -80,6 +86,8 @@
 
     <dimen name="progress_bar_height">3dp</dimen>
     <dimen name="hairline_width">1dp</dimen>
+    <!-- The watched badge in a Home card's corner - Catalog Rows -> Edit Row -> Watched Indicator. -->
+    <dimen name="watched_badge_size">22dp</dimen>
 
     <!-- Liquid glass panels. Large sits behind the hero and the detail info
          card; the smaller one is every other glass surface - rows, chips,

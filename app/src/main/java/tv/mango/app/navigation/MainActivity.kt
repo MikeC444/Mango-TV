@@ -4,12 +4,17 @@ import android.os.Bundle
 import android.view.KeyEvent
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.launch
 import tv.mango.app.R
 import tv.mango.app.databinding.ActivityMainBinding
 import tv.mango.app.models.Episode
 import tv.mango.app.models.MediaItem
 import tv.mango.app.models.MediaType
 import tv.mango.app.player.PendingPlayback
+import tv.mango.app.theme.RuntimeTheme
 import tv.mango.app.ui.search.PendingSimilarSearch
 
 /**
@@ -55,6 +60,15 @@ class MainActivity : AppCompatActivity(), NavigationHost {
         }
 
         navigator.start()
+
+        // The rail is the one piece of chrome that outlives navigation - see
+        // RuntimeTheme's own documentation for why every other screen picks up
+        // a changed appearance fresh instead of needing to observe it here.
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                RuntimeTheme.config.collect { binding.navRail.applyConfig(it) }
+            }
+        }
     }
 
     /**

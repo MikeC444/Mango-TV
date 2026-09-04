@@ -9,6 +9,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!--
+      Settings -> Home Screen -> Background. Both start fully transparent -
+      Solid (the default) never touches them at all - and only draw anything
+      once HomeFragment applies a Dynamic Artwork, Blurred Artwork, Gradient or
+      Cinematic background.
+    -->
+    <ImageView
+        android:id="@+id/background_artwork"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0"
+        android:contentDescription="@null"
+        android:scaleType="centerCrop" />
+
+    <View
+        android:id="@+id/background_scrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <tv.mango.app.ui.home.HeroView
         android:id="@+id/hero"
         android:layout_width="match_parent"

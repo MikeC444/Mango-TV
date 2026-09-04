@@ -29,6 +29,10 @@ class LibraryRepository(
     fun isWatched(id: MediaId): Flow<Boolean> =
         store.watched.map { id.value in it }
 
+    /** Every title the viewer has explicitly marked watched - see [tv.mango.app.ui.home.HomeViewModel]'s watched badge. */
+    val watchedIds: Flow<Set<MediaId>> =
+        store.watched.map { ids -> ids.mapTo(mutableSetOf(), ::MediaId) }
+
     fun progressOf(id: MediaId): Flow<Float> =
         store.progress.map { it[id.value]?.fraction ?: 0f }
 
