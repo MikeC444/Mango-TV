@@ -11,7 +11,7 @@ import tv.mango.app.settings.home.ColorsConfig
  * by every view that needs a colour.
  *
  * Field-for-field, this mirrors `colors.xml` - it is what every shared view
- * class (`TvCardView`, `NavRail`, `HeroView`, the glass surfaces built by
+ * class (`TvCardView`, `NavRail`, the glass surfaces built by
  * [ThemeDrawables]...) reads instead of a compiled resource, which is what
  * lets an accent change reach every one of them without a single `@color`
  * reference baked into a drawable anywhere in the application.

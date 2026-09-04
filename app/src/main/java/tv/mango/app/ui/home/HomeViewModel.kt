@@ -48,7 +48,7 @@ import tv.mango.app.settings.home.RowsConfig
  *  - Settings -> Home Screen -> Catalog Rows' own visibility, order and
  *    renaming - the one place row *identity* changes; everything about how a
  *    visible row's cards are drawn (size, layout, captions...) is resolved
- *    later, per row, by [tv.mango.app.ui.core.ContentRowsAdapter].
+ *    later, per row, by the Compose Home screen.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModel(
